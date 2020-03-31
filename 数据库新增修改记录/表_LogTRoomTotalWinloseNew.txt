@@ -1,0 +1,46 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[LogTRoomTotalWinloseNew]    Script Date: 12/11/2017 16:10:03 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[LogTRoomTotalWinloseNew](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[RoomId] [int] NOT NULL,
+	[WinTotal] [bigint] NOT NULL,
+	[LoseTotal] [bigint] NOT NULL,
+	[Desk] [int] NOT NULL,
+	[TaskScore] [bigint] NOT NULL,
+	[CaijinScore] [bigint] NOT NULL,
+	[CollectDate] [smalldatetime] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'统计时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'LogTRoomTotalWinloseNew', @level2type=N'COLUMN',@level2name=N'CollectDate'
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_RoomId]  DEFAULT ((0)) FOR [RoomId]
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_WinTotal]  DEFAULT ((0)) FOR [WinTotal]
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_LoseTotal]  DEFAULT ((0)) FOR [LoseTotal]
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_Desk]  DEFAULT ((0)) FOR [Desk]
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_TaskScore]  DEFAULT ((0)) FOR [TaskScore]
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_CaijinScore]  DEFAULT ((0)) FOR [CaijinScore]
+GO
+
+ALTER TABLE [dbo].[LogTRoomTotalWinloseNew] ADD  CONSTRAINT [DF_LogTRoomTotalWinloseNew_CollectDate]  DEFAULT (getdate()) FOR [CollectDate]
+GO

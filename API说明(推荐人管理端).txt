@@ -1,0 +1,440 @@
+﻿﻿API说明(推荐人管理端)
+=======================================================
+
+2018-01-05 -------------------------------------------
+增加API接口
+多级推荐人列表（RecUserList），详见方法说明；
+
+
+2018-01-04 -------------------------------------------
+修改API接口
+分润明细（分页）【以流水统计】（按日期统计）（GetShareProfitTotal），详见方法说明；
+
+2017-12-21 -------------------------------------------
+增加API接口：
+获取分润金币（GetMineShareGold），提款记录（GetCashData），详见方法说明；
+
+2017-12-14 -------------------------------------------
+修改API接口：
+推荐人名下玩家统计（TuijianPlayers），增加输出字段，详见方法说明；
+增加API接口：
+提交取款订单（PostCashOrder），详见方法说明
+
+
+2017-12-06 -------------------------------------------
+推荐人分润明细【以流水统计】（GetShareProfitTotal）输出参数集合增加用户名（UserName）、昵称（NickName）、我的收益字段（MyGain）；
+
+2017-12-05 -------------------------------------------
+推荐人管理端接口重构：修改t,sign验签调用方式，方便加功能开关及扩展；
+
+2017-11-24 -------------------------------------------
+增加API接口：
+推荐人金币余额变化日志(分页)（RecUserMoneyChangeLog），详情见方法说明；
+推荐人给自己名下用户充值（使用推荐人金币余额）（RecUserChangeUserMoney），详情见方法说明；
+
+2017-11-23 -------------------------------------------
+增加API接口：
+推荐人名下玩家统计(TuijianPlayers)：详见方法说明
+推荐人分润明细（GetShareProfitTotal）：详见方法说明
+
+2017-11-03 -------------------------------------------
+修改API接口：
+推荐人登陆(RecUserLogin),输入参数：推荐人密码(明文)，详情见方法说明；
+推荐人修改密码(RecUserEdit),输入参数：原密码(明文) 新密码（明文），详情见方法说明；
+
+2017-08-08 -------------------------------------------
+修改API接口：
+金币变化日志（MoneyChangeLog），使用推荐人ID 668899，可以查看所有用户金币变化日志；
+
+2017-08-03 -------------------------------------------
+修改API接口：
+金币变化日志（MoneyChangeLog），增加条件限制（过滤掉机器人）；
+
+2017-07-12 -------------------------------------------
+修改API接口：
+金币变化日志（MoneyChangeLog），增加参数，增加输出字段；
+
+2017-07-10 -------------------------------------------
+增加API接口：
+推荐人登陆（RecUserLogin），详见方法说明；
+推荐人退出（RecUserLogout），详见方法说明；
+推荐人修改密码（RecUserEdit），详见方法说明；
+推荐人详情（RecUserDetails），详见方法说明；
+金币变化日志(分页)（MoneyChangeLog），详见方法说明；
+
+=======================================================
+
+加密：
+recuser_keyid=recuser@ttyx101
+recuser_secret=CFE08590A4850D4F761D05D61AACA44B
+调用：http://domain/api/recuser/api名称?t=currdt&sign=vsign&para=1&parb=2&parv=3
+参数：t   //unix时间戳 (10位int)
+      sign   //签名(string)
+      sign=MD5(recuser_keyid + t + recuser_secret)   //MD5大写形式副本
+返回：格式为json
+      code   //code=1成功,code=-1失败
+      msg    //code=1时返回success,code=-1时返回错误信息
+      results   //code=1时为返回数据,code=-1时返回null
+
+-------------------------------------------------------
+
+推荐人详情
+http://domain/api/recuser/RecUserDetails?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+
+-------------------------------------------------------
+
+金币变化日志:
+http://domain/api/recuser/MoneyChangeLog?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&userid=&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&changetype=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    userid   //(非必选)游戏用户ID
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-07-03 11:35
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-07-05 11:35
+    changetype //(非必选)金币变化类型 为空. 筛选所有的 1.只筛选增加的;  2.只筛选减少的;
+ 返回:
+    返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    moneychangetotal  //总金币合计数
+    increase_total  //金币增加合计数  
+    reduce_total  //金币减少合计数
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+    
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "success",
+    "moneychangetotal": "368934610562816091",
+    "increase_total": "368943661787201859",
+    "reduce_total": "-9051224385768",
+    "recordcount": "1401",
+    "totalpage": "467",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "userid": "311923", 
+            "username": "test002",
+            "nickname": "test002",
+            "recuserid": "88888",
+            "startmoney": "577187859",
+            "changemoney": "10000",
+            "changetype": "10",
+            "datetime": "2017/7/11 22:29:00",
+            "remark": "奖卷兑换金币,金币实时到账"
+        },
+        {
+            "userid": "311923",
+            "username": "test002",
+            "nickname": "test002",
+            "recuserid": "88888",
+            "startmoney": "577177859",
+            "changemoney": "10000",
+            "changetype": "10",
+            "datetime": "2017/7/11 22:27:00",
+            "remark": "奖卷兑换金币,金币实时到账"
+        },
+        {
+            "userid": "311923",
+            "username": "test002",
+            "nickname": "test002",
+            "recuserid": "88888",
+            "startmoney": "577167859",
+            "changemoney": "10000",
+            "changetype": "10",
+            "datetime": "2017/7/11 22:26:57",
+            "remark": "奖卷兑换金币,金币实时到账"
+        }
+    ]
+}
+
+
+-------------------------------------------------------
+
+推荐人登陆
+http://domain/api/recuser/RecUserLogin?t=1430000000&sign=asdasdasdsadad&rid=8888&rpwd=aa
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    rid   //推荐人ID(int)
+    rpwd   //密码(明文)(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results token //登录验证token
+    results rid  //推荐人id
+    results realname  //推荐人姓名
+
+-------------------------------------------------------
+
+推荐人退出
+http://domain/api/recuser/RecUserLogout?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results null //null  
+
+-------------------------------------------------------
+
+推荐人修改密码
+http://domain/api/recuser/RecUserEdit?t=1430000000&sign=asdasdasdsadad&rpwd=aa&newrpwd=aa11&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    rpwd   //原密码(明文)(string)
+    newrpwd   //新密码(明文)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results null //null
+
+-------------------------------------------------------
+
+推荐人名下玩家统计
+http://domain/api/recuser/TuijianPlayers?t=1430000000&sign=asdasdasdsadad&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize    //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    recordcount  //条数总计
+    pagesize  //分页条数
+    pageindex  //页码
+    results  // 数据集合【包含UserID(玩家ID)，UserName(用户名)，NickName（昵称），BankMoney（保险箱金币），WalletMoney（钱包金币），RegisterTM（注册时间），RegisterIP（注册IP），ComName（游戏名称），RoomName（房间名称），LastLoginTM（最后登陆时间）LastLoginIP（最后登陆IP），AllLoginTime（登陆总次数），OnlineStatus（是否在线）】
+
+--------------------------------------------------------
+
+推荐人分润明细
+http://domain/api/recuser/GetShareProfitTotal?pageindex=1&pagesize=20&t=1511937124&sign=249a697ba36ad1e20749b6f7f5bf0924&token=B026B3F0A9FFBDDBEAE2451A7CE883238CF636DF4DC0C5566F077B85A87E5FEA
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize    //每页记录条数
+    startdt  //时间段筛选，开始时间（默认当天，筛选为整天查询）
+    enddt  //时间段筛选，结束时间（默认当天，筛选为整天查询）
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    totalearn  //总收益
+    level1earn  //一级收益
+    level2earn  //二级收益
+    level3earn  //三级收益
+    recordcount  //条数总计
+    pagesize  //分页条数
+    pageindex  //页码
+    results  //数据集合【包含UserID(玩家ID)，UserName(用户名)，NickName（昵称），TotalGold(流水金币)，GainEarn(我的收益),DestRecUserID(收益来源级别)】
+
+--------------------------------------------------------
+
+推荐人金币余额变化日志(分页)(当前推荐人)
+http://domain/api/recuser/RecUserMoneyChangeLog?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-07-03 11:35
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-07-05 11:35
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    moneychangetotal  //总金币合计数
+    increase_total  //金币增加合计数  
+    reduce_total  //金币减少合计数
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "success",
+    "moneychangetotal": "368934610562816091",
+    "increase_total": "368943661787201859",
+    "reduce_total": "-9051224385768",
+    "recordcount": "1401",
+    "totalpage": "467",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "recuserid": "88888",
+            "realname": "kkk",
+            "startmoney": "10000",
+            "changemoney": "5000",
+            "adddate": "2017/7/11 22:29:00",
+            "remark": "test"
+        },
+        {
+            "recuserid": "88888",
+            "realname": "kkk",
+            "startmoney": "10000",
+            "changemoney": "5000",
+            "adddate": "2017/7/11 22:29:00",
+            "remark": "test"
+        },
+        {
+            "recuserid": "88888",
+            "realname": "kkk",
+            "startmoney": "10000",
+            "changemoney": "5000",
+            "adddate": "2017/7/11 22:29:00",
+            "remark": "test"
+        }
+    ]
+}
+
+--------------------------------------------------------
+
+推荐人给自己名下用户充值（使用推荐人金币余额）
+http://domain/api/recuser/RecUserChangeUserMoney?t=1430000000&sign=asdasdasdsadad&userid=8&changetype=201&changemoney=1000&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid   //游戏用户ID
+    changetype   //修改金币类型 201.推荐人修改用户金币数-充值  202.推荐人修改用户金币数-赠送  203.推荐人修改用户金币数-扣除
+    changemoney   //充值、扣除金币数(例如： 充值10000金币，扣除时为负值 -10000金)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results userid //用户ID
+    results username  //用户名
+    results startmoney  //初始金币数
+    results changemoney  //变更金币数
+
+--------------------------------------------------------
+
+提交取款订单
+http://domain/api/recuser/PostCashOrder?t=1430000000&sign=asdasdasdsadad&ordergold=123.12&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    ordergold  //提交订单金币数
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【提交成功，请等待审核】,code=-1时返回错误信息
+    results null  
+
+--------------------------------------------------------
+
+获取分润金币
+http://domain/api/recuser/GetMineShareGold?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【提交成功，请等待审核】,code=-1时返回错误信息
+    results recuserid   //推广员ID
+    results amount    //历史总额
+    results hadcash   //已提现
+    results cancash   //可提现
+    results nocash    //不可提现
+
+--------------------------------------------------------
+
+提款记录
+http://domain/api/recuser/GetCashData?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-07-03 11:35
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-07-05 11:35
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "success",
+    "moneychangetotal": "368934610562816091",
+    "increase_total": "368943661787201859",
+    "reduce_total": "-9051224385768",
+    "recordcount": "1401",
+    "totalpage": "467",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "OrderNumID": "TX2313121241412",
+            "RecUserID": "88888",
+            "BeforeGold": "11284.08",
+            "ChangeGold": "1.00",
+            "AfterGold": "11283.00",
+            "Status": "1",
+            "AddTime":  "2017/12/21 12:29:00",
+            "UpdateTime": "2017/12/21 12:29:00"
+        },
+        {
+            "OrderNumID": "TX2342347245765",
+            "RecUserID": "88888",
+            "BeforeGold": "11283.08",
+            "ChangeGold": "1.00",
+            "AfterGold": "11282.00",
+            "Status": "2",
+            "AddTime":  "2017/12/21 12:29:00",
+            "UpdateTime": "2017/12/21 13:10:00"
+        }
+    ]
+}
+
+--------------------------------------------------------
+
+多级推荐人列表
+http://domain/api/recuser/RecUserList?t=1430000000&sign=asdasdasdsadad&pageindex=1&pagesize=20@re&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【提交成功，请等待审核】,code=-1时返回错误信息
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results RecUserID   //推广员ID
+    results Amount   //收益
+    results UserCount//名下玩家数量
+
+--------------------------------------------------------
+
+

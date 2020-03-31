@@ -1,0 +1,56 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[RecProportionEarnLog]    Script Date: 01/04/2018 14:05:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RecProportionEarnLog](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RecUserID] [int] NOT NULL,
+	[DestRecuserID] [int] NOT NULL,
+	[DestRecUserLevel] [int] NOT NULL,
+	[DestUserID] [int] NOT NULL,
+	[Earn] [decimal](18, 3) NOT NULL,
+	[CollectTime] [datetime] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'推广员ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecProportionEarnLog', @level2type=N'COLUMN',@level2name=N'RecUserID'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'直接收益推荐人' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecProportionEarnLog', @level2type=N'COLUMN',@level2name=N'DestRecuserID'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'直接收益推荐人级别' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecProportionEarnLog', @level2type=N'COLUMN',@level2name=N'DestRecUserLevel'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'直接收益用户ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecProportionEarnLog', @level2type=N'COLUMN',@level2name=N'DestUserID'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'收益' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecProportionEarnLog', @level2type=N'COLUMN',@level2name=N'Earn'
+GO
+
+ALTER TABLE [dbo].[RecProportionEarnLog] ADD  CONSTRAINT [DF_RecProportionEarnLog_RecUserID]  DEFAULT ((0)) FOR [RecUserID]
+GO
+
+ALTER TABLE [dbo].[RecProportionEarnLog] ADD  CONSTRAINT [DF_RecProportionEarnLog_DestRecuserID]  DEFAULT ((0)) FOR [DestRecuserID]
+GO
+
+ALTER TABLE [dbo].[RecProportionEarnLog] ADD  CONSTRAINT [DF_RecProportionEarnLog_DestRecUserLevel]  DEFAULT ((1)) FOR [DestRecUserLevel]
+GO
+
+ALTER TABLE [dbo].[RecProportionEarnLog] ADD  CONSTRAINT [DF_RecProportionEarnLog_DestUserID]  DEFAULT ((0)) FOR [DestUserID]
+GO
+
+ALTER TABLE [dbo].[RecProportionEarnLog] ADD  CONSTRAINT [DF_RecProportionEarnLog_Earn]  DEFAULT ((0)) FOR [Earn]
+GO
+
+ALTER TABLE [dbo].[RecProportionEarnLog] ADD  CONSTRAINT [DF_RecProportionEarnLog_CollectTime]  DEFAULT (getdate()) FOR [CollectTime]
+GO
+
+

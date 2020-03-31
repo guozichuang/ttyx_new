@@ -1,0 +1,10 @@
+use ttyxtest
+alter table TGameRoomInfo add cfg_RoomType int not null default 1
+alter table TGameRoomInfo add cfg_m_iCellscore int not null default 100
+alter table TGameRoomInfo add cfg_m_iMaxCellFire int not null default 1000
+alter table TGameRoomInfo add cfg_m_iMinxCellFire int not null default 100
+alter table TGameRoomInfo add cfg_m_iGoldCoin int not null default 1
+alter table TGameRoomInfo add cfg_m_iFishCoin int not null default 1
+alter table TGameRoomInfo add cfg_Tax int not null default 200
+alter table TGameRoomInfo add cfg_GoldToNIuniu int not null default 1000
+alter table TGameRoomInfo add cfg_UpScore int not null default 10

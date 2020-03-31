@@ -1,0 +1,128 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[Web_NewAdmin_DateReport]    Script Date: 12/13/2017 15:26:59 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		Richard
+-- Create date: 2017-12-13
+-- Description:	作业运行，统计每天平均在线人数、最高在线人数、最低在线人数、登陆人数、活跃人数，作业运行时间————凌晨，统计的数据是昨天的数据
+-- 统计新用户的数据，比如新用户登录人数、活跃人数，充值人数等
+-- =============================================
+CREATE PROCEDURE  [dbo].[Web_NewAdmin_DateReport]
+AS
+BEGIN
+	SET NOCOUNT ON;
+	-- 1.统计每天平均在线人数、最高在线人数、最低在线人数等
+	DECLARE @AvgOnline INT --平均在线人数
+	DECLARE @MaxOnline INT --最高在线人数
+	DECLARE @MinOnline INT --最低在线人数
+	DECLARE @GameCount INT --活跃用户的标准（即当天游戏局数必须达到的局数）
+	DECLARE @Date DATETIME --统计的日期（昨天日期，格式的形式为：2010-09-24）
+	SET @GameCount=0
+	SET @Date=CONVERT(CHAR(10),DATEADD(DAY,-1,GETDATE()),120)
+	SELECT @GameCount=ISNULL(Field1,0) FROM Web_PConfig WHERE ID=3
+	select @AvgOnline=isnull(avg(OnlineCount),0),
+		   @MaxOnline=isnull(max(OnlineCount),0),
+		   @MinOnline=isnull(min(OnlineCount),0) 
+		   from Web_Count_OnlineUsers 
+		   where UserType=0 and InputDate>=@Date and InputDate<dateadd(day,1,@Date)
+	INSERT INTO Web_AnalyData_DateOnline(AvgOnline,MaxOnline,MinOnline,ReportDate)
+		 VALUES(@AvgOnline,@MaxOnline,@MinOnline,@Date)
+
+	--2.统计新用户的数据，比如新用户登录人数、活跃人数，充值人数等
+	declare @RegNum int --注册人数
+	declare @NewLoginNum int  --新用户登录人数
+	declare @NewActiveNum int --新用户当日活跃人数
+	declare @NewPayNum int --新用户充值人数
+	declare @NewPayMoneyCount int --新用户充值总金额
+	select @RegNum=count(*) from Web_Users a inner join TUsers b on a.UserID=b.UserID where b.IsRobot=0 and RegisterTM>=@Date and RegisterTM<DATEADD(DAY,1,@Date)
+
+	select @NewLoginNum=count(*) from (select a.UserID from TLoginRecord a 
+			inner join Web_Users b  on a.UserID=b.UserID
+			inner join TUsers c on a.UserID=c.UserID
+		    where c.IsRobot=0 and b.RegisterTM>=@Date and b.RegisterTM<DATEADD(DAY,1,@Date)
+			and LastLoginTM>=@Date and LastLoginTM<dateadd(day,1,@Date) group by a.UserID) as K
+
+	select @NewActiveNum=count(*) from (select count(*) as GameCount,b.UserID from TChangeRecord a 
+						inner join TChangeRecordUser b on a.ID=b.RecordIndex 
+						inner join TUsers c on b.UserID=c.UserID
+						inner join Web_Users d on b.UserID=d.UserID
+						where c.IsRobot=0 and d.RegisterTM>=@Date and d.RegisterTM<DATEADD(DAY,1,@Date)
+						and a.EndTime>=@Date and a.EndTime<dateadd(day,1,@Date)
+						group by b.UserID having count(*)>=@GameCount) as K
+
+	select @NewPayNum=isnull(sum(payNum),0),@NewPayMoneyCount=isnull(sum(PayMoney),0) from (select count(*) as payNum ,isnull(sum(PayMoney),0) as PayMoney,a.UserID from Web_VAnaly_PayList a
+						inner join Web_Users b on a.UserID=b.UserID
+						where b.RegisterTM>=@Date and b.RegisterTM<DATEADD(DAY,1,@Date)
+						and AddTime>=@Date and AddTime<dateadd(day,1,@Date)
+						group by a.UserID) as K
+
+	insert into Web_Analy_NewUserReport(ReportDate,RegNum,LoginNum,ActiveNum,GameCount,PayNum,PayMoneyCount)
+				values(@Date,@RegNum,@NewLoginNum,@NewActiveNum,@GameCount,@NewPayNum,@NewPayMoneyCount)
+
+
+	--3.插入推广员的每日数据统计
+	insert into Web_NewAdmin_DayReport(ReportDate,RecUserID,
+	AvgOnline,MaxOnline,MinOnline,LoginNum,ActiveNum,ActiveGameCount,
+	NewUserNum,PayNum,PayMoneyCount,PayCount,GameCount,
+	TaxCount,RegNum)
+	select @Date,a.RecUserID,
+	isnull(b.AvgOnline,0) as AvgOnline,
+	isnull(b.MaxOnline,0) as MaxOnline,
+	isnull(b.MinOnline,0) as MinOnline,
+	isnull(c.LoginNum,0) as LoginNum,
+	isnull(d.ActiveNum,0) as ActiveNum,
+	@GameCount as ActiveGameCount,
+	isnull(e.NewUserNum,0) as NewUserNum,
+	isnull(f.PayNum,0) as PayNum,
+	isnull(f.PayMoneyCount,0) as PayMoneyCount,
+	isnull(f.PayCount,0) as PayCount,
+	isnull(K.GameCount,0) as GameCount,
+	isnull(K.TaxCount,0) as TaxCount,
+	isnull(G.RegNum,0) as RegNum
+	from RecUser a left join
+	( select RecUserID,
+	Isnull(avg(OnlineCount),0) as AvgOnline,
+	Isnull(max(OnlineCount),0) as MaxOnline,
+	isnull(min(OnlineCount),0) as MinOnline from Web_Count_RecOnline 
+	where InputDate>=@Date and InputDate<dateadd(day,1,@Date) group by RecUserID) as b on a.RecUserID=b.RecUserID
+	left join 
+	(select count(*) as LoginNum,RecUserID from (select a.UserID,b.RecUserID
+		   from TLoginRecord a inner join TUsers b on a.UserID=b.UserID
+		   where b.IsRobot=0 and a.LastLoginTM>=@Date and a.LastLoginTM<dateadd(day,1,@Date) group by b.RecUserID,a.UserID) as c1 group by RecUserID ) as c
+	on a.RecUserID=c.RecUserID
+	left join
+	(select count(*) as ActiveNum,RecUserID from (select b.UserID,c.RecUserID from TChangeRecord a
+		 inner join TChangeRecordUser b on a.ID=b.RecordIndex
+		 inner join TUsers c on b.UserID=c.UserID
+		 where c.IsRobot=0 and EndTime>=@Date and EndTime<dateadd(day,1,@Date)
+		 group by b.UserID,c.RecUserID having  count(*)>=@GameCount) as d1 group by RecUserID) as d 
+	on 	a.RecUserID=d.RecUserID
+	left join
+	(select count(*) as NewUserNum,RecUserID from (select a.UserID,c.RecUserID from TLoginRecord a 
+			inner join Web_Users b  on a.UserID=b.UserID
+			inner join TUsers c on a.UserID=c.UserID
+		    where c.IsRobot=0 and b.RegisterTM>=@Date and b.RegisterTM<DATEADD(DAY,1,@Date)
+			and LastLoginTM>=@Date and LastLoginTM<dateadd(day,1,@Date) group by a.UserID,c.RecUserID) as e1 group by RecUserID) as e
+	 on a.RecUserID=e.RecUserID
+	left join 
+	(select count(*) as PayNum,RecUserID,isnull(sum(PayMoney),0) as PayMoneyCount,isnull(sum(PayCount),0) as PayCount
+	 from (select count(*) as PayCount,a.UserID,b.RecUserID,isnull(sum(PayMoney),0) as PayMoney 
+	from Web_VAnaly_PayList a inner join TUsers b on a.UserID=b.UserID 
+	where b.IsRobot=0 and a.AddTime>=@Date and a.AddTime<dateadd(day,1,@Date) 
+	group by a.UserID,b.RecUserID) as f1 group by RecUserID) as f
+	on a.RecUserID=f.RecUserID	
+	left join 
+	(select count(*) as GameCount,isnull(sum(b.ChangeTax),0) as TaxCount,c.RecUserID
+	 from TChangeRecord a inner join TChangeRecordUser b on a.ID=b.RecordIndex
+	  inner join TUsers c on b.UserID=c.UserID 
+	  where c.IsRobot=0 and a.EndTime>=@Date and a.EndTime<dateadd(day,1,@Date) group by c.RecUserID) as K
+	on a.RecUserID=K.RecUserID	
+	left join 
+	(select count(*) RegNum,b.RecUserID from Web_Users a inner join TUsers b on a.UserID=b.UserID
+	 where b.IsRobot=0 and a.RegisterTM>=@Date and a.RegisterTM<dateadd(day,1,@Date) group by b.RecUserID) as G	
+	on G.RecUserID=a.RecUserID
+END

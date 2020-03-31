@@ -1,0 +1,81 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[Web_NewAdmin_DayReport]    Script Date: 12/13/2017 16:05:23 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Web_NewAdmin_DayReport](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ReportDate] [datetime] NOT NULL,
+	[AvgOnline] [int] NOT NULL,
+	[MaxOnline] [int] NOT NULL,
+	[MinOnline] [int] NOT NULL,
+	[LoginNum] [int] NOT NULL,
+	[ActiveNum] [int] NOT NULL,
+	[ActiveGameCount] [int] NOT NULL,
+	[NewUserNum] [int] NOT NULL,
+	[PayNum] [int] NOT NULL,
+	[PayMoneyCount] [int] NOT NULL,
+	[PayCount] [int] NOT NULL,
+	[GameCount] [int] NOT NULL,
+	[TaxCount] [int] NOT NULL,
+	[RecUserID] [int] NOT NULL,
+	[RegNum] [int] NOT NULL,
+ CONSTRAINT [PK_Web_NewAdmin_DayReport] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_ReportDate]  DEFAULT (getdate()) FOR [ReportDate]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_AvgOnline]  DEFAULT ((0)) FOR [AvgOnline]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_MaxOnline]  DEFAULT ((0)) FOR [MaxOnline]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_MinOnline]  DEFAULT ((0)) FOR [MinOnline]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_LoginNum]  DEFAULT ((0)) FOR [LoginNum]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_ActiveNum]  DEFAULT ((0)) FOR [ActiveNum]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_ActiveGameCount]  DEFAULT ((0)) FOR [ActiveGameCount]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_NewUserNum]  DEFAULT ((0)) FOR [NewUserNum]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_PayNum]  DEFAULT ((0)) FOR [PayNum]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_PayMoneyCount]  DEFAULT ((0)) FOR [PayMoneyCount]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_PayCount]  DEFAULT ((0)) FOR [PayCount]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_GameCount]  DEFAULT ((0)) FOR [GameCount]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_TaxCount]  DEFAULT ((0)) FOR [TaxCount]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_RecUserID]  DEFAULT ((0)) FOR [RecUserID]
+GO
+
+ALTER TABLE [dbo].[Web_NewAdmin_DayReport] ADD  CONSTRAINT [DF_Web_NewAdmin_DayReport_RegNum]  DEFAULT ((0)) FOR [RegNum]
+GO
+
+

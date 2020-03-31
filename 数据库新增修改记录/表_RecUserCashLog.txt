@@ -1,0 +1,65 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[RecUserCashLog]    Script Date: 12/14/2017 16:19:27 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RecUserCashLog](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[OrderNumID] [nvarchar](120) NOT NULL,
+	[RecUserID] [int] NOT NULL,
+	[BeforeGold] [decimal](18, 2) NOT NULL,
+	[ChangeGold] [decimal](18, 2) NOT NULL,
+	[AfterGold] [decimal](18, 2) NOT NULL,
+	[Status] [int] NOT NULL,
+	[AddTime] [datetime] NOT NULL,
+	[UpdateTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_RecUserCashLog] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'订单ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserCashLog', @level2type=N'COLUMN',@level2name=N'OrderNumID'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'开始金币' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserCashLog', @level2type=N'COLUMN',@level2name=N'BeforeGold'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'变化金币' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserCashLog', @level2type=N'COLUMN',@level2name=N'ChangeGold'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'更改后金币' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserCashLog', @level2type=N'COLUMN',@level2name=N'AfterGold'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'状态：1、未处理，2、提现扣除，3、提现失败（金币返还），4、提现失败（金币扣除）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserCashLog', @level2type=N'COLUMN',@level2name=N'Status'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'订单处理时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserCashLog', @level2type=N'COLUMN',@level2name=N'AddTime'
+GO
+
+ALTER TABLE [dbo].[RecUserCashLog] ADD  CONSTRAINT [DF_RecUserCashLog_RecUserID]  DEFAULT ((0)) FOR [RecUserID]
+GO
+
+ALTER TABLE [dbo].[RecUserCashLog] ADD  CONSTRAINT [DF_RecUserCashLog_BeforeGold]  DEFAULT ((0)) FOR [BeforeGold]
+GO
+
+ALTER TABLE [dbo].[RecUserCashLog] ADD  CONSTRAINT [DF_RecUserCashLog_ChangeGold]  DEFAULT ((0)) FOR [ChangeGold]
+GO
+
+ALTER TABLE [dbo].[RecUserCashLog] ADD  CONSTRAINT [DF_RecUserCashLog_AfterGold]  DEFAULT ((0)) FOR [AfterGold]
+GO
+
+ALTER TABLE [dbo].[RecUserCashLog] ADD  CONSTRAINT [DF_RecUserCashLog_AddTime]  DEFAULT (getdate()) FOR [AddTime]
+GO
+
+ALTER TABLE [dbo].[RecUserCashLog] ADD  CONSTRAINT [DF_RecUserCashLog_UpdateTime]  DEFAULT (getdate()) FOR [UpdateTime]
+GO
+
+

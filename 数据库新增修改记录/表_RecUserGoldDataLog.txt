@@ -1,0 +1,38 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[RecUserGoldDataLog]    Script Date: 12/13/2017 20:17:37 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RecUserGoldDataLog](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[UserID] [int] NOT NULL,
+	[Gold] [bigint] NOT NULL,
+	[GameTime] [int] NOT NULL,
+	[RecUserID] [int] NOT NULL,
+	[CollectDateTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_RecUserGoldDataLog] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[RecUserGoldDataLog] ADD  CONSTRAINT [DF_RecUserGoldDataLog_UserID]  DEFAULT ((0)) FOR [UserID]
+GO
+
+ALTER TABLE [dbo].[RecUserGoldDataLog] ADD  CONSTRAINT [DF_RecUserGoldDataLog_Gold]  DEFAULT ((0)) FOR [Gold]
+GO
+
+ALTER TABLE [dbo].[RecUserGoldDataLog] ADD  CONSTRAINT [DF_RecUserGoldDataLog_GameTime]  DEFAULT ((0)) FOR [GameTime]
+GO
+
+ALTER TABLE [dbo].[RecUserGoldDataLog] ADD  CONSTRAINT [DF_RecUserGoldDataLog_RecUserID]  DEFAULT ((0)) FOR [RecUserID]
+GO
+
+

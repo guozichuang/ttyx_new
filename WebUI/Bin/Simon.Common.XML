@@ -1,0 +1,1374 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Simon.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Simon.Common.SimonDES">
+            <summary>
+            DES加密/解密类
+            </summary>
+        </member>
+        <member name="P:Simon.Common.SimonDES.KeyIV">
+            <summary>
+            获取Key，优先读取配置文件
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonDES.Encrypt(System.String)">
+            <summary>
+            加密
+            </summary>
+            <param name="Text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonDES.Encrypt(System.String,System.String)">
+            <summary> 
+            加密(自定义KeyIV)
+            </summary> 
+            <param name="Text"></param> 
+            <param name="sKey"></param> 
+            <returns></returns> 
+        </member>
+        <member name="M:Simon.Common.SimonDES.Decrypt(System.String)">
+            <summary>
+            解密
+            </summary>
+            <param name="Text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonDES.Decrypt(System.String,System.String)">
+            <summary> 
+            解密(自定义KeyIV)
+            </summary> 
+            <param name="Text"></param> 
+            <param name="sKey"></param> 
+            <returns></returns> 
+        </member>
+        <member name="T:Simon.Common.SimonCache">
+            <summary> 
+            缓存控制类 
+            </summary>  
+        </member>
+        <member name="F:Simon.Common.SimonCache.AllUseCacheKey">
+            <summary>
+            所有用户缓存
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonCache.AddCache(System.String,System.Object,System.DateTime)">
+            <summary> 
+            添加缓存 
+            </summary> 
+            <param name="key"></param> 
+            <param name="value"></param> 
+            <param name="absoluteExpiration"></param> 
+        </member>
+        <member name="M:Simon.Common.SimonCache.GetCache(System.String)">
+            <summary> 
+            取出缓存
+            </summary> 
+            <param name="key"></param> 
+        </member>
+        <member name="M:Simon.Common.SimonCache.RemoveCache(System.String)">
+            <summary> 
+            移除缓存 
+            </summary> 
+            <param name="key"></param> 
+        </member>
+        <member name="M:Simon.Common.SimonCache.ClearCache">
+            <summary> 
+            清空使用的缓存 
+            </summary> 
+        </member>
+        <member name="T:Simon.Common.SimonCheckCode">
+            <summary>
+            图片验证码生成类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonCheckCode.CreateImageOnPage(System.String,System.Int32,System.Int32,System.Int32,System.Web.HttpContext)">
+            <summary>
+            生成图片验证码并输出到页面
+            </summary>
+            <param name="ChkCode">验证码字符串 </param>
+            <param name="ImageCheckCodeW">验证码图片宽度</param>
+            <param name="ImageCheckCodeH">验证码图片高度</param>
+            <param name="fontSize">字符大小</param>
+            <param name="context">一般为 this.Context</param>
+        </member>
+        <member name="M:Simon.Common.SimonCheckCode.CreateCheckCode(System.Int32)">
+            <summary>
+            生成验证码随机字符
+            </summary>
+            <param name="codeLength">随机码长度</param>
+            <returns></returns>
+        </member>
+        <member name="T:Simon.Common.SimonCookies">
+            <summary>
+            Cookie控制类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonCookies.Save(System.String,System.String)">
+            <summary>
+            保存一个Cookie,不设置过期时间和作用域
+            </summary>
+            <param name="CookieName">Cookie名称</param>
+            <param name="CookieValue">Cookie值</param>
+        </member>
+        <member name="M:Simon.Common.SimonCookies.Save(System.String,System.String,System.Int32)">
+            <summary>
+            保存一个Cookie,不设置作用域
+            </summary>
+            <param name="CookieName">Cookie名称</param>
+            <param name="CookieValue">Cookie值</param>
+            <param name="CookieExpMin">Cookie过期时间:以分钟为单位(0表示不设过期时间，赋值为设置为过期失效)</param>
+        </member>
+        <member name="M:Simon.Common.SimonCookies.Save(System.String,System.String,System.Int32,System.String)">
+            <summary>
+            保存一个Cookie
+            </summary>
+            <param name="CookieName">Cookie名称</param>
+            <param name="CookieValue">Cookie值</param>
+            <param name="CookieExpMin">Cookie过期时间:以分钟为单位(0表示不设过期时间，赋值为设置为过期失效)</param>
+            <param name="CookieDomain">Cookie作用域,域名</param>
+        </member>
+        <member name="M:Simon.Common.SimonCookies.Get(System.String)">
+            <summary>
+            取得CookieValue
+            </summary>
+            <param name="CookieName">Cookie名称</param>
+            <returns>Cookie的值</returns>
+        </member>
+        <member name="M:Simon.Common.SimonCookies.Clear(System.String)">
+            <summary>
+            清除CookieValue
+            </summary>
+            <param name="CookieName">Cookie名称</param>
+        </member>
+        <member name="T:Simon.Common.SimonDB">
+            <summary>
+            通用数据库操作类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonDB.CreDbPar(System.String,System.Object)">
+            <summary>
+            创建DbParameter (ParameterDirection.Input) 类型
+            </summary>
+            <param name="parName">参数名称</param>
+            <param name="parValue">参数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.CreDbPar(System.String,System.Data.ParameterDirection,System.Object)">
+            <summary>
+            创建DbParameter (在存储过程中：使用ParameterDirection.Input、ParameterDirection.InputOutput类型参数时，注意parValue值类型需要和存储过程中参数类型相符)
+            </summary>
+            <param name="parName">参数名称</param>
+            <param name="parDirection">参数类型</param>
+            <param name="parValue">参数值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.BuildConnection">
+            <summary>
+            初始化Dbconnection对象
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.PrepareCommand(System.Data.Common.DbCommand,System.Data.Common.DbConnection,System.Data.Common.DbTransaction,System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            配置Command
+            </summary>
+            <param name="cmd"></param>
+            <param name="conn"></param>
+            <param name="trans"></param>
+            <param name="cmdText"></param>
+            <param name="parms"></param>
+        </member>
+        <member name="M:Simon.Common.SimonDB.ExecuteNonQuery(System.String)">
+            <summary>
+            执行SQL语句,返回受影响的行数
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <returns>受影响的行数</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.ExecuteNonQuery(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带数的SQL语句,返回受影响的行数
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>受影响的行数</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.ExecuteNonQuery(System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带数的SQL语句,返回受影响的行数
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>受影响的行数</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.RunProcedure(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行存储过程，获取存储过程返回值
+            </summary>
+            <param name="storedProcName">存储过程名</param>
+            <param name="parms">存储过程参数</param>
+            <returns>存储过程返回值 ReturnValue</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.ExecuteScalar(System.String)">
+            <summary>
+            执行SQL语句,返回第一行第一列
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <returns>第一行第一列</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.ExecuteScalar(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带参数的SQL语句,返回第一行第一列
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>第一行第一列</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.ExecuteScalar(System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带参数的SQL语句,返回第一行第一列
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>第一行第一列</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.IsExist(System.String)">
+            <summary>
+            执行SQL查询语句,返回是否存在重复记录
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <returns>bool值,指示是否存在重复值</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.IsExist(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行SQL查询(Select)语句,返回是否存在重复记录
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>bool值,指示是否存在重复值</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.IsExist(System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行SQL查询(Select)语句,返回是否存在重复记录
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>bool值,指示是否存在重复值</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.Insert(System.String)">
+            <summary>
+            执行SQL插入(Insert)语句,返回新增记录自增量ID
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <returns>新增记录自增量ID</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.Insert(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行SQL插入(Insert)语句,返回新增记录自增量ID
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>新增记录自增量ID</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.Insert(System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行SQL插入(Insert)语句,返回新增记录自增量ID
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>新增记录自增量ID</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataSet(System.String,System.String)">
+            <summary>
+            执行SQL语句,返回DataSet;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="tableName">表名</param>
+            <returns>DataSet</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataSet(System.String,System.Data.Common.DbParameter[],System.String)">
+            <summary>
+            执行带参数的SQL语句,返回DataSet;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <param name="tableName">表名</param>
+            <returns>DataSet</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataSet(System.String,System.String,System.Data.Common.DbParameter[],System.String)">
+            <summary>
+            执行带参数的SQL语句,返回DataSet;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <param name="tableName">表名</param>
+            <returns>DataSet</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Simon.Common.SimonDB.DataReader(System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:Simon.Common.SimonDB.DataReader(System.String,System.Data.Common.DbParameter[])" -->
+        <member name="M:Simon.Common.SimonDB.DataReader(System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带参数的SQL语句,返回DataReader;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>DataReader</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataTable(System.String)">
+            <summary>
+            执行SQL语句,返回DataTable;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <returns>DataTable</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataTable(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带参数的SQL语句,返回DataTable;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>DataTable</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataTable(System.String,System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行带参数的SQL语句,返回DataTable;
+            </summary>
+            <param name="commandText">SQL语句</param>
+            <param name="commandType">commandtype:sp为存储过程,其他为text SQL语句</param>
+            <param name="parms">DbParameter</param>
+            <returns>DataTable</returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.DataTableSelectTopN(System.Data.DataTable,System.Int32)">
+            <summary>
+            获取DataTable前几条数据
+            </summary>
+            <param name="sourceDT">源DataTable</param>
+            <param name="TopN">前N条数据</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonDB.SortDataTable(System.Data.DataTable,System.String,System.String)">
+            <summary>
+            DataTable筛选，排序返回符合条件行
+            eg:SortExprDataTable(dt,"Sex='男'","Time Desc")
+            </summary>
+            <param name="sourceDT">传入的DataTable</param>
+            <param name="strExpr">筛选条件</param>
+            <param name="strSort">排序条件</param>
+        </member>
+        <member name="M:Simon.Common.SimonHttp.CreateGetHttpResponse(System.String,System.Nullable{System.Int32},System.String,System.Net.CookieCollection)">
+            <summary>  
+            创建GET方式的HTTP请求  
+            </summary>  
+            <param name="url">请求的URL</param>  
+            <param name="timeout">请求的超时时间</param>  
+            <param name="userAgent">请求的客户端浏览器信息，可以为空</param>  
+            <param name="cookies">随同HTTP请求发送的Cookie信息，如果不需要身份验证可以为空</param>  
+            <returns></returns>  
+        </member>
+        <member name="M:Simon.Common.SimonHttp.CreatePostHttpResponse(System.String,System.String,System.Nullable{System.Int32},System.String,System.String,System.Text.Encoding,System.Net.CookieCollection)">
+            <summary>  
+            创建POST方式的HTTP请求  
+            </summary>  
+            <param name="url">请求的URL</param>  
+            <param name="postdata">随同请求POST数据</param>  
+            <param name="timeout">请求的超时时间</param>  
+            <param name="userAgent">请求的客户端浏览器信息，可以为空</param>  
+            <param name="requestEncoding">发送HTTP请求时所用的编码</param>  
+            <param name="cookies">随同HTTP请求发送的Cookie信息，如果不需要身份验证可以为空</param>  
+            <returns></returns>  
+        </member>
+        <member name="M:Simon.Common.SimonLog.WriteLog(System.String,System.String,System.String)">
+            <summary>
+             写文本日志
+            </summary>
+            <param name="txtinfo">文本文件内容</param>
+            <param name="txtfilepath">文本文件路径</param>
+            <param name="txtfilename">文本文件名称</param>
+        </member>
+        <member name="T:Simon.Common.SimonPager">
+            <summary>
+            Simon 简单分页
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonPager.GetTotalPage(System.Int32,System.Int32)">
+            <summary>
+            计算页数
+            </summary>
+            <param name="RecordCount">总记录数</param>
+            <param name="PageSize">分页大小</param>
+            <returns>页数</returns>
+        </member>
+        <member name="M:Simon.Common.SimonPager.GetPagerHtml(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            写出分页
+            </summary>
+            <param name="TotalPage">总页数</param>
+            <param name="PageIndex">当前页码</param>
+            <param name="StepNumBtnCount">当前页两侧数字页码数量</param>
+            <param name="PageCssClass">分页CssClass</param>
+            <returns>分页代码</returns>
+        </member>
+        <member name="T:Simon.Common.SimonPageSql">
+            <summary>
+            双TOP二分法生成分页SQL类(支持MSSQL、ACCESS)
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonPageSql.GetPageSql(System.Int32,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            获取分页SQL语句，排序字段需要构成唯一记录
+            </summary>
+            <param name="recordCount">记录总数</param>
+            <param name="pageSize">每页记录数</param>
+            <param name="currPageIndex">当前页数</param>
+            <param name="sqlStr">SQL查询语句</param>
+            <param name="orderField">排序字段，多个则用“,”隔开</param>
+            <returns>分页SQL语句</returns>
+        </member>
+        <member name="M:Simon.Common.SimonPageSql.GetTopNSql(System.Int32,System.String)">
+            <summary>
+            获取记录总数SQL语句
+            </summary>
+            <param name="topN">限定记录数</param>
+            <param name="sqlStr">SQL查询语句</param>
+            <returns>记录总数SQL语句</returns>
+        </member>
+        <member name="M:Simon.Common.SimonPageSql.GetCountSql(System.String)">
+            <summary>
+            获取记录总数SQL语句
+            </summary>
+            <param name="sqlStr">SQL查询语句</param>
+            <returns>记录总数SQL语句</returns>
+        </member>
+        <member name="T:Simon.Common.SimonSession">
+            <summary>
+            Session控制类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonSession.Save(System.String,System.Object)">
+            <summary>
+            设置Sesion项
+            </summary>
+            <param name="SessionName">Sesion名称</param>
+            <param name="SessionValue">Sesion值</param>
+        </member>
+        <member name="M:Simon.Common.SimonSession.Save(System.String,System.Object,System.Int32)">
+            <summary>
+            设置Sesion项
+            </summary>
+            <param name="SessionName">Sesion名称</param>
+            <param name="SessionValue">Sesion值</param>
+            <param name="SesionExpires">Sesion超时时间(分钟)</param>
+        </member>
+        <member name="M:Simon.Common.SimonSession.Get(System.String)">
+            <summary>
+            读取Session项(不存在则返回null)
+            </summary>
+            <param name="SessionName">Session名称</param>
+            <returns>Session值</returns>
+        </member>
+        <member name="M:Simon.Common.SimonSession.Del(System.String)">
+            <summary>
+            清除Session项(设置Session项为 null)
+            </summary>
+            <param name="SessionName">SessionName</param>
+        </member>
+        <member name="M:Simon.Common.SimonSession.Abandon">
+            <summary>
+            取消Session会话状态
+            </summary>
+        </member>
+        <member name="T:Simon.Common.SimonThumbnail">
+            <summary>
+            图片缩略图处理类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.SetImage(System.String)">
+            <summary>
+            创建
+            </summary>
+            <param name="FileName">原始图片路径</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.ThumbnailCallback">
+            <summary>
+            回调
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.GetImage(System.Int32,System.Int32)">
+            <summary>
+            生成缩略图,返回缩略图的Image对象
+            </summary>
+            <param name="Width">缩略图宽度</param>
+            <param name="Height">缩略图高度</param>
+            <returns>缩略图的Image对象</returns>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.SaveThumbnailImage(System.Int32,System.Int32)">
+            <summary>
+            保存缩略图
+            </summary>
+            <param name="Width"></param>
+            <param name="Height"></param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.SaveImage(System.Int32,System.Int32,System.Drawing.Imaging.ImageFormat)">
+            <summary>
+            生成缩略图并保存
+            </summary>
+            <param name="Width">缩略图的宽度</param>
+            <param name="Height">缩略图的高度</param>
+            <param name="imgformat">保存的图像格式</param>
+            <returns>缩略图的Image对象</returns>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.SaveImage(System.Drawing.Image,System.String,System.Drawing.Imaging.ImageCodecInfo)">
+            <summary>
+            保存图片
+            </summary>
+            <param name="image">Image 对象</param>
+            <param name="savePath">保存路径</param>
+            <param name="ici">指定格式的编解码参数</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.GetCodecInfo(System.String)">
+            <summary>
+            获取图像编码解码器的所有相关信息
+            </summary>
+            <param name="mimeType">包含编码解码器的多用途网际邮件扩充协议 (MIME) 类型的字符串</param>
+            <returns>返回图像编码解码器的所有相关信息</returns>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.ResizeImage(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            计算新尺寸
+            </summary>
+            <param name="width">原始宽度</param>
+            <param name="height">原始高度</param>
+            <param name="maxWidth">最大新宽度</param>
+            <param name="maxHeight">最大新高度</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.GetFormat(System.String)">
+            <summary>
+            得到图片格式
+            </summary>
+            <param name="name">文件名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeSquareImage(System.Drawing.Image,System.String,System.Int32)">
+            <summary>
+            制作小正方形
+            </summary>
+            <param name="image">图片对象</param>
+            <param name="newFileName">新地址</param>
+            <param name="newSize">长度或宽度</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeSquareImage(System.String,System.String,System.Int32)">
+            <summary>
+            制作小正方形
+            </summary>
+            <param name="fileName">图片文件名</param>
+            <param name="newFileName">新地址</param>
+            <param name="newSize">长度或宽度</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeRemoteSquareImage(System.String,System.String,System.Int32)">
+            <summary>
+            制作远程小正方形
+            </summary>
+            <param name="url">图片url</param>
+            <param name="newFileName">新地址</param>
+            <param name="newSize">长度或宽度</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeThumbnailImage(System.Drawing.Image,System.String,System.Int32,System.Int32)">
+            <summary>
+            制作缩略图
+            </summary>
+            <param name="original">图片对象</param>
+            <param name="newFileName">新图路径</param>
+            <param name="maxWidth">最大宽度</param>
+            <param name="maxHeight">最大高度</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeThumbnailImage(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            制作缩略图
+            </summary>
+            <param name="fileName">文件名</param>
+            <param name="newFileName">新图路径</param>
+            <param name="maxWidth">最大宽度</param>
+            <param name="maxHeight">最大高度</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeThumbnailImage(System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            生成缩略图
+            </summary>
+            <param name="fileName">源图路径（绝对路径）</param>
+            <param name="newFileName">缩略图路径（绝对路径）</param>
+            <param name="width">缩略图宽度</param>
+            <param name="height">缩略图高度</param>
+            <param name="mode">生成缩略图的方式</param>    
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeThumbnailImage(System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            裁剪图片并保存
+            </summary>
+            <param name="fileName">源图路径（绝对路径）</param>
+            <param name="newFileName">缩略图路径（绝对路径）</param>
+            <param name="maxWidth">缩略图宽度</param>
+            <param name="maxHeight">缩略图高度</param>
+            <param name="cropWidth">裁剪宽度</param>
+            <param name="cropHeight">裁剪高度</param>
+            <param name="X">X轴</param>
+            <param name="Y">Y轴</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.MakeRemoteThumbnailImage(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            制作远程缩略图
+            </summary>
+            <param name="url">图片URL</param>
+            <param name="newFileName">新图路径</param>
+            <param name="maxWidth">最大宽度</param>
+            <param name="maxHeight">最大高度</param>
+        </member>
+        <member name="M:Simon.Common.SimonThumbnail.GetRemoteImage(System.String)">
+            <summary>
+            获取图片流
+            </summary>
+            <param name="url">图片URL</param>
+            <returns></returns>
+        </member>
+        <member name="T:Simon.Common.SimonTimeParser">
+            <summary>
+            时间转换类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonTimeParser.UnixTimeStampToDateTime(System.Double)">
+            <summary>
+            将Unix时间戳转换为DateTime类型时间
+            </summary>
+            <param name="unixTimeStamp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonTimeParser.DateTimeToUnixTimeStamp(System.DateTime)">
+            <summary>
+            DateTime时间格式转换为Unix时间戳格式
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonTimeParser.SecondToMinute(System.Int32)">
+            <summary>
+            把秒转换成分钟
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonTimeParser.GetMonthLastDate(System.Int32,System.Int32)">
+            <summary>
+            返回某年某月最后一天
+            </summary>
+            <param name="year">年份</param>
+            <param name="month">月份</param>
+            <returns>日</returns>
+        </member>
+        <member name="T:Simon.Common.SimonUtils">
+            <summary>
+            常用工具类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.RespW(System.String)">
+            <summary>
+            简化输出 
+            </summary>
+            <param name="str">需要输出的内容</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.RespWNC(System.String)">
+            <summary>
+            简化输出(禁止页面缓存)
+            </summary>
+            <param name="str">需要输出的内容</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Alert(System.String)">
+            <summary>
+            弹出对话框并返回上一页 (结束当前页)
+            </summary>
+            <param name="msg">提示信息</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Alert(System.String,System.String)">
+            <summary>
+            弹出对话框并跳转URL (结束当前页)
+            </summary>
+            <param name="msg">提示信息</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Alert(System.Web.UI.Page,System.String)">
+            <summary>
+            弹出对话框 (JS脚本延迟加载,不结束当前页,需视情况return或强制结束)
+            </summary>
+            <param name="page">当前页面指针，一般为this</param>
+            <param name="msg">提示信息</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Alert(System.Web.UI.Page,System.String,System.String)">
+            <summary>
+            弹出对话框并跳转URL (JS脚本延迟加载,不结束当前页,需视情况return或强制结束)
+            </summary>
+            <param name="page">当前页面指针，一般为this</param>
+            <param name="msg">提示信息</param>
+            <param name="url">跳转URL</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.CloseLhgdialog(System.Web.UI.Page,System.String)">
+            <summary>
+            关闭Lhgdialog插件窗口
+            </summary>
+            <param name="page">当前页面指针，一般为this</param>
+            <param name="dialogid">窗口id</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.OpenWinBySize(System.Web.UI.Page,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            打开指定大小的新窗口
+            </summary>
+            <param name="page">当前页面指针，一般为this</param>
+            <param name="url">新窗口URL</param>
+            <param name="width">宽</param>
+            <param name="heigth">高</param>
+            <param name="top">顶部位置</param>
+            <param name="left">左边位置</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.OpenModalDialog(System.Web.UI.Page,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            打开指定大小的模态窗口
+            </summary>
+            <param name="page">当前页面指针，一般为this</param>
+            <param name="url">模态窗口URL</param>
+            <param name="width">宽</param>
+            <param name="height">高</param>
+            <param name="top">顶部位置</param>
+            <param name="left">左边位置</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Q(System.String)">
+            <summary>
+            获取Request值,字符串类型,检测是否为中英文,不能带特殊符号
+            </summary>
+            <param name="str">要获取的Request参数名</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Qnum(System.String)">
+            <summary>
+            获取Request值,数字类型,检测是否为数字,不能带特殊符号
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.myRequest(System.String)">
+            <summary>
+            获得客户端提交的参数,基础过滤
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.EnCodeMD5(System.String)">
+            <summary>
+            MD5字符串加密(普通加密)
+            </summary>
+            <param name="str">要加密的字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.EnCodeMixMD5(System.String)">
+            <summary>
+            MD5字符串加密(混合加密)
+            </summary>
+            <param name="str">要加密的字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ReplaceSpaceAndLineBreak(System.String)">
+            <summary>
+            过滤空格和换行符
+            </summary>
+            <param name="str">需要过滤的字符串</param>
+            <returns>过滤后的字符串</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ReplaceBadWordsAndHtml(System.String)">
+            <summary>
+            过滤敏感字符和html代码
+            </summary>
+            <param name="str">需要过滤的字符串</param>
+            <returns>过滤后的字符串</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ReplaceBadWords(System.String)">
+            <summary>
+            敏感字符过滤
+            </summary>
+            <param name="str">需要过滤的字符串</param>
+            <returns>过滤后的字符串</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.PwdCheck(System.String)">
+            <summary>
+            密码强度检测(密码为六位及以上并且字母、数字、特殊字符三项中有两项，中等强度密码)
+            </summary>
+            <param name="pwdstr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.CheckSqlString(System.String)">
+            <summary>
+            检测是否有Sql危险字符
+            </summary>
+            <param name="str">要判断字符串</param>
+            <returns>判断结果</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.SqlStringFilter(System.String)">
+            <summary>
+            检查危险字符
+            </summary>
+            <param name="Input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsEmail(System.String)">
+            <summary>
+            检测是否为邮箱格式
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.CheckPhoneIsAble(System.String)">
+            <summary>
+            检测是否为手机格式
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsNumAndEn(System.String)">
+            <summary>
+            检测是否为英文和数字组合
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsNumOrEn(System.String)">
+            <summary>
+            检测是否为英文或数字组合
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsEC(System.String)">
+            <summary>
+            检测是否为中文、英文、数字、下划线 并且不能以下划线开头和结尾
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsWordNum(System.String)">
+            <summary>
+            检测是否为数字和字母组合的字符
+            </summary>
+            <param name="str">要检测的字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsNum(System.String)">
+            <summary>
+            检测是否为数字 整数
+            </summary>
+            <param name="str">要检测的字符</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsInt(System.String)">
+            <summary>
+            检测是否为整数(正整数、负整数)
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsIP(System.String)">
+            <summary>
+            检查是否为IP地址格式
+            </summary>
+            <param name="ip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetNumber(System.String)">
+            <summary>
+            获取字符串中的数字(字符串形式)
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsDecimal(System.String)">
+            <summary>
+            检测是否为浮点数或整数
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsDecimal2(System.String)">
+            <summary>
+            检测是否为浮点数或整数 不限小数点位数
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsMoney(System.String)">
+            <summary>
+            检测货币的价格金额，整数或者小数点后2位
+            </summary>
+            <param name="str">要检测的字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.StrCut2(System.String,System.Int32,System.String)">
+              <summary>      
+              将指定字符串按指定长度进行剪切，      
+              </summary>      
+              <param name= "oldStr "> 需要截断的字符串 </param>      
+              <param name= "maxLength "> 字符串的最大长度 </param>      
+              <param name= "endWith "> 超过长度的后缀 </param>      
+              <returns> 如果超过长度，返回截断后的新字符串加上后缀，否则，返回原字符串 </returns>      
+        </member>
+        <member name="M:Simon.Common.SimonUtils.StrCut(System.String,System.Int32)">
+            <summary>
+            长度截断,英文1个字符、中文2个字符计算,例如截取5个字符可以设置为10
+            </summary>
+            <param name="str">被截取的字符串</param>
+            <param name="length">长度,中文为2个字符,英文为一个z字符,例如截取5个字符可以设置为10</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetStrLen(System.String)">
+            <summary>
+            获取混合字符串长度，中文按两个字符计算，数字和字母按一个计算
+            </summary>
+            <param name="str">字符串</param>
+            <returns>字符串长度</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.FormatMin(System.Int32)">
+            <summary>
+            计算剩余时间,输入整数分钟，转换为 ..天..小时..分钟
+            </summary>
+            <param name="min">要转换的总分钟数</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.FormatPrice(System.String)">
+            <summary>
+            格式化价格数据,带货币符号
+            </summary>
+            <param name="str">要转换的价格</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.FormatPrice2(System.String)">
+            <summary>
+            格式化价格数据,不带货币符号
+            </summary>
+            <param name="str">要转换的价格</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetFileSize(System.Int32)">
+            <summary>    
+            文件大小 转换KB,MB,GB
+            </summary>    
+            <param name="size">文件的大小 单位：bytes</param>    
+            <returns></returns>    
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ChineseCap(System.String)">
+            <summary>
+            输入汉字字符串索引拼音的首字母
+            </summary>
+            <param name="ChineseStr">要进行索引的汉字</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.RBL_Selected(System.Web.UI.WebControls.RadioButtonList,System.String)">
+            <summary>
+            RadioButtonList选定某项值
+            </summary>
+            <param name="rbl">rbl</param>
+            <param name="valuestr">值</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.RBL_SelectedByText(System.Web.UI.WebControls.RadioButtonList,System.String)">
+            <summary>
+            RadioButtonList选定某项文本
+            </summary>
+            <param name="rbl">rbl</param>
+            <param name="textstr">文本</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.DDL_Selected(System.Web.UI.WebControls.DropDownList,System.String)">
+            <summary>
+            DropDownList选定某项值
+            </summary>
+            <param name="ddl">ddl</param>
+            <param name="valuestr">值</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.DDL_SelectedByText(System.Web.UI.WebControls.DropDownList,System.String)">
+            <summary>
+            DropDownList选定某项文本
+            </summary>
+            <param name="ddl">ddl</param>
+            <param name="textstr">文本</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.Bind24Hour(System.Web.UI.WebControls.DropDownList)">
+            <summary>
+            绑定24小时到DropDownList(选择时间时使用)
+            </summary>
+            <param name="ddl"></param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetCheckBoxList(System.Web.UI.WebControls.CheckBoxList,System.String)">
+            <summary>
+            获取CheckBoxList选中的值
+            </summary>
+            <param name="cbl">要获取的CheckBoxList</param>
+            <param name="separator">获取值之间的分割字符，如,或|</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ResetCheckBoxList(System.Web.UI.WebControls.CheckBoxList)">
+            <summary>
+            重置CheckBoxList
+            </summary>
+            <param name="cbl">要重置的CheckBoxList</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.SetCheckBoxList(System.Web.UI.WebControls.CheckBoxList,System.String[])">
+            <summary>
+            给CheckBoxList赋初始值 
+            </summary>
+            <param name="cbl">要赋值的CheckBoxList</param>
+            <param name="strArr"></param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetUserIp">
+            <summary>
+            获得用户IP(兼容阿里云)
+            </summary>
+            <returns>IP</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.DateDiff(System.DateTime,System.DateTime)">
+            <summary>
+            获得两个日期的间隔
+            </summary>
+            <param name="DateTime1">日期一。</param>
+            <param name="DateTime2">日期二。</param>
+            <returns>日期间隔TimeSpan。</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.FormatDate(System.DateTime,System.String)">
+            <summary>
+            格式化日期时间
+            </summary>
+            <param name="dateTime1">日期时间</param>
+            <param name="dateMode">显示模式</param>
+            <returns>0-9种模式的日期</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ReplaceFileName(System.String)">
+            <summary>
+            替换文件名中的特殊字符(如果过滤后文件名为空,则根据时间生成随机文件名)
+            </summary>
+            <param name="filename">原始文件名</param>
+            <returns>过滤后的文件名</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.HtmlToTxt(System.String)">
+            <summary>
+            过滤Html标签
+            </summary>
+            <param name="strHtml">html字符串</param>
+            <returns>过滤后的字符串</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetRandomTime(System.DateTime,System.DateTime)">
+            <summary>
+            得到随机日期
+            </summary>
+            <param name="time1">起始日期</param>
+            <param name="time2">结束日期</param>
+            <returns>随机日期</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.QuickValidate(System.String,System.String)">
+            <summary>
+            快速验证一个字符串是否符合指定的正则表达式。
+            </summary>
+            <param name="_express">正则表达式的内容。</param>
+            <param name="_value">需验证的字符串。</param>
+            <returns>是否合法的bool值。</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.StrToInt(System.String,System.Int32)">
+            <summary>
+            把字符串转成整型
+            </summary>
+            <param name="_value">字符串</param>
+            <param name="_defValue">默认值</param>
+            <returns>转换后的整型</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsStringDate(System.String)">
+            <summary>
+            检查一个字符串是否可以转化为日期
+            </summary>
+            <param name="_value">日期字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsStringDateAndFormat(System.String)">
+            <summary>
+            检查一个字符串是否可以转化为日期，然后验证是否符合格式，默认格式 "yyyy-MM-dd"
+            </summary>
+            <param name="_value">日期字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsStringDateAndFormat(System.String,System.String)">
+            <summary>
+            检查一个字符串是否可以转化为日期，然后验证是否符合格式
+            </summary>
+            <param name="_value">日期字符串</param>
+            <param name="_dateformat">需验证日期格式 如 yyyy-MM-dd HH:mm:ss</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsStringDateByRegex(System.String)">
+            <summary>
+            是否为日期型字符串，例如 2008-05-08
+            </summary>
+            <param name="_value">日期字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsStringTimeByRegex(System.String)">
+            <summary>
+            是否为时间型字符串，例如 15:00:00
+            </summary>
+            <param name="_value">时间字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.IsStringDateTimeByRegex(System.String)">
+            <summary>
+            是否为日期+时间型字符串，例如 2008-05-08 15:00:00
+            </summary>
+            <param name="_value">时间字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.StrToDate(System.String,System.DateTime)">
+            <summary>
+            把字符串转成日期
+            </summary>
+            <param name="_value">字符串</param>
+            <param name="_defValue">默认值</param>
+            <returns>转换后的日期</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ToSBC(System.String)">
+             <summary> 
+             转全角的函数(SBC case) 
+             </summary> 
+             <param name="input">任意字符串</param> 
+             <returns>全角字符串</returns> 
+            <remarks> 
+            全角空格为12288，半角空格为32 
+            其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248 
+            </remarks> 
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ToDBC(System.String)">
+             <summary> 
+             转半角的函数(DBC case) 
+             </summary> 
+             <param name="input">任意字符串</param> 
+             <returns>半角字符串</returns> 
+            <remarks> 
+            全角空格为12288，半角空格为32 
+            其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248 
+            </remarks> 
+        </member>
+        <member name="M:Simon.Common.SimonUtils.DownloadFile(System.String)">
+            <summary>
+            文件下载
+            </summary>
+            <param name="filepath"></param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ZipHtml(System.String)">
+            <summary>
+            压缩Html
+            </summary>
+            <param name="Html">Html</param>
+            <returns>压缩后的html代码</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.ReadFile(System.String)">
+            <summary>
+            读取文件
+            </summary>
+            <param name="tempDir">文件路径</param>
+            <returns>读取的文件内容</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.CreateDir(System.String)">
+            <summary>
+            创建目录(已存在则不创建)
+            </summary>
+            <param name="directorypath">路径</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetFileExt(System.String)">
+            <summary>
+            返回文件扩展名，不含“.”
+            </summary>
+            <param name="_filepath">文件全名称</param>
+            <returns>string</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetRamCode">
+            <summary>
+            生成日期随机码
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetRandomString(System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.String)">
+            <summary>
+            生成随机字符串 
+            </summary>
+            <param name="length">目标字符串的长度</param>
+            <param name="useNum">是否包含数字，1=包含，默认为包含</param>
+            <param name="useLow">是否包含小写字母，1=包含，默认为包含</param>
+            <param name="useUpp">是否包含大写字母，1=包含，默认为包含</param>
+            <param name="useSpe">是否包含特殊字符，1=包含，默认为不包含</param>
+            <param name="custom">要包含的自定义字符，直接输入要包含的字符列表</param>
+            <returns>指定长度的随机字符串</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetMapPath(System.String)">
+            <summary>
+            获得当前绝对路径
+            </summary>
+            <param name="strPath">指定的路径</param>
+            <returns>绝对路径</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetDirFileList(System.String,System.String)">
+            <summary>
+            获取指定路径文件夹内文件列表,可指定文件类型
+            </summary>
+            <param name="dirPath">路径</param>
+            <param name="searchop">文件类型或匹配规则</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.FileExists(System.String)">
+            <summary>
+            判断文件是否存在
+            </summary>
+            <param name="filepath">路径</param>
+            <returns>返回bool值</returns>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.DeleteFile(System.String)">
+            <summary>
+            删除文件
+            </summary>
+            <param name="filePath">路径</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.CreateHtmlFile(System.String,System.String)">
+            <summary>
+            创建Html文件
+            </summary>
+            <param name="filePath">路径</param>
+            <param name="text">内容</param>
+        </member>
+        <member name="M:Simon.Common.SimonUtils.DeleteDir(System.String,System.Boolean)">
+            <summary>   
+            删除文件夹,和所有文件
+            </summary>   
+            <param name="dir">带文件夹名的路径</param>   
+            <param name="deldir">是否删除文件夹本身和所有子文件夹</param>  
+        </member>
+        <member name="M:Simon.Common.SimonUtils.GetHttp(System.String,System.Text.Encoding)">
+            <summary>
+            获取远程页面内容
+            </summary>
+            <param name="url">url</param>
+            <param name="encoding">编码</param>
+            <returns>返回html</returns>
+        </member>
+        <member name="T:Simon.Common.SimonUrl">
+            <summary>
+            Url操作辅助类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.Base64Encrypt(System.String)">
+            <summary>
+            URL的64位编码
+            </summary>
+            <param name="sourthUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.Base64Decrypt(System.String)">
+            <summary>
+            URL的64位解码
+            </summary>
+            <param name="eStr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.IsBase64(System.String)">
+            <summary>
+            是否是Base64字符串
+            </summary>
+            <param name="eStr"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.AddParam(System.String,System.String,System.String)">
+            <summary>
+            添加URL参数
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.UpdateParam(System.String,System.String,System.String)">
+            <summary>
+            更新URL参数
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.ParseUrl(System.String,System.String@,System.Collections.Specialized.NameValueCollection@)">
+            <summary>
+            分析 url 字符串中的参数信息
+            </summary>
+            <param name="url">输入的 URL</param>
+            <param name="baseUrl">输出 URL 的基础部分</param>
+            <param name="nvc">输出分析后得到的 (参数名,参数值) 的集合</param>
+        </member>
+        <member name="M:Simon.Common.SimonUrl.GetNVC(System.String)">
+            <summary>
+            获取url字符串中键值对
+            </summary>
+            <param name="urlstr"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Simon.Common.SimonXml">
+            <summary>
+            XML操作辅助类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonXml.CreateAttribute(System.Xml.XmlDocument,System.String,System.String)">
+            <summary>
+            创建Attribute
+            </summary>
+            <param name="xmlDocument">xml文档</param>
+            <param name="name">Attribute名</param>
+            <param name="value">Attribute值</param>
+            <returns></returns>
+        </member>
+        <member name="M:Simon.Common.SimonXml.SetAttribute(System.Xml.XmlNode,System.String,System.String)">
+            <summary>
+            设置Attribute
+            </summary>
+            <param name="node">节点</param>
+            <param name="attributeName">Attribute名</param>
+            <param name="attributeValue">Attribute值</param>
+        </member>
+        <member name="M:Simon.Common.SimonXml.FormatXml(System.Xml.XmlDocument)">
+            <summary>
+            格式化xml
+            </summary>
+            <param name="xml">xml</param>
+            <returns>格式化后的xml</returns>
+        </member>
+        <member name="T:Simon.Common.SimonWaterMark">
+            <summary>
+            图片水印辅助类
+            </summary>
+        </member>
+        <member name="M:Simon.Common.SimonWaterMark.AddImageSignPic(System.String,System.String,System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            图片水印处理类
+            </summary>
+            <param name="imgPath">服务器图片相对路径</param>
+            <param name="filename">保存文件名</param>
+            <param name="watermarkFilename">水印文件相对路径</param>
+            <param name="watermarkStatus">图片水印位置 0=不使用 1=左上 2=中上 3=右上 4=左中 5=居中 6=右中 7=左下 8=中下  9=右下</param>
+            <param name="quality">附加水印图片质量,0-100</param>
+            <param name="watermarkTransparency">水印的透明度 1--10 10为不透明</param>
+        </member>
+        <member name="M:Simon.Common.SimonWaterMark.AddImageSignText(System.String,System.String,System.String,System.Int32,System.Int32,System.String,System.Int32)">
+            <summary>
+            文字水印
+            </summary>
+            <param name="imgPath">服务器图片相对路径</param>
+            <param name="filename">保存文件名</param>
+            <param name="watermarkText">水印文字</param>
+            <param name="watermarkStatus">图片水印位置 0=不使用 1=左上 2=中上 3=右上 4=左中  9=右下</param>
+            <param name="quality">附加水印图片质量,0-100</param>
+            <param name="fontname">字体</param>
+            <param name="fontsize">字体大小</param>
+        </member>
+    </members>
+</doc>

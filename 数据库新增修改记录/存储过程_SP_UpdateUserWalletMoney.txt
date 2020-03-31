@@ -1,0 +1,18 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_UpdateUserWalletMoney]    Script Date: 01/05/2018 14:31:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Mr Guo>
+-- Create date: <2017-12-26>
+-- Description:	<游戏端请求更新玩家钱包金币>
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_UpdateUserWalletMoney]
+	@UserID   int   --玩家ID
+AS
+BEGIN
+	update TUserInfo set GiveMoney=0 where UserID=@UserID
+END

@@ -1,0 +1,46 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[Web_pOnlineUserReport]    Script Date: 12/13/2017 15:41:09 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- Stored Procedure
+
+-- =============================================
+-- Author:		黄明森
+-- Create date: 20100908
+-- Description:	每十分钟统计一次在线人数
+-- =============================================
+ALTER PROCEDURE [dbo].[Web_pOnlineUserReport]
+AS
+BEGIN
+	SET NOCOUNT ON;
+	declare @InputDate datetime
+	set @InputDate=getdate()
+	--1.插入总的在线人数情况
+	insert into Web_Count_OnlineUsers(InputDate,OnlineCount)
+		 select @InputDate,isnull(count(*),0) from TWLoginRecord a
+		 inner join TUsers b on a.UserID=b.UserID where b.IsRobot=0
+
+	--2.插入代理商旗下在线人数情况
+	insert into Web_Count_AgencyOnline(AgencyID,OnlineCount,InputDate)
+		select w.AgencyID,isnull(K.OnlineCount,0) OnlineCount,isnull(K.InputDate,@InputDate) InputDate  from Web_Agency w left join
+		(select b.AgencyID,isnull(count(*),0) OnlineCount,@InputDate as InputDate from TWLoginRecord a 
+		inner join TUsers b on a.UserID=b.UserID where b.IsRobot=0
+		group by b.AgencyID) K on w.AgencyID=K.AgencyID
+
+	--3.插入各房间的在线人数情况
+	insert into Web_Count_RoomOnline(RoomID,OnlineCount,InputDate)
+		 select a.WID,isnull(count(*),0),@InputDate from TWLoginRecord a 
+		inner join TUsers b on a.UserID=b.UserID where b.IsRobot=0
+		group by a.WID 
+		
+		--2.插入推广员名下在线人数情况
+	insert into Web_Count_RecOnline(RecUserID,OnlineCount,InputDate)
+		select w.RecUserID,isnull(K.OnlineCount,0) OnlineCount,isnull(K.InputDate,@InputDate) InputDate  from RecUser w left join
+		(select b.RecUserID,isnull(count(*),0) OnlineCount,@InputDate as InputDate from TWLoginRecord a 
+		inner join TUsers b on a.UserID=b.UserID where b.IsRobot=0
+		group by b.RecUserID) K on w.RecUserID=K.RecUserID
+
+END

@@ -1,0 +1,57 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[RecUserGold]    Script Date: 12/13/2017 20:56:06 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RecUserGold](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[RecUserID] [int] NOT NULL,
+	[Amount] [decimal](18, 2) NOT NULL,
+	[HadCash] [decimal](18, 2) NOT NULL,
+	[CanCash] [decimal](18, 2) NOT NULL,
+	[NoCash] [decimal](18, 2) NOT NULL,
+	[Status] [int] NOT NULL,
+ CONSTRAINT [PK_RecUserGold] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'历史总额' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserGold', @level2type=N'COLUMN',@level2name=N'Amount'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'已取出' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserGold', @level2type=N'COLUMN',@level2name=N'HadCash'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'可去除' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserGold', @level2type=N'COLUMN',@level2name=N'CanCash'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'不可取出' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserGold', @level2type=N'COLUMN',@level2name=N'NoCash'
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'状态（0：正常，1：冻结）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'RecUserGold', @level2type=N'COLUMN',@level2name=N'Status'
+GO
+
+ALTER TABLE [dbo].[RecUserGold] ADD  CONSTRAINT [DF_RecUserGold_Amount]  DEFAULT ((0)) FOR [Amount]
+GO
+
+ALTER TABLE [dbo].[RecUserGold] ADD  CONSTRAINT [DF_RecUserGold_HadCash]  DEFAULT ((0)) FOR [HadCash]
+GO
+
+ALTER TABLE [dbo].[RecUserGold] ADD  CONSTRAINT [DF_RecUserGold_CanCash]  DEFAULT ((0)) FOR [CanCash]
+GO
+
+ALTER TABLE [dbo].[RecUserGold] ADD  CONSTRAINT [DF_RecUserGold_NoCash]  DEFAULT ((0)) FOR [NoCash]
+GO
+
+ALTER TABLE [dbo].[RecUserGold] ADD  CONSTRAINT [DF_RecUserGold_Status]  DEFAULT ((0)) FOR [Status]
+GO
+
+

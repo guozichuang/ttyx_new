@@ -1,0 +1,39 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[RecUserMoneyChangeLog]    Script Date: 12/24/2017 11:53:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[RecUserMoneyChangeLog](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[RecUserID] [int] NULL,
+	[RealName] [nvarchar](200) NULL,
+	[StartMoney] [bigint] NULL,
+	[ChangeMoney] [bigint] NULL,
+	[AddDate] [datetime] NULL,
+	[Remark] [nvarchar](200) NULL,
+ CONSTRAINT [PK_RecUserMoneyChangeLog] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[RecUserMoneyChangeLog] ADD  CONSTRAINT [DF_RecUserMoneyChangeLog_RecUserID]  DEFAULT ((0)) FOR [RecUserID]
+GO
+
+ALTER TABLE [dbo].[RecUserMoneyChangeLog] ADD  CONSTRAINT [DF_RecUserMoneyChangeLog_StartMoney]  DEFAULT ((0)) FOR [StartMoney]
+GO
+
+ALTER TABLE [dbo].[RecUserMoneyChangeLog] ADD  CONSTRAINT [DF_RecUserMoneyChangeLog_ChangeMoney]  DEFAULT ((0)) FOR [ChangeMoney]
+GO
+
+ALTER TABLE [dbo].[RecUserMoneyChangeLog] ADD  CONSTRAINT [DF_RecUserMoneyChangeLog_AddDate]  DEFAULT (getdate()) FOR [AddDate]
+GO
+
+

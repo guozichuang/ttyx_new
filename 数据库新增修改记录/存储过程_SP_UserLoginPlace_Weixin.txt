@@ -1,0 +1,464 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  StoredProcedure [dbo].[SP_UserLoginPlace_Weixin]    Script Date: 03/05/2018 22:50:36 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+-- =============================================
+-- Description:	用户登录（微信OPENID登录）
+--        返回值：
+--				0：登录成功
+--				1：IP受限
+--				2：用户不存在
+--				3：帐号被禁用了
+--				4：密码错误
+--	            5：已经登陆
+-- =============================================
+CREATE PROCEDURE [dbo].[SP_UserLoginPlace_Weixin]
+(
+	@WeixinOpenID   NVARCHAR(100),		--微信OPENID
+	@UserLoginIP	NVARCHAR(16),		--用户登录的IP地址
+	@UserToken		NVARCHAR(128),		--Token值
+	@ZID			INT,				--登陆服务器ID
+	@MachineCode	NVARCHAR(64),		--客户端机器码	zxj
+	@CPUID			NVARCHAR(64),		--客户端 CPUID,   PengJiLin, 2011-7-21
+	@HardID			NVARCHAR(64),		--客户端 硬盘 ID, PengJiLin, 2011-7-21
+	@ZJ_NumVerify	NVARCHAR(64),		--客户端 证件号, JIanGuankun, 2011-7-21
+	@MobileVerify	NVARCHAR(8),			--客户端 手机验证码,JianGuankun,2012-5-16
+	@UserIDIN		INT                 --用户ID
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @UserNameOut		NVARCHAR(21)
+	DECLARE @UserID				INT
+	DECLARE @Disabled			INT
+	DECLARE @Master				INT
+	DECLARE @UserPassword		NVARCHAR(50)
+	DECLARE @LogoID				INT
+    DECLARE @Lotteries		    INT     --用户奖券
+	DECLARE @Wallet				BIGINT
+	DECLARE @BankMoney			BIGINT
+	DECLARE @GiveMoney       BIGINT    --赠送金币   【2017-12-26新增】
+	DECLARE @TotalMoney         BIGINT --头像根据金币变化设置
+	DECLARE @UserIngot			BIGINT  --用户元宝
+	DECLARE @Fascination		INT
+	DECLARE @timeismoney		INT
+	DECLARE @viptime			INT
+	DECLARE @DoublePointTime	INT
+	DECLARE @ProtectTime		INT
+	DECLARE @LastLoginIP		NVARCHAR(15)
+	DECLARE @nickName			NVARCHAR(20)
+	DECLARE @Name				NVARCHAR(20)
+	DECLARE	@Sex				INT
+
+	--JianGuankun 20111107 新增用户资料
+	DECLARE @SignDescr			NVARCHAR(128) --个性签名
+	DECLARE @RealName			VARCHAR(20)	--真实姓名
+	DECLARE @ZJ_Number			VARCHAR(50)	--证件号码
+	DECLARE @PhoneNum			VARCHAR(50)	--移动电话号码
+	DECLARE @QQNum				VARCHAR(20)	--QQ号码
+	DECLARE	@AdrNation			VARCHAR(50)	--国籍
+	DECLARE @AdrProvince		VARCHAR(50)	--省份
+	DECLARE @AdrCity			VARCHAR(50) --城市
+	DECLARE	@ZipCode			VARCHAR(10) --邮政编码
+	DECLARE	@Email				VARCHAR(50)	--电子邮件
+	DECLARE	@Address			NVARCHAR(500)--联系地址
+	DECLARE	@Schooling			NVARCHAR(20) --文化程度
+	DECLARE	@HomePage			VARCHAR(128)--主页
+	DECLARE	@TelNo 				VARCHAR(20) --固定电话
+	DECLARE	@MSNID 				NVARCHAR(50)--MSN帐号
+	DECLARE	@Birthday 			DATETIME    --生日
+	DECLARE	@Age				INT		    --年龄
+	DECLARE	@FindPwdQue_1		VARCHAR(50) --找回密码问题一
+	DECLARE	@FindPwdAnw_1		VARCHAR(50) --找回密码回答一
+	DECLARE	@FindPwdQue_2		VARCHAR(50) --找回密码问题二
+	DECLARE	@FindPwdAnw_2		VARCHAR(50) --找回密码回答二	
+	
+	DECLARE	@IsUseIngot			INT		    --是否使用中间货币
+	DECLARE	@IngotBuyProp	    INT		    --是否使用中间货币购买道具
+	DECLARE	@EnableExchange     INT			--是否启用中间货币兑换游戏币
+	
+	--JianGuankun 20111108 新增安全登陆使用的数据
+	DECLARE	@DefHardID		NVARCHAR(64) --默认使用的硬盘ID
+	DECLARE	@IsRobot		SMALLINT	 --是否为机器人
+
+	--Kylin 20090201 防止帐号重登录
+	DECLARE	@OnLineFlag				INT
+	--
+	DECLARE @NewsID				INT
+	DECLARE @HAVENEWS			INT
+	DECLARE @LimitedLogon		INT
+	DECLARE	@LockMathine		INT				--是否锁机
+	DECLARE	@BindMobile			INT				--是否绑定手机
+	DECLARE @BindZJ				INT				--是否绑定证件
+	DECLARE	@MatCode		NVARCHAR(64)	--机器码
+	DECLARE @StatusByGM		int
+	DECLARE @StatusTime		datetime
+	DECLARE @Salt			VARCHAR(20)
+
+	DECLARE @AgencyID		INT
+	SET @AgencyID = -1
+
+	DECLARE @AddFriendType	int
+
+
+
+	--IP地址限制检查
+	SELECT	@LimitedLogon=LimitedLogon 
+	FROM TGameIPRule with(nolock) 
+	WHERE AccessIPChar=@UserLoginIP 
+	AND OverTime>=GETDATE()
+
+	IF @LimitedLogon IS NOT NULL AND @LimitedLogon<>0
+	BEGIN
+		RETURN 1	--IP地址被限制
+	END
+	
+		SELECT  @UserNameOut = a.UserName,
+				@UserID=a.UserID,
+				@Disabled=a.Disabled,
+				@Sex=a.Sex, 
+				@Master=b.Master,
+				@UserPassword=a.pass,
+				@LogoID=a.logoid,
+				@NickName=a.NickName,
+				@IsRobot = a.IsRobot,
+				@DefHardID = b.MyHardID,
+				@AdrNation = b.AdrNation,
+				@AdrProvince = b.AdrProvince,
+				@AdrCity = b.AdrCity,
+				@SignDescr = c.SignDescr,
+				@RealName = c.RealName,
+				@ZJ_Number = c.ZJ_Number,
+				@PhoneNum = c.Phone,
+				@QQNum = c.qqnum,
+				@ZipCode = c.ZipCode,
+				@Email = c.Email,
+				@Address = c.Address,
+				@Schooling = c.Schooling,
+				@HomePage = c.HomePage,
+				@TelNo = c.TelNo,
+				@MSNID = c.MSNID,
+				@BindMobile = isnull(c.PhoneValid, 0),
+				@BindZJ = isnull(c.ZJValid, 0),
+				@OnLineFlag=a.OnlineFlag,
+				@StatusByGM=isnull(b.StatusByGM, 0),
+				@StatusTime = isnull(b.StatusTime, '1970-01-01'),
+				@Birthday = isnull(c.Birthday, '1970-01-01'),
+				@Age=isnull(c.Age,0),
+				@Salt = a.Salt,
+				@AgencyID = a.AgencyID,
+				@FindPwdQue_1 =c.FindPwdQue_1,	--增加密保2014-09-19
+				@FindPwdAnw_1 =c.FindPwdAnw_1,
+				@FindPwdQue_2 =c.FindPwdQue_2,
+				@FindPwdAnw_2 =c.FindPwdAnw_2
+		FROM TUsers a with(nolock) 
+		Left join Web_UserWeixin uwx with(nolock) on a.UserID = uwx.UserID
+		LEFT JOIN TUserInfo b with(nolock) on a.UserID = b.UserID
+		LEFT JOIN Web_Users c with(nolock) on a.UserID = c.UserID
+		WHERE a.UserID=@UserIDIN and uwx.WeixinOpenID is not null and uwx.WeixinOpenID<>'' and uwx.WeixinOpenID=@WeixinOpenID
+	
+	
+
+	IF @UserID IS NULL 
+	BEGIN
+		RETURN 2	--用户不存在
+	END
+
+	IF @StatusByGM = 4 and @StatusTime>GetDate()
+	BEGIN
+		RETURN 3	--用户不存在
+	END
+
+	--Kylin 20090319 添加新防止账户同时登陆
+
+	if EXISTS (SELECT  ZID FROM TZLoginRecord a with(nolock)  WHERE  a.UserID =@UserID)
+	begin
+		RETURN 5
+	end
+
+	If EXISTS (SELECT LockCode FROM TLockCode with(nolock) WHERE  LockCode = @MachineCode OR LockHard = @HardID)
+	begin
+		RETURN 7
+	end
+
+	-- 如果用户帐号不可用，或帐号拥有管理员权限，则禁止登录客户端大厅
+	IF @Disabled<>0 OR @Master<>0
+	BEGIN
+		RETURN 3	--用户帐号禁止
+	END
+
+	--在锁机的情况下，则return6通知客户端不能登陆
+	--JianGuankun 2012.5.16
+
+	SELECT  @LockMathine=LockMathine,
+			@MatCode=MathineCode 
+	FROM TUserInfo with(nolock) 
+	WHERE UserID=@UserID
+
+	IF @IsRobot = 0
+	BEGIN
+		IF @LockMathine=1 AND @MatCode<>@MachineCode
+		BEGIN
+			SELECT  @UserID AS UserID,@PhoneNum AS PhoneNum
+			RETURN 6
+		END
+	END
+
+	--玩家从未填写证件号或未绑定证件，则不进行验证；机器人不验证
+	--本次登陆的机器HardID不是默认机ID，需要身份验证
+	--JianGuankun 20111108
+
+	IF @ZJ_NumVerify <> '*' AND LEN(@ZJ_Number) > 0 AND @BindZJ = 1 AND @IsRobot = 0
+	BEGIN
+		IF LEN(@ZJ_NumVerify) = 0 --没有使用证件验证模式
+		BEGIN
+			IF (@DefHardID IS NOT NULL AND @DefHardID <> @HardID) OR @DefHardID IS NULL --异地登陆或第一次登陆需要身份验证
+			BEGIN
+				SELECT  @UserID AS UserID,@ZJ_Number AS ZJ_Number
+				RETURN 8
+			END
+		END
+
+		ELSE --带证件验证模式
+		BEGIN
+			IF @ZJ_NumVerify <> @ZJ_Number 
+			BEGIN
+				RETURN 4 --证件验证没有通过，视作密码不对处理
+			END
+		END
+	END
+
+	--玩家从未填写手机号，或未绑定手机，则不进行验证；机器人不验证
+	--JianGuankun 20121011
+	IF @MobileVerify <> '*' AND LEN(@PhoneNum) > 0 AND @BindMobile = 1 AND @IsRobot = 0
+	BEGIN
+		IF LEN(@MobileVerify) = 0 --没有使用证件验证模式
+		BEGIN
+			SELECT  @UserID AS UserID,@PhoneNum AS PhoneNum
+			RETURN 9
+		END
+	END	
+
+	SELECT  @Wallet=WalletMoney,
+			@BankMoney=BankMoney,
+			@GiveMoney=GiveMoney,    --2017-12-26新增【赠送金币】
+			@Fascination=Fascination,
+			@TimeIsMoney=TimeIsMoney,
+			@Viptime=viptime,
+			@DoublePointTime=DoublePointTime,
+			@ProtectTime=ProtectTime,
+			@LastLoginIP=LastLoginIP,
+			@AddFriendType = AddFriendType
+	FROM TUserInfo with(nolock)
+	WHERE UserID=@UserID
+
+
+    ---begin by wzd add
+    --获取银行的版本
+    DECLARE @BankVer				INT
+	SELECT TOP 1 @BankVer = BankVersion FROM Web_Config 
+
+	IF @BankVer = 2
+	BEGIN
+		SELECT @Wallet = isnull(SUM(WalletMoney),0) FROM TBankWallet WHERE UserID = @UserID
+	END
+
+	--玩家总金币(头像根据总金币变化)
+	--SET  @TotalMoney = @Wallet + @BankMoney+@GiveMoney    --2017-12-26新增【赠送金币】
+	SET  @TotalMoney = @Wallet + @BankMoney   --2017-12-26新增【赠送金币】
+	
+   --获取奖券
+	SELECT @Lotteries = Lotteries FROM Web_Users WHERE UserID = @UserID
+    ----end 
+
+
+	IF not exists(select 1 from TUserInfo with(nolock) WHERE UserID=@UserID)
+	BEGIN
+		--如果用户信息表不存在，则需要添加一条记录
+		INSERT INTO	TUserInfo(UserID) VALUES (@UserID)
+		--其它数据使用默认值
+		--更新内存数据
+		SET @Wallet			= 0
+		SET @GiveMoney      =0     --2017-12-26新增【赠送金币】
+		SET @BankMoney		= 0
+		SET @Fascination	= 0
+		SET @TimeIsMoney	= 0
+		SET @Viptime		= 0
+		SET @DoublePointTime= 0
+		SET	@ProtectTime	= 0
+		SET	@Sex			= 0
+		SET @LastLoginIP	= ''''
+	END
+
+	--更新用户信息
+	UPDATE TUserInfo 
+	SET	AllLoginTime=AllLoginTime+1,
+		LastLoginTM=GETDATE(),
+		LastLoginIP=@UserLoginIP,
+		TimeIsMoney=0
+	WHERE UserID=@UserID
+
+	--更新用户TOKEN
+	UPDATE	TUsers
+	SET Token=@UserToken,
+		OnlineFlag=1
+	WHERE UserID=@UserID
+
+	--玩家从未填写证件号，则不进行验证；机器人不验证
+	--本次登陆的机器HardID不是默认机ID，需要身份验证
+	--有手机认证，无需身份验证
+	--JianGuankun 20111108
+
+	IF @IsRobot = 0
+	BEGIN
+		--登陆的PC的HardID是本PC的HardID,则更改MyHardID
+		UPDATE TUserInfo SET MyHardID = @HardID WHERE UserID = @UserID
+	END
+
+
+	--是否有在线公告
+	--注意：是从网站数据表来的数据，不改变原来的结构
+	SELECT @NewsID=News_ID 
+	FROM Web_NewsType with(nolock),Web_NewsData with(nolock) 
+	WHERE Web_NewsType.typeid=Web_NewsData.news_type 
+	and typesort=100 
+	and istop=1
+	--添加玩家登陆记录      -- PengJiLin, 2011-7-21, 增加 客户端机器信息
+	INSERT INTO [TLoginRecord]
+		(
+			[UserID]
+			,[MachineCode]
+			,[CPUID]
+			,[HardID]
+			,[LastLoginIP]
+		)
+		VALUES
+		(
+			@UserID
+			,@MachineCode
+			,@CPUID
+			,@HardID
+			,@UserLoginIP
+		)
+
+	---添加玩家最近登陆的日志记录
+	if exists(select  1  from TLoginLast with(nolock) where UserId = @UserID )
+	begin
+			if not exists
+			(
+				select  1  from TLoginLast with(nolock) where UserId = @UserID and MachineCode=@MachineCode and IP=@UserLoginIP and HardID=@HardID
+			)
+			begin 
+				update  TLoginLast set MachineCode=@MachineCode ,IP=@UserLoginIP , HardID=@HardID where UserId = @UserID
+			end
+	end
+	else
+	begin
+		insert into TLoginLast(UserId,MachineCode,IP,HardID)values(@UserID,@MachineCode,@UserLoginIP,@HardID)
+	end
+	
+	
+	IF @NewsID is NULL
+	begin
+		SET @HAVENEWS = 0
+	end
+
+	ELSE
+	begin
+		SET @HAVENEWS = 1
+	end
+	--------------------------------
+	--Kylin 20090319 添加新防止账户同时登陆
+
+
+	--获取用户元宝信息
+	SELECT @UserIngot = UserIngot FROM TUserInfo WHERE UserID = @UserID
+	
+	--获取数据库中间货币相关的配置
+	SELECT TOP 1 @IsUseIngot=IsPayToIngot, @IngotBuyProp=IsIngotToProp, @EnableExchange=IsIngotToGold FROM Web_Config
+	IF @IsUseIngot IS NULL
+	BEGIN
+		SET @IsUseIngot = 0
+	END
+	IF @IngotBuyProp IS NULL
+	BEGIN
+		SET @IngotBuyProp = 0
+	END
+	IF @EnableExchange IS NULL
+	BEGIN
+		SET @EnableExchange = 0
+	END
+	
+	--查询银行密码
+	DECLARE @UserBankPwd NCHAR(50)
+	SELECT @UserBankPwd = TwoPassword FROM TUsers WHERE UserID = @UserID
+	
+	--INSERT INTO [TZLoginRecord] ([UserID],[ZID])  VALUES(@UserID,@ZID)
+	--------------------------------
+
+	--输出变量
+	SELECT  @UserID AS UserID,
+			@Sex AS sex,
+			@UserPassword AS UserPassword, 
+			@LogoID AS  LogoID,
+            @Lotteries as Lotteries,
+			@Wallet+@GiveMoney AS  Wallet,         --2017-12-26新增【赠送金币】
+			@BankMoney AS  BankMoney,   
+			@TotalMoney AS TotalMoney,    
+			@UserIngot AS  UserIngot,
+			@Fascination AS Fascination, 
+			@timeismoney AS timeismoney,
+			@viptime AS viptime, 
+			@DoublePointTime AS DoublePointTime,
+			@ProtectTime AS ProtectTime, 
+			@LastLoginIP AS LastLoginIP,
+			@nickName AS nickName, 
+			@UserNameOut AS  UserName,
+			@SignDescr AS SignDescr,
+			@RealName AS RealName,
+			@ZJ_Number AS ZJ_Number,
+			@PhoneNum AS PhoneNum,
+			@QQNum AS QQNum,
+			@ZipCode AS ZipCode,
+			@Email AS Email,
+			@Address AS Address,
+			@Schooling AS Schooling,
+			@HomePage AS HomePage,
+			@TelNo AS TelNo,
+			@MSNID AS MSNID,
+			@AdrNation AS AdrNation,
+			@AdrProvince AS AdrProvince,
+			@AdrCity AS AdrCity,
+			@Birthday AS Birthday,
+			@Age AS Age,
+			@HAVENEWS AS HAVENEWS,
+			@LockMathine AS LockMathine,
+			@BindMobile AS BindMobile,
+			@BindZJ AS BindZJ,
+			@AddFriendType as AddFriendType,
+			@AgencyID AS AgencyID,
+			@FindPwdQue_1 AS FindPwdQue_1,	--增加密保2014-09-19
+			@FindPwdAnw_1 AS FindPwdAnw_1,
+			@FindPwdQue_2 AS FindPwdQue_2,
+			@FindPwdAnw_2 AS FindPwdAnw_2,
+			
+			@IsUseIngot AS IsUseIngot,
+			@IngotBuyProp AS IngotBuyProp,
+			@EnableExchange AS EnableExchange,		
+			@UserBankPwd AS UserBankPwd
+	RETURN 0
+END
+
+
+GO
+
+

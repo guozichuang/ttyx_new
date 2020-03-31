@@ -1,0 +1,952 @@
+﻿API说明(前端)
+=======================================================
+
+2018-02-07 -------------------------------------------
+增加API接口：
+微信关联登录(BindWeixin)   (关联登录时，未绑定的自动注册为新用户,已绑定的用户使用原有用户信息)；
+
+
+2018-01-17 -------------------------------------------
+增加API接口：
+代理运营需要的《旺实付》支付接口， 可以根据需要单独部署；
+接口说明（测试服务器url）
+http://api-mobilegame-test-000.kk838.com/a_paywap.aspx?userid=5952774&rechargermb=1&payip=1.1.1.1&t=1600000000&sign=abc123
+参数： （验签模式加密参数同 前端API）
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+	rechargermb  //充值金额(int)
+	payip  //用户IP
+游戏APP端 发起此链接至手机浏览器即可调起支付(手机支付宝)，此API URL即为支付页面，建议参数采用Post模式传递；
+
+
+2017-12-30 -------------------------------------------
+增加API接口：
+代理运营需要的《去聚合》支付接口， 可以根据需要单独部署；
+接口说明（测试服务器url）
+http://api-mobilegame-test-000.kk838.com/a_qujuhe.aspx?userid=5952774&rechargermb=1&payip=1.1.1.1&t=1600000000&sign=abc123
+参数： （验签模式加密参数同 前端API）
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+	rechargermb  //充值金额(int)
+	payip  //用户IP
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results orderid  //订单号
+    results payurl  //支付url (平台提供的只有QQ钱包支付模式，游戏端APP直接发起此链接至手机浏览器打开即可进行支付（需使用QQ钱包）)
+
+
+2017-12-06 -------------------------------------------
+修改API接口：
+获取分享链接和二维码URL（GetShareLinkQRCode），不影响现有调用，同步管理端逻辑，增加输出参数：sharedes（分享描述）、isenable（分享是否启用）
+
+2017-12-05 -------------------------------------------
+前端接口重构：修改t,sign验签调用方式，方便加功能开关及扩展；
+
+2017-11-24 -------------------------------------------
+修改API接口：
+获取分享链接和二维码URL(GetShareLinkQRCode),增加输出参数：分享类型、分享标题、分享内容,详情见方法说明；
+
+2017-11-15 -------------------------------------------
+修改API接口：
+财富排行榜（GetAssetRankList），按照总金币数排行，增加输出列（allmoney 总金币数 （钱包金币+银行金币）），详情见方法说明；
+
+2017-10-25 -------------------------------------------
+增加API接口：
+获取RMB购买金币价格、赠送、图片信息(GetRechargeRate)，详情见方法说明；
+修改API接口：
+微信支付(生成订单)（WeixinPayGenOrder）,加入赠送金币逻辑；
+微信支付（异步通知）,加入赠送金币逻辑；
+支付宝(生成订单)（AlipayGenOrder）,异步通知,加入赠送金币逻辑；
+支付宝（异步通知）,加入赠送金币逻辑；
+
+2017-10-16 -------------------------------------------
+修改API接口：
+获取分享链接和二维码URL(GetShareLinkQRCode)，增加输出参数(sharepic) 详情见方法说明；
+
+2017-10-09 -------------------------------------------
+修改API接口:
+游戏币排行榜(GetMoneyRankList)，增加返回参数，详情见方法说明；
+
+2017-09-30 -------------------------------------------
+修改API接口:
+苹果内购（AppStoreReceipt）,修改商品名字符串 anyapps_xxx  现在改为 gngame_xxx （xxx为数字）；
+
+2017-09-24 -------------------------------------------
+修改API接口:
+微信支付(生成订单)(WeixinPayGenOrder),修改返回参数名字，修改进行二次签名，重新生成的sign返回；
+
+
+2017-09-20 -------------------------------------------
+修改API接口:
+充值，兑奖等接口涉及到用在线或用户正在游戏中的判断都去掉；
+
+2017-09-19 -------------------------------------------
+增加API接口：
+微信支付(生成订单)(WeixinPayGenOrder),详情见方法说明；
+
+
+2017-09-11 -------------------------------------------
+修改API接口：
+快捷注册(QuickReg)，修改注册推荐人机制；
+EnableRegRec=True ：推荐人ID为必填项，且推荐人ID不能填错；
+EnableRegRec=False ：推荐人ID为非必填项，不填或者填错时，推荐人ID写为0，填且填对时，写入推荐人ID；
+
+2017-09-11 -------------------------------------------
+增加API接口：
+充值订单详情（RMBCostOrderDetails），详情见方法说明；
+修改API接口：
+支付宝(生成订单)（AlipayGenOrder），增加输出参数(orderid 订单号)，详情见方法说明；
+
+2017-09-06 -------------------------------------------
+奖卷兑换商品列表(分页)(ExchangeGoodsList)，增加输出参数(附赠金币额)，详情见方法说明；
+奖卷兑换商品详情(ExchangeGoodsDetails)，增加输出参数(附赠金币额)，详情见方法说明；
+奖卷兑换订单(下单即扣奖卷)(ExchangeOrder)，修改兑换逻辑，兑换时增加附赠给用户的金币并写入订单附赠金币额；
+奖卷兑换订单列表(分页)(ExchangeOrderList)，增加输出参数(附赠金币额)，详情见方法说明；
+奖卷兑换订单详情(ExchangeOrderDetails)，增加输出参数(附赠金币额)，详情见方法说明；
+
+2017-08-31 -------------------------------------------
+增加API接口：
+支付宝(生成订单)（AlipayGenOrder），详情见方法说明；
+
+2017-08-29 -------------------------------------------
+修改API接口：
+苹果内购（AppStoreReceipt），修改提交参数格式（需使用Post流模式提交），详情见方法说明；
+
+2017-08-27 -------------------------------------------
+增加API接口：
+苹果内购（AppStoreReceipt），详情见方法说明；
+
+2017-08-23 -------------------------------------------
+修改API接口:
+游戏币排行榜（GetMoneyRankList）,修改调用的数据表，此次修改不影响游戏前端调用；
+
+
+2017-08-12 -------------------------------------------
+增加API接口：
+保险箱赠送、接收记录（MoneyTransLog）,详情见方法说明；
+
+2017-08-07 -------------------------------------------
+修改API接口：
+游戏币排行榜（GetMoneyRankList）,排除掉机器人；
+财富排行榜（GetAssetRankList）,排除掉机器人；
+
+2017-07-26 -------------------------------------------
+增加API接口:
+财富排行榜(GetAssetRankList),详情见方法说明；
+
+2017-07-19 -------------------------------------------
+增加API接口:
+奖卷兑换订单广播(ExchangeOrderNotice),详情见方法说明；
+修改API接口:
+奖卷兑换订单列表(分页)ExchangeOrderList，订单时间显示到日；
+
+2017-07-16 -------------------------------------------
+修改API接口:
+奖卷兑换订单(下单即扣奖卷)（ExchangeOrder），增加返回值字段curr_inventory（当前库存）
+
+2017-07-15 -------------------------------------------
+修改API接口:
+奖卷兑换订单列表(分页)(ExchangeOrderList)，修改列表显示逻辑(前端 订单列表只显示话费订单(2),实物订单(3),不显示金币订单),详情见方法说明；
+奖卷兑换订单(下单即扣奖卷)（ExchangeOrder），奖卷兑换话费卡，自动发卡；
+
+2017-07-11 -------------------------------------------
+修改API接口：
+获取用户当前金币数量（GetUserCurrCoin）,增加字段(用户当前奖卷数量)，详情见方法说明；
+增加API接口：
+奖卷兑换订单(下单即扣奖卷)（ExchangeOrder），详情见方法说明；
+奖卷兑换订单列表(分页)（ExchangeOrderList），详情见方法说明；
+奖卷兑换订单详情（ExchangeOrderDetails），详情见方法说明；
+
+2017-07-08 -------------------------------------------
+修改API接口：
+奖卷兑换商品列表（ExchangeGoodsList）,增加字段，详情见方法说明；
+奖卷兑换商品详情（ExchangeGoodsDetails），增加字段，详情见方法说明；
+充值（15173）,修改调用新的对接url，修改返回值，详情见方法说明；
+
+2017-07-07 -------------------------------------------
+增加API接口：
+奖卷兑换商品列表（ExchangeGoodsList），详情见方法说明；
+奖卷兑换商品详情（ExchangeGoodsDetails），详情见方法说明；
+
+2017-06-20 -------------------------------------------
+增加API接口：
+查询兑奖(下分订单功能)是否启用(enablecashprize)，未启用状态下不能提交 兑奖(下分)订单 （CashPrizeOrder）
+详情见方法说明；
+
+
+2017-06-07 -------------------------------------------
+用户注册接口调整（quickreg）：
+注册不再送金币；
+
+
+2017-06-06 -------------------------------------------
+增加API接口：
+获取分享链接和二维码URL，GetShareLinkQRCode
+详情见方法说明；
+
+
+=======================================================
+
+加密：
+api_keyid=api@ttyx101
+api_secret=C505093A80F306E23D39B79100E17AF7
+调用：http://domain/api/api名称?t=currdt&sign=vsign&para=1&parb=2&parv=3
+参数：t   //unix时间戳 (10位int)
+      sign   //签名(string)
+      sign=MD5(api_keyid + t + api_secret)   //MD5大写形式副本
+返回：格式为json
+      code   //code=1成功,code=-1失败(int)
+      msg    //code=1时返回success,code=-1时返回错误信息(string)
+      results   //code=1时为返回数据,code=-1时返回null
+
+-------------------------------------------------------
+
+查询注册推荐人功能是否启用
+http://domain/api/enableregrec?t=1430000000&sign=asdasdasdsadad
+参数:
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+返回:
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results enableregrec  //true 启用 false 未启用(bool)
+
+-------------------------------------------------------
+
+用户注册：
+http://domain/api/quickreg?t=1430000000&sign=asdasdasdsadad&username=test12355&userpwd=123456&nickname=ceshi12355&regip=1.1.1.1&recuserid=123
+参数:
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	username   //用户名(string)
+	userpwd   //密码(string)
+	nickname   //用户昵称(string)
+	regip   //注册IP(string)
+	recuserid   //注册推荐人ID(int)
+返回:
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results userid  //用户ID(int)
+	
+-------------------------------------------------------
+
+游戏公告:
+http://domain/api/getgamenotice?t=1430000000&sign=asdasdasdsadad&noticetype=0
+参数:
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	noticetype   //公告类型（0普通公告，1兑奖公告）(int)
+返回:
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results noticetype  //公告类型（0普通公告，1兑奖公告）(int)
+	results noticecon  //公告内容(string)
+	results adddate  //发布日期(datetime)
+
+-------------------------------------------------------
+
+充值（15173）：
+http://domain/api/recharge?t=123&sign=456&device=android&device_id=sss&player_ip=1.1.1.1&player_id=uid&pay_type=wxpay&total_fee=10
+参数:
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	device   //设备信息:ios,android(string)
+	device_id   //设备ID(string)
+	player_ip   //玩家IP(string)
+	player_id   //玩家账号(string)
+	pay_type   //支付方式(string) 支付宝: alipay, 微信: wxpay, 微信pc端: wxpay_pc
+	total_fee   //充值金额(int) 单位：元
+返回:
+    受支付接口所限，输出支付页面h5代码
+
+-------------------------------------------------------
+
+获取订单支付状态：
+http://domain/api/getpaystatus?t=123&sign=456&order_num=888999
+参数:
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	order_num   //订单号(string)
+返回:
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results paystatus  //支付状态(string)
+
+-------------------------------------------------
+
+游戏币排行榜：   修改 加 boss名 和倍率 列
+http://domain/api/getmoneyranklist?t=123&sign=456&gameid=888999&days=100&topcount=100
+参数：
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	gameid   //游戏ID(int)  大话捕鱼70030600，摇钱树70611800，渔乐圈70661800
+	days  //统计天数(int) 
+	topcount  //排行榜统计数量(int) 
+返回：
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results  //排行榜数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "moneyrank": "1",
+            "changemoney": "77592",
+            "bossname": "普陀圣莲",
+            "beilv": "1824",
+            "collectdatetime": "2017/3/13 19:10:36",
+			"collectdate": "2017/3/13",
+			"collecttime": "19:10:36",
+            "userid": "921180",
+            "username": "kyone999",
+            "nickname": "居周都恪"
+        },
+        {
+            "moneyrank": "2",
+            "changemoney": "26232",
+            "bossname": "普陀圣莲",
+            "beilv": "1284",
+            "collectdatetime": "2017/3/12 16:45:33",
+			"collectdate": "2017/3/13",
+			"collecttime": "19:10:36",
+            "userid": "146544",
+            "username": "test004",
+            "nickname": "test004"
+        },
+        {
+            "moneyrank": "3",
+            "changemoney": "26180",
+            "bossname": "灵感大王·鲲",
+            "beilv": "847",
+            "collectdatetime": "2017/5/6 15:39:38",
+			"collectdate": "2017/3/13",
+			"collecttime": "19:10:36",
+            "userid": "617503",
+            "username": "lcx5151669",
+            "nickname": "我是王健林"
+        }
+    ]
+}
+
+-------------------------------------------------
+兑奖(下分)订单：  修改，下单即扣分
+http://domain/api/cashprizeorder?t=123&sign=456&coinamount=1000&remark=kkkaaa&userid=123&userpwd=abc
+
+参数：
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	coinamount   //兑奖额度(int)  
+	remark  //备注信息(string  length 0-200) 
+	userid  //用户ID(int)
+	userpwd  //游戏密码(明文)(string)
+返回：
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results  userid //用户ID(int)
+	results  coinamount //兑奖额度(long)
+
+-------------------------------------------------
+兑奖(下分)订单列表(历史记录)
+http://domain/api/CashPrizeOrderList?t=123&sign=456&topcount=30&userid=619504
+
+参数：
+	t   //unix时间戳 (10位int)
+	sign   //签名(string)
+	topcount   //获取记录数量(int)  
+	userid  //用户ID(int)
+返回：
+	code  //code=1成功,code=-1失败(int)
+	msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results  //订单列表(历史记录)数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "id": "10021",
+            "userid": "619504",
+            "username": "xiaolong123",
+            "coinamount": "1000",    //兑奖金币数量
+            "remark": "",
+            "state": "0",   //订单状态 0 未处理，1 已处理，2 已拒绝
+            "adddate": "2017/5/18 15:31:59"
+        },
+        {
+            "id": "10020",
+            "userid": "619504",
+            "username": "xiaolong123",
+            "coinamount": "1000",
+            "remark": "",
+            "state": "0",
+            "adddate": "2017/5/18 15:31:52"
+        },
+        {
+            "id": "10019",
+            "userid": "619504",
+            "username": "xiaolong123",
+            "coinamount": "1000",
+            "remark": "",
+            "state": "0",
+            "adddate": "2017/5/18 15:31:48"
+        }
+    ]
+}
+-------------------------------------------------
+获取用户当前金币数量、奖卷数量
+http://domain/api/GetUserCurrCoin?t=123&sign=456&userid=619504
+
+参数：
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+
+返回：
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  userid //用户ID(int)
+    results  usercurrcoin //用户当前金币数量(long)
+    results  usercurrlotteries //用户当前奖卷数量(long)
+
+-------------------------------------------------
+
+获取分享链接和二维码URL
+http://domain/api/GetShareLinkQRCode?t=1430000000&sign=asdasdasdsadad
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results sharetype  //分享类型 1.图片分享
+	results sharetitle  //分享标题
+	results sharedes  //分享描述
+	results sharecon  //分享内容
+    results link  //分享链接(string)
+    results qrcodeurl  //二维码URL(string)
+	results sharepic  //分享图片URL(string)
+	results isenable  //分享是否启用
+
+-------------------------------------------------
+
+查询兑奖(下分订单功能)是否启用，未启用状态下不能提交 兑奖(下分)订单 （CashPrizeOrder）
+http://domain/api/enablecashprize?t=1430000000&sign=asdasdasdsadad
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results enablecashprize  //true 启用 false 未启用(bool)
+
+-------------------------------------------------------
+
+奖卷兑换商品列表：
+http://domain/api/ExchangeGoodsList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&type=&kw=
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    type  //(非必选)商品类型(int) 1、金币；2、话费；3实物，  type=  为空则显示所有商品；
+    kw  //(非必选)查询关键字(string) 模糊匹配 title、des
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    totalpage  //总页数(int)
+    pagesize  //每页记录条数(int)
+    pageindex  //页码(int)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "3",
+    "totalpage": "1",
+    "pagesize": "100",
+    "pageindex": "1",
+    "results": [
+        {
+            "id": "1",  //商品id
+            "type": "3",  //商品类型 1、金币；2、话费；3实物；
+            "title": "33",  //商品标题
+            "img": "",  //商品标题图片url
+            "des": "",  //商品描述
+            "inventory": "0",  //商品库存
+            "prizeprice": "0",  //商品奖卷兑换价格
+            "exchangecoin": "0",  //兑换金币额
+            "exchangemobilefee": "0",  //兑换话费额
+			"givecoin": "0",  //附赠金币额
+            "sort": "0",  //排序
+            "updatetime": "2017/7/6 15:35:28"  //更新时间
+        },
+        {
+            "id": "2",
+            "type": "2",
+            "title": "22",
+            "img": "",
+            "des": "",
+            "inventory": "0",
+            "prizeprice": "0",
+            "exchangecoin": "0",
+            "exchangemobilefee": "0",
+			"givecoin": "0", 
+            "sort": "0",
+            "updatetime": "2017/7/6 15:35:24"
+        },
+        {
+            "id": "3",
+            "type": "1",
+            "title": "11",
+            "img": "",
+            "des": "",
+            "inventory": "0",
+            "prizeprice": "0",
+            "exchangecoin": "0",
+            "exchangemobilefee": "0",
+			"givecoin": "0", 
+            "sort": "0",
+            "updatetime": "2017/7/6 15:35:21"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+奖卷兑换商品详情
+http://domain/api/ExchangeGoodsDetails?t=1430000000&sign=asdasdasdsadad&id=123
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    id   //商品ID(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results id  //商品id(int)
+    results type  //商品类型 1、金币；2、话费；3实物；(int)
+    results title  //商品标题(string)
+    results img  //商品标题图片url(string)
+    results des  //商品描述(string)
+    results inventory  //商品库存(int)
+    results prizeprice   //商品奖卷兑换价格(long)
+    results exchangecoin   //兑换金币额(long)
+    results exchangemobilefee   //兑换话费额(int)
+	results givecoin  //附赠金币额(long)
+    results sort  //排序(int)
+    results updatetime  //更新时间(datetime)
+
+-------------------------------------------------------
+
+奖卷兑换订单(下单即扣奖卷)
+http://domain/api/ExchangeOrder?t=1430000000&sign=abc&userid=963823&goodsid=1&realname=&mobile=&address=
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+    goodsid  //商品ID(int)
+    realname  //姓名1-200个字符(实物商品必填项)(string)
+    mobile  //手机号1-50个字符(实物商品必填项)(string)
+    address  //地址(实物商品必填项)(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results orderid  //订单ID(int)
+    results curr_inventory  //当前库存(int)
+
+-------------------------------------------------------
+
+奖卷兑换订单列表(分页)
+http://domain/api/ExchangeOrderList?t=1430000000&sign=abc&pageindex=1&pagesize=10&userid=963823&goodstype=&state=
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    userid   //用户ID(int)
+    goodstype   //(非必选)商品类型(int) 1、金币；2、话费；3实物；（前端 订单列表只显示话费订单(2),实物订单(3),不显示金币订单）
+    state  //(非必选)订单状态(int) 0 未处理，1 已处理
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    totalpage  //总页数(int)
+    pagesize  //每页记录条数(int)
+    pageindex  //页码(int)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "id": "10002",  //订单ID
+            "userid": "963823",  //用户ID
+            "goodsid": "1",  //商品ID
+            "goodstype": "1",  //商品类型 1、金币；2、话费；3实物；
+            "goodstitle": "test11",  //商品标题
+            "prizeprice": "100",   //商品奖卷兑换价格
+            "exchangecoin": "10000",  //兑换金币额
+            "exchangemobilefee": "0",  //兑换话费额
+			"givecoin": "0",  //附赠金币额
+            "realname": "",  //姓名
+            "mobile": "",  //手机号
+            "address": "",  //地址
+            "orderremark": "",  //订单处理备注信息（商品为话费时，管理端可填写充值卡号，密码，充值网址等展现给前端）
+            "orderstate": "1",  //订单状态 0 未处理，1 已处理
+            "osdate0": "2017/7/11",  //提交订单时间
+            "osdate1": "2017/7/11"  //订单处理时间（商品为金币时，自动兑换处理）
+        },
+        {
+            "id": "10001",
+            "userid": "963823",
+            "goodsid": "1",
+            "goodstype": "1",
+            "goodstitle": "test11",
+            "prizeprice": "100",
+            "exchangecoin": "10000",
+            "exchangemobilefee": "0",
+			"givecoin": "0",
+            "realname": "",
+            "mobile": "",
+            "address": "",
+            "orderremark": "",
+            "orderstate": "1",
+            "osdate0": "2017/7/11",
+            "osdate1": "2017/7/11"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+奖卷兑换订单详情
+http://domain/api/ExchangeOrderDetails?t=1430000000&sign=abc&userid=963823&id=10002
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid   //用户ID(int)
+    id   //订单ID(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results id  //订单ID(int)
+    results userid  //用户ID(int)
+    results goodsid  //商品ID(int)
+    results goodstype  //商品类型 1、金币；2、话费；3实物；(int)
+    results goodstitle  //商品标题(string)
+    results prizeprice  //商品奖卷兑换价格(long)
+    results exchangecoin  //兑换金币额(long)
+    results exchangemobilefee  //兑换话费额(int)
+	results givecoin //附赠金币额(long)
+    results realname  //姓名(string)
+    results mobile  //手机号(string)
+    results address  //地址(string)
+    results orderremark  //订单处理备注信息（商品为话费时，管理端可填写充值卡号，密码，充值网址等展现给前端）(string)
+    results orderstate  //订单状态 0 未处理，1 已处理(int)
+    results osdate0  //提交订单时间(datetime)
+    results osdate1  //订单处理时间（商品为金币时，自动兑换处理）(datetime)
+
+-------------------------------------------------------
+
+奖卷兑换订单广播
+http://domain/api/ExchangeOrderNotice?t=1430000000&sign=abc&topcount=10
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    topcount   //调用数量(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "id": "10084", //订单ID(int)
+            "nickname": "test2323",  //用户昵称(string)
+            "goodstitle": "50元话费",  //商品标题(string)
+            "prizeprice": "5000", //商品奖卷兑换价格(long)
+            "osdate1": "2017年07月17日19时33分"  //订单处理时间
+        },
+        {
+            "id": "10083",
+            "nickname": "test2323",
+            "goodstitle": "50元话费",
+            "prizeprice": "5000",
+            "osdate1": "2017年07月17日19时27分"
+        },
+        {
+            "id": "10082",
+            "nickname": "testest",
+            "goodstitle": "50元话费",
+            "prizeprice": "5000",
+            "osdate1": "2017年07月17日16时02分"
+        }
+    ]
+}
+
+
+-------------------------------------------------------
+
+财富排行榜
+http://domain/api/GetAssetRankList?t=1430000000&sign=abc&topcount=10&ranktype=1
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    topcount   //调用数量(int)
+    ranktype   //财务榜类型（int） 0 金币排行 1 奖卷排行
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "assetrank": "1",  //排行(int)
+			"allmoney": "34240", //总金币（钱包+银行）
+            "walletmoney": "34240",  //金币数量(long)
+            "lotteries": "99565799",  //奖卷数量(long)
+            "userid": "963823",  //用户ID(int)
+            "username": "test2323",  //用户名(string)
+            "nickname": "test2323"  //用户昵称(string)
+        },
+        {
+            "assetrank": "2",
+			"allmoney": "339398225",
+            "walletmoney": "339398225",
+            "lotteries": "8913200",
+            "userid": "443252",
+            "username": "z315593003",
+            "nickname": "F3155"
+        },
+        {
+            "assetrank": "3",
+			"allmoney": "483146523",
+            "walletmoney": "483146523",
+            "lotteries": "6570000",
+            "userid": "447424",
+            "username": "wuchuan1",
+            "nickname": "树舞倪"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+保险箱赠送、接收记录
+http://domain/api/MoneyTransLog?t=1430000000&sign=abc&topcount=10&userid=860527&transtype=1
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    topcount   //调用数量(int)
+    userid  //用户ID(int)
+    transtype   //记录类型(int) 0赠送，1接收
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "userid": "860527",                   //转出用户ID
+            "nickname": "詹姆斯·邦德",           //转出用户昵称
+            "userid_zz": "644904",                //接收用户ID
+            "nickname_zz": "牛二哥的貂皮内裤",    //接收用户昵称
+            "money": "10000000",                  //金额
+            "transtime": "2016/4/5 16:36:00",     //发生时间
+	    "success": "True"                     //状态
+        },
+        {
+            "userid": "860527",
+            "nickname": "詹姆斯·邦德",
+            "userid_zz": "644904",
+            "nickname_zz": "牛二哥的貂皮内裤",
+            "money": "10000000",
+            "transtime": "2016/4/5 16:24:00",
+            "success": "True"
+        },
+        {
+            "userid": "860527",
+            "nickname": "詹姆斯·邦德",
+            "userid_zz": "644904",
+            "nickname_zz": "牛二哥的貂皮内裤",
+            "money": "10000000",
+            "transtime": "2016/4/5 16:23:00",
+            "success": "True"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+苹果内购
+http://domain/api/AppStoreReceipt
+参数:  （需使用Post流模式提交）
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+    payip   //用户IP(string)
+    transaction_id  //订单号 
+    posturl  //苹果内购posturl    https://sandbox.itunes.apple.com/verifyReceipt
+    receipt_data  //苹果内购 receipt_data 
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+
+
+-------------------------------------------------------
+
+支付宝(生成订单)
+http://domain/api/AlipayGenOrder?t=1430000000&sign=abc&userid=10101000&rechargermb=6&payip=1.1.1.1
+
+参数：
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+    rechargermb  //充值金额(人民币)(int)
+    payip   //用户IP(string)
+返回：
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+	results orderid  //订单号
+    results orderstr  //订单字符串(供app支付使用)
+
+-------------------------------------------------------
+
+微信支付(生成订单)
+http://domain/Api/WeixinPayGenOrder?t=1530000000&sign=abc123456&userid=77838&rechargermb=6&payip=1.1.1.1
+
+参数：
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //用户ID(int)
+    rechargermb  //充值金额(人民币)(int)
+    payip   //用户IP(string)
+返回：
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results orderid  //订单号
+    results appid  //调用接口提交的应用ID
+	results partnerid  //调用接口提交的商户号
+	results prepayid  //微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时
+	results package //扩展字段
+	results noncestr  //微信返回的随机字符串
+	results timestamp //时间戳
+	results sign  //微信返回的签名
+	
+-------------------------------------------------------
+
+充值订单详情
+http://domain/api/RMBCostOrderDetails?t=1430000000&sign=abc&orderid=1709041854371096
+
+参数：
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    orderid  //订单号(string)
+返回：
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results orderid   //订单号 
+	results orderstate  //订单状态  0失败  1成功 
+	results userid  //用户ID 
+	results username  //用户名 
+	results paymoney  //支付金额 
+	results typeinfo  //支付类型说明 
+	results addtime   //下单时间 
+
+-------------------------------------------------------
+
+获取RMB购买金币价格、赠送、图片信息
+http://domain/api/GetRechargeRate?t=1430000000&sign=abc
+
+参数：
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "rechargermb": "6",   //RMB价格
+            "rechargegold": "300",  //充值金币数量
+            "regivegold": "0",   //充值赠送金币数量
+            "iconurl": "http://MoneyIcon_1"   //Icon图片URL
+        },
+        {
+            "rechargermb": "30",
+            "rechargegold": "1500",
+            "regivegold": "0",
+            "iconurl": "http://MoneyIcon_2"
+        },
+        {
+            "rechargermb": "68",
+            "rechargegold": "3400",
+            "regivegold": "0",
+            "iconurl": "http://MoneyIcon_3"
+        },
+        {
+            "rechargermb": "198",
+            "rechargegold": "9900",
+            "regivegold": "0",
+            "iconurl": "http://MoneyIcon_4"
+        },
+        {
+            "rechargermb": "348",
+            "rechargegold": "17400",
+            "regivegold": "0",
+            "iconurl": "http://MoneyIcon_5"
+        },
+        {
+            "rechargermb": "648",
+            "rechargegold": "32400",
+            "regivegold": "0",
+            "iconurl": "http://MoneyIcon_6"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+微信关联登录(BindWeixin)   (关联登录时，未绑定的自动注册为新用户,已绑定的用户使用原有用户信息)
+http://domain/api/BindWeixin?t=1430000000&sign=abc&wxopenid=&wxnickname=&regip=&recuserid=
+参数：
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    wxopenid  //微信openid(string)
+	wxnickname  //微信nickname(string)
+	regip  //注册IP(string)
+	recuserid  //注册推荐人ID(int)  可不填
+返回：
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results userid   //用户ID
+	results  usermd5pwd  //用户密码(md5过的)

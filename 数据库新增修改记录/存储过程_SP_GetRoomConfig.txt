@@ -1,0 +1,23 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_GetRoomConfig]    Script Date: 01/04/2018 16:00:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Simon>
+-- Create date: <2018-01-04>
+-- Description:	<服务端获取房间设置数据>
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_GetRoomConfig]
+	@RoomID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	
+	select RoomID,cfg_RoomType,cfg_m_iCellscore,cfg_m_iMaxCellFire,cfg_m_iMinxCellFire,
+			cfg_m_iGoldCoin,cfg_m_iFishCoin,cfg_Tax,cfg_GoldToNIuniu,cfg_UpScore
+	from TGameRoomInfo where RoomID=@RoomID
+	
+END

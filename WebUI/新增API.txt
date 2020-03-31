@@ -1,0 +1,344 @@
+﻿1、房卡游戏加入房间
+http://domain/api/GetFangKaRoomInfo?t=1430000000&sign=asdasdasdsadad&roomnum=858480&userid=123456
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    roomnum  //房间号(int) 
+    userid  //玩家ID(int)    新增项（AA支付需要判断）
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results RoomID      //房间ID(int)
+    results RoomNum     //桌子号 (int)
+    results RecordNum   //记录编号(string)
+    results GameNameID  //游戏ID(int)
+    results Desk        //桌子ID(int)
+    results PayRule     //支付规则(tinyint)
+    results GameRule    //商品奖卷兑换价格(tinyint)
+    results JuShuRule   //局数规则(tinyint)
+    results PlayersRule //玩家个数(tinyint)
+    results CreateTime  //创建时间(datetime)
+    results Rate  //倍率(tinyint)
+    results OwnerID  //创建者ID(int)
+2、微信登录API修改，微信关联登录(BindWeixin) 
+增加请求参数：
+headIconUrl   //微信头像地址
+gender    //微信性别
+3、房卡游戏加入房间（GetFangKaRoomInfo）
+增加返回json参数：
+results Rate  //倍率(tinyint)
+results OwnerID  //创建者ID(int)
+4、申请创建俱乐部
+http://domain/api/ClubCreate?t=1430000000&sign=asdasdasdsadad&userid=123456&phone=13888888888&remark=dfadsfsda&name=英雄联盟
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //申请玩家ID
+	phone     //申请人手机号
+	remark    //备注
+	name      //俱乐部名称
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	results clubid      //俱乐部ID(int)
+5、申请/邀请加入俱乐部
+http://domain/api/ClubJoin?t=1430000000&sign=asdasdasdsadad&clubid=564764&userid=123456&type=1
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+	userid     //申请人ID/受邀人ID
+	type		//类型：1为申请加入，2为受邀加入
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+6、房卡总战绩
+http://domain/api/FangkaRecord?t=1430000000&sign=asdasdasdsadad&recordNum=20181108171000379714
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    recordNum  //记录编号
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2",
+    "results": [
+        {
+            "RecordNum": "20181107142140815338",  //记录编号
+            "GameNameID": "10306600",  //游戏ID
+            "RoomNum": "815338",  //房间号
+            "CountRule": "1",  //记局规则：1按局，2按圈
+            "JuShuRule": "10",  //游戏总局数
+            "Rate": "1",  //游戏倍率
+            "OwnerID": "311923",  //房主ID
+            "UserID": "311923",  //玩家ID
+            "ScoreSum": "30",  //单人总结算分
+            "IsWinUser": "1",  //是否为大赢家，0否，1是
+		    "IsDissolve": "0",  //是否为发起解散者，0否，1是
+            "StartTime": "2018/11/07 14:21:49 ",  //游戏开始时间
+            "AddTime": "2018-11-07 14:26:43.023",  //游戏总结算时间
+			"GameRule":"1",  //房间规则
+			"Score1":"10",   //外包分
+			"BackYards":"43211"  //回放码
+        }，
+		{
+            "RecordNum": "20181107142140815338",  //记录编号
+            "GameNameID": "10306600",  //游戏ID
+            "RoomNum": "815338",  //房间号
+            "CountRule": "2",  //记局规则：1按局，2按圈
+            "JuShuRule": "10",  //游戏总局数
+            "Rate": "1",  //游戏倍率
+            "OwnerID": "311923",  //房主ID
+            "UserID": "473650",  //玩家ID
+            "ScoreSum": "-30",  //单人总结算分
+            "IsWinUser": "0",  //是否为大赢家，0否，1是
+		    "IsDissolve": "0",  //是否为发起解散者，0否，1是
+            "StartTime": "2018/11/07 14:21:49 ",  //游戏开始时间
+            "AddTime": "2018-11-07 14:26:43.023",  //游戏总结算时间
+			"GameRule":"1",  //房间规则
+			"Score1":"10",   //外包分
+			"BackYards":"43211"  //回放码
+        }
+    ]
+}
+7、房卡每局战绩
+http://domain/api/FangkaRecordsingle?t=1430000000&sign=asdasdasdsadad&recordNum=20181108171000379714&roundNum=1
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    recordNum  //记录编号
+    roundNum  //局号
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2",
+    "results": [
+        {
+            "RecordNum": "20181108171000379714",  //记录编号
+            "UserID": "338251",  //玩家ID
+            "NickName": "地狱为王537",  //玩家昵称
+            "HeadIconUrl": "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIlb6mDGp91mv7tXL3uAwJmDzNwKtBmCctoPDKbTTb3icyrLgXqOYVrWjCRlyj6B2LZZnYZcO12NXA/132",  //玩家头像地址
+            "RoundNum": "1",  //局号
+            "Score": "-4",  //单局结算分
+		    "HandPatterns": "29,13,33,40,55,23,28,42,53,",  //手牌数据
+            "XiPai": "",  //喜牌
+            "IsSurrender": "0",  //是否投降，0否，1是
+            "AddTime": "2018-11-08 17:13:45.030"  //单局结算时间
+        }，
+		{
+            "RecordNum": "20181108171000379714",  //记录编号
+            "UserID": "110321",  //玩家ID
+            "NickName": "云熙832",  //玩家昵称
+            "HeadIconUrl": "http://thirdwx.qlogo.cn/mmopen/vi_32/xKILMcgibsQzdXbliareYrLSaSvP0BKDfO0wnMHBEGvG6U00f3jXfFQ51hsZEpHDBU3IwPKY6y2iaF1GeZibRfat8g/132",  //玩家头像地址
+            "RoundNum": "1",  //局号
+            "Score": "4",  //单局结算分
+		    "HandPatterns": "3,2,1,6,5,4,41,8,7,",  //手牌数据
+            "XiPai": "双顺清,",  //喜牌
+            "IsSurrender": "0",  //是否投降，0否，1是
+            "AddTime": "2018-11-08 17:13:45.030"  //单局结算时间
+        }
+    ]
+}
+8、房卡总战绩（个人历史战绩）
+http://domain/api/FangkaRecordByUser?t=1430000000&sign=asdasdasdsadad&userid=123456
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //记录编号
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "21",
+    "results": [
+        {
+            "RecordNum": "20181107142832513400",  //记录编号
+            "GameNameID": "10306600",  //游戏ID
+            "RoomNum": "513400",  //房间号
+            "JuShuRule": "10",  //游戏总局数
+            "Rate": "1",  //游戏倍率
+            "OwnerID": "311923",  //房主ID
+            "UserID": "473650",  //玩家ID
+            "ScoreSum": "-6",  //单人总结算分
+            "IsWinUser": "0",  //是否为大赢家，0否，1是
+		    "IsDissolve": "1",  //是否为发起解散者，0否，1是
+            "StartTime": "2018/11/07 14:28:54 ",  //游戏开始时间
+            "AddTime": "2018-11-07 14:32:10.697"  //游戏总结算时间
+        }，
+		{
+            "RecordNum": "20181107142140815338",  //记录编号
+            "GameNameID": "10306600",  //游戏ID
+            "RoomNum": "815338",  //房间号
+            "JuShuRule": "10",  //游戏总局数
+            "Rate": "1",  //游戏倍率
+            "OwnerID": "311923",  //房主ID
+            "UserID": "473650",  //玩家ID
+            "ScoreSum": "-30",  //单人总结算分
+            "IsWinUser": "0",  //是否为大赢家，0否，1是
+		    "IsDissolve": "0",  //是否为发起解散者，0否，1是
+            "StartTime": "2018/11/07 14:21:49 ",  //游戏开始时间
+            "AddTime": "2018-11-07 14:26:43.023"  //游戏总结算时间
+        }
+    ]
+}
+9、根据玩家ID 获取昵称和微信头像
+http://domain/api/GetUserWechatMsg?t=1430000000&sign=asdasdasdsadad&userid=123456
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID（int）
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	results NickName      //玩家昵称(int)
+	results HeadIconUrl      //头像地址(int)
+10、竣付通API()
+【
+http://domain/api/JftRecharge?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&pay_device=2&player_ip=192_168_0_253&player_id=860527&pay_type=ZFB&pay_money=1
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	pay_device      //设备信息:1 代表 pc   2 代表 ios  3 代表 android。
+	player_ip      //玩家IP,格式“198_0_0_1”
+	player_id     //玩家账号ID
+	pay_type     //支付方式 支付宝: ZFB, 微信: WX
+	pay_money   //充值金额(单位：元)
+	游戏APP端 发起此链接至手机浏览器即可调起竣付通支付，此API URL即为支付页面，建议参数采用Post模式传递；
+	】（作废）
+http://domain/a_jftpay.aspx?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&p3_money=1&p7_productcode=ZFB&p14_customname=860527&p16_customip=192_168_0_253&p25_terminal=2
+参数： （验签模式加密参数同 前端API）
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	p3_money  //充值金额(单位：元)(int)
+	p7_productcode   //支付方式 支付宝: ZFB, 微信: WX//用户IP
+	p14_customname    //玩家账号ID
+	p16_customip   //玩家IP,格式“198_0_0_1”
+	p25_terminal    //设备信息:1 代表 pc   2 代表 ios  3 代表 android。
+游戏APP端 发起此链接至手机浏览器即可调起竣付通支付，此API URL即为支付页面，建议参数采用Post模式传递；
+11、获取录像文件地址
+http://domain/api/GetVideoDataLog?t=1430000000&sign=asdasdasdsadad&VideoNum=20190321143029688661&UserID=217258
+
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	VideoNum      //录像唯一标识号
+	UserID       //用户ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	results RecordNum      //记录编号
+	results RoundNum      //局号
+	results BackYards      //回放码
+	results AddTime      //录制时间
+	results FilePath      //下载地址（为空则无该录像文件）
+
+12、获取他人录像文件
+http://domain/api/GetUserVideoData?t=1430000000&sign=asdasdasdsadad&BackYards=978533
+
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	BackYards      //录像回放码
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	gameID      //游戏ID
+	filePath      //回访地址
+
+13、获取对局战绩
+http://42.51.28.135/api/GetUserGameData?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&userid=141026
+
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	totalToday      //今日总局数
+	totalYest        //昨日总局数
+	winToday      //今日胜局
+	winYest         //昨日胜局
+
+14、修改俱乐部公告
+http://42.51.28.135/api/UpdateClubNotice?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&clubid=564764&userid=123456&clubname=测试俱乐部&notice=修改俱乐部公告
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+	userid     //修改者ID
+	clubname     //俱乐部名称
+	notice		//修改的公告
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+
+15、获取用户是否被封禁
+http://42.51.28.135/api/GetClubUserStatus?userid=311923&t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&clubid=777933
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+	userid     //修改者ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	status     //0正常，1封禁
+返回数据样例：
+{
+	"code"："1
+    "msg"："success"
+    "status"："0
+}
+16、暴风雪支付
+http://129.226.59.89/a_qlmjpay.aspx?userid=11672&rechargermb=2&payip=1.192.164.99&paytype=8001013&t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //用户ID
+	rechargermb      //充值金额
+	payip           //请求IP地址
+	paytype     //充值方式（微信8001013，支付宝8001024）
+	purchasetype    //货币类型：1，金币；2房卡
+	游戏APP端 发起此链接至手机浏览器即可调起支付，此API URL即为支付页面，建议参数采用Post模式传递；
+
+17、个人信息战绩接口（进园子）
+http://42.51.28.135/api/UserGameData?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&date=6&jinyuanzi=0&userid=473650&clubid=246144&pageindex=1&pagesize=5
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	date      //1今天，2昨天，3前天，4一周，5十五天，6三十天
+	jinyuanzi       //进园子，0全部，1进园子
+	userid       //玩家ID，0全部
+	clubid       //俱乐部ID，0全部
+	pageindex     //页码
+	pagesize       //单页条数
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount      //总返回记录数
+	totalpage     //总页数
+	pagesize    //单页条数
+	pageindex    //页码
+	results UserID      //玩家ID
+	results NickName      //玩家昵称
+	results SumNum      //总局数
+	results SumScore      //总分数
+	results WinNum      //总大赢家次数

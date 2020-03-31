@@ -1,0 +1,78 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_UpdateUserInfo_FishSpecial]    Script Date: 12/28/2017 17:53:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Mr Guo>
+-- Create date: <2016-06-24>
+-- Description:	<对捕鱼进行结算，并写入游戏记录>
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_UpdateUserInfo_FishSpecial] 
+	@UserID   int,   --玩家ID
+	@ScrPoint  bigint,    --玩家原始积分
+	@ScrMoney   bigint,   --玩家原始金币
+	@ChangePoint  bigint,   --改变的积分
+	@ChangeMoney  bigint,   --改变的金币
+	@ChangeTax    bigint,   --改变的税
+	@GameTime    int,       --游戏时长
+	@RoomID     int,        --房间ID
+	@DeskIndex   int,        --那个桌子
+	@Tax         bigint      --税
+AS
+BEGIN
+	--更新玩家金币信息
+	--UPDATE TUserInfo SET TaxCom=TaxCom+@ChangeTax,WalletMoney=WalletMoney+@ChangeMoney WHERE UserID=@UserID
+	
+	
+	--------------------------------------
+	--2017-12-26修改 by Mr Guo
+	declare @givemoney bigint
+	select GiveMoney=@givemoney from TUserInfo where UserID=@UserID
+	
+	if(@givemoney>0)
+	begin
+		UPDATE TUserInfo SET TaxCom=TaxCom+@ChangeTax,WalletMoney=@ScrMoney+@ChangeMoney-@givemoney WHERE UserID=@UserID
+	end
+	
+	else
+	begin
+		UPDATE TUserInfo SET TaxCom=TaxCom+@ChangeTax,WalletMoney=@ScrMoney+@ChangeMoney WHERE UserID=@UserID
+	end
+	---------------------------------------
+	
+	--插入游戏记录
+	declare @UserIsRobot int=0
+	select @UserIsRobot=IsRobot from TUsers where UserID=@UserID 
+	if (@UserIsRobot=1)  --机器人不插入游戏记录
+	begin
+		return 0
+	end
+	
+	DECLARE	@EndTime DATETIME
+	SET	@EndTime = GETDATE()
+	INSERT	INTO	TChangeRecord
+					(GameTime,EndTime,RoomID,DeskIndex,Tax,ModelType)
+	VALUES			(@GameTime,@EndTime,@RoomID,@DeskIndex,@Tax,0)
+
+	DECLARE @ID		INT
+	SELECT	@ID = ID
+	FROM	TChangeRecord
+	WHERE	GameTime = @GameTime
+			AND	EndTime = @EndTime
+			AND RoomID = @RoomID
+			AND DeskIndex = @DeskIndex
+
+	IF @ID IS NULL
+	BEGIN
+		RETURN 0
+	END 
+	
+	INSERT INTO	TChangeRecordUser
+					(RecordIndex,UserID,SrcPoint,SrcMoney,ChangePoint,ChangeMoney,ChangeTax)
+		VALUES		(@ID,@UserID,@ScrPoint,@ScrMoney,@ChangePoint,@ChangeMoney,@ChangeTax) 
+	
+	exec [dbo].[SP_ReceiveMoney] @UserID, 1
+END

@@ -1,0 +1,33 @@
+USE [ttyxtest]
+GO
+
+/****** Object:  Table [dbo].[Web_Count_RecOnline]    Script Date: 12/13/2017 15:45:45 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Web_Count_RecOnline](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[RecUserID] [int] NOT NULL,
+	[OnlineCount] [int] NOT NULL,
+	[InputDate] [datetime] NOT NULL,
+ CONSTRAINT [PK_Web_Count_RecOnline] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[Web_Count_RecOnline] ADD  CONSTRAINT [DF_Web_Count_RecOnline_RecUserID]  DEFAULT ((0)) FOR [RecUserID]
+GO
+
+ALTER TABLE [dbo].[Web_Count_RecOnline] ADD  CONSTRAINT [DF_Web_Count_RecOnline_OnlineCount]  DEFAULT ((0)) FOR [OnlineCount]
+GO
+
+ALTER TABLE [dbo].[Web_Count_RecOnline] ADD  CONSTRAINT [DF_Web_Count_RecOnline_InputDate]  DEFAULT (getdate()) FOR [InputDate]
+GO
+
+

@@ -1,0 +1,40 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_UserPartitionUnlock]    Script Date: 01/13/2018 16:05:32 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Mr Guo>
+-- Create date: <2016-04-03>
+-- Description:	判断游戏传的值去改变用户的配分锁定状态
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_UserPartitionUnlock]
+(
+	 @InUserID int,     --传入的玩家ID
+	 @InPartitionSatus tinyint   ---传入的配分玩家状态
+)
+AS
+BEGIN
+declare 
+	 @PartitionSatus tinyint,     --查询数据库玩家的配分玩家状态
+	 @UserLockSatus tinyint     ---传入的配分锁定状态
+--判断用户是否在锁定表里
+select @UserLockSatus=UserLockSatus,@PartitionSatus=PartitionSatus from Web_UserPartitionCardSatus where UserID = @InUserID
+if(@UserLockSatus is null)
+return -1   ---用户不在此表中
+if(@UserLockSatus=0)
+return -2   ---用户未锁定
+if(@UserLockSatus=1)   ---用户已被锁定
+    
+if(@InPartitionSatus>=@PartitionSatus) ---判断用户是否达到解锁条件
+	begin
+	--update Web_UserPartitionCardSatus set UserLockSatus=0 where UserID = @InUserID
+	
+	delete from Web_UserPartitionCardSatus where UserID = @InUserID
+	return 0
+	end
+else
+	return -3   ---不能解锁
+END

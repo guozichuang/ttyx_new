@@ -1,0 +1,981 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[SP_UserLoginRoom]    Script Date: 01/13/2018 16:04:36 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Fred Huang
+-- Create date: 2008-11-19
+-- Description:	用户登录房间
+-- 修改：zxd
+-- 日期：20100309
+-- 原因：防止绕过Z服务器直接登录W服务器
+-- 办法：登录W服务器时，判断是否有Z服务器登录记录，如无记录，则只有机器人允许登录到W服务器
+
+-- 修改：zxd
+-- 日期：20100806
+-- 原因：判断当前玩家被GM操作过的记录
+-- 办法：判断StatusByGM和StatusTime，并返回，并再由调用本存储过程者判断返回值是否为禁言状态
+-- exec SP_UserLoginRoom 1013,'d0970714757783e6cf17b26fb8e2298f','192.168.0.66',5,10003300,'Tmatchtable','TRoomIPRule','TUserNameRule','TGameLock'
+-- =============================================
+ALTER PROCEDURE [dbo].[SP_UserLoginRoom]
+(
+	@UserID			INT,				--用户ID
+	@PassMD5		NVARCHAR(50),		--用户密码
+	@LoginIP		NVARCHAR(15),		--用户登录的IP地址
+	@RoomID			INT,				--用户登录的房间ID
+	@KernelNameID	INT,				--内核NAMEID
+	@MatchTable		NVARCHAR(30),		--用户成绩记录表
+	@IPRuleTable	NVARCHAR(30),		--房间IP限制表
+	@NameRuleTable	NVARCHAR(30),		--房间用户限制表
+	@LockTable		NVARCHAR(30)		--用户登录后的锁定表
+	
+)	
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE	@Member			INT
+	DECLARE	@GamePower		INT
+	DECLARE	@MatchMember	INT
+	DECLARE	@Master			INT
+	DECLARE @Name			NVARCHAR(20)
+	DECLARE @NickName		NVARCHAR(30)
+	DECLARE @Sex			INT
+	DECLARE	@LogoID			INT
+	DECLARE @MasterPower	INT
+	DECLARE @Fascination	INT
+	DECLARE @viptime		INT
+	DECLARE @DoublePointTime	INT
+	DECLARE @ProtectTime	INT
+	DECLARE	@Wallet			BIGINT
+	DECLARE @BankMoney		BIGINT
+	DECLARE @GiveMoney       BIGINT    --赠送金币   【2017-12-26新增】
+	DECLARE @AllkMoney		BIGINT  --玩家所有金币
+	DECLARE @UserIngot		BIGINT --用户元宝
+	DECLARE	@Win			INT
+	DECLARE	@Lost			INT
+	DECLARE	@Cut			INT
+	DECLARE	@Mid			INT
+	DECLARE @Point			BIGINT
+	DECLARE @LimitGame		INT
+	DECLARE	@GPLimitTime	DATETIME
+	--Kylin 20090201 防止帐号重登录
+	DECLARE	@OnLineFlag INT
+	DECLARE @GameNameID INT
+	-- yjj 20090319  添加用户信息字段
+	DECLARE @OccuPation		NVARCHAR(50)
+	DECLARE @PhoneNum		NVARCHAR(50)
+	DECLARE @AdrProvince	NVARCHAR(50)
+	DECLARE @AdrCity		NVARCHAR(50)
+	DECLARE @AdrZone    	NVARCHAR(50)
+	--JianGuankun 20120208 进入练习场默认金币数
+	DECLARE @ExercisePoint	BIGINT
+	-- duanxiaohui 20111111 添加个性签名字段
+	DECLARE @SignDescr	    NVARCHAR(128) --个性签名
+	DECLARE @DiamondTime	INT  -- add by HYS 09.07.14 邮游钻石身份
+	DECLARE @StatusByGM		int			-- 被GM操作过的记录类型
+	DECLARE @StatusTime		datetime	-- 被GM操作过的时效
+	-- 20100309由ZXD添加，防止普通非机器人玩家绕过Z服务器登录W服务器，识别是否机器人用
+	DECLARE @IsRobot INT	-- 是否机器人，0为普通玩家，其它值为机器人
+	--wushuqun 2009.6.6登录房间时，即时获取虚拟玩家人数
+	DECLARE @VirtualUser INT
+	--wushuqun 2009.6.26 登录房间时，获取玩家类型
+	DECLARE @UserType  INT
+	DECLARE @Salt VARCHAR(20)
+	DECLARE @ReturnVal INT
+	
+	--新增输出数据
+	--begin
+	DECLARE @TodayGold   bigint      ---玩家金币
+	DECLARE @TodayReCardNum  int      ---剩余复活卡次数
+	DECLARE @PlayTime     int         ---剩余游戏时长             2016-06-22新增
+	DECLARE @Days7Score   bigint       ---7日排行榜分数
+	DECLARE @Days10Score  bigint      ---10日排行榜分数
+	declare @Days7Grade   int         ---7日排行榜名次
+	declare @Days10Grade   int         ---10日排行榜名次
+	declare @Days7BeforeScore   bigint         ---7日排行榜前一名分数
+	declare @Days10BeforeScore   bigint         ---10日排行榜前一名分数
+	declare @Days7AfterScore   bigint         ---7日排行榜后一名分数
+	declare @Days10AfterScore   bigint         ---10日排行榜后一名分数
+	--end
+	
+	SET @ReturnVal = 0
+
+	--检查是否IP限制
+	DECLARE	@SQL NVARCHAR(512)
+	SET @SQL='SELECT @LGame=LimitedGame	FROM '+@IPRuleTable
+	+' WHERE AccessIPChar='''+@LoginIP+''''
+	+' AND RoomID=' + STR(@RoomID)
+	+' AND OverTime>=GETDATE()'
+	EXEC SP_EXECUTESQL @SQL,N'@LGame INT OUTPUT',@LimitGame OUTPUT
+
+	IF @LimitGame IS NOT NULL
+	BEGIN
+		RETURN 1		--用户登录IP被限制了
+	END
+
+	--检查用户名是否被限制
+	SET @SQL='SELECT @LGame=GameInvalidate	FROM '+@NameRuleTable
+	+' WHERE UserID='+STR(@UserID)
+	+' AND RoomID='+STR(@RoomID)
+	+' AND OverTime>=GETDATE()'	
+	EXEC SP_EXECUTESQL @SQL,N'@LGame INT OUTPUT',@LimitGame OUTPUT
+
+	IF @LimitGame IS NOT NULL
+	BEGIN
+		RETURN 2		--用户帐号在此房间登录被限制了
+	END
+
+	
+	--获取7日免费比赛玩家数据
+	
+	DECLARE @num int   --用户在7日比赛用户信息表中存在的条数
+	DECLARE @num1 int  --用户在7日比赛数据表中存在的条数
+	DECLARE @num2 int  --用户在10日比赛数据表中存在的条数
+	declare @gold bigint   --用户当天的金币值
+	declare @reCard int   --用户当天的剩余复活卡次数，最多为3
+	declare @ptime int  --用户参与比赛每日剩余可用时长（单位：second）
+	declare @bonus decimal(18, 0)   --用户当天比赛的经验加成
+	declare @d7grade int   --7日排行榜名次
+	declare @d10grade int   --10日排行榜名次
+	declare @d7num int  --7日排行榜总人数
+	declare @d10num int  --10日排行榜总人数
+	
+	select @num=COUNT(*) from TFreeMatchUserInfo where UserID=@UserID
+	if	@num>0
+		begin
+		
+		SELECT @gold=TodayGold,@reCard=TodayReCardNum,@ptime=PlayTime from TFreeMatchUserInfo where UserID=@UserID
+		
+		if @gold>0 and @ptime>0
+			begin
+			
+			declare @resttime int   --离次日00:00:00剩余时间
+			set @resttime=DATEDIFF([second], GETDATE(),cast((CONVERT(varchar(10),dateadd(day,1,getdate()),120)+' 00:00:00') as datetime))
+			if	@resttime>@ptime
+				begin
+					set @TodayGold=@gold
+					set @TodayReCardNum=@reCard
+					set @PlayTime=@ptime
+				end
+			else
+				begin
+					set @TodayGold=@gold
+					set @TodayReCardNum=@reCard
+					set @PlayTime=@resttime
+				end
+			end
+		else
+			begin
+				
+			
+			if	@reCard>0
+				begin
+				declare @UseNum smallint  --已使用次数
+				select @UseNum=COUNT(*) from Web_LogFreeMatchReCard where UserID=@UserID and CAST(CreateDateTime as date)=CAST(GETDATE() as date) and LogType=1
+				if @UseNum<3
+					begin
+					set @TodayGold=1000000
+					set @TodayReCardNum=@reCard-1
+					set @PlayTime=3600
+					update TFreeMatchUserInfo set TodayGold=1000000,TodayReCardNum=@reCard-1,PlayTime=3600 where UserID=@UserID
+					insert into Web_LogFreeMatchReCard (UserID,CreateDateTime,LogType) values (@UserID,GETDATE(),1)
+					end
+				end
+			else
+				begin
+					set @TodayGold=@gold
+					set @TodayReCardNum=0
+					set @PlayTime=0
+				end
+			
+			end
+		
+		end
+		
+	else
+		begin
+		
+		set @gold=1000000
+		set @reCard=0
+		set @bonus=0
+		set @ptime=3600
+		
+		insert into TFreeMatchUserInfo (UserID,TodayGold,TodayReCardNum,Bonus,PlayTime) values (@UserID,@gold,@reCard,@bonus,@ptime)
+		
+		set @TodayGold=@gold
+		set @TodayReCardNum=@reCard
+		set @PlayTime=@ptime
+		
+		end
+	
+	select @num1=COUNT(*) from Log7DaysMatchHitFish where UserID=@UserID
+	if	@num1>0
+		begin
+		--select @Days7Score=HitMoney from Log7DaysMatchHitFish where UserID=@UserID
+		
+		select @d7num=COUNT(*) from Log7DaysMatchHitFish
+
+		select @d7grade=b.PriceGrade,@Days7Score=b.HitMoney
+		from(
+		select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+		from 
+		(
+			select * from Log7DaysMatchHitFish
+		) a
+		)b where b.UserID=@UserID
+		
+		if @d7grade=@d7num
+			begin
+			
+			select @Days7BeforeScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from Log7DaysMatchHitFish
+			) a
+			)b where b.PriceGrade=@d7grade-1
+			
+			set @Days7AfterScore=0
+			end
+		if @d7grade=1
+			begin
+			
+			set @Days7BeforeScore=0
+			
+			select @Days7AfterScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from Log7DaysMatchHitFish
+			) a
+			)b where b.PriceGrade=@d7grade+1
+			
+			end
+		else
+			begin
+			
+			select @Days7BeforeScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from Log7DaysMatchHitFish
+			) a
+			)b where b.PriceGrade=@d7grade-1
+			
+			select @Days7AfterScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from Log7DaysMatchHitFish
+			) a
+			)b where b.PriceGrade=@d7grade+1
+			
+			end
+		
+		set @Days7Grade = @d7grade
+		
+		end
+	else
+		begin
+		set @Days7Score=0
+		set @Days7BeforeScore=0
+		set @Days7AfterScore=0
+		end
+	
+	select @num2=COUNT(*) from LogTenHitFishMoney where UserID=@UserID
+	if	@num2>0
+		begin
+		--select @Days10Score=HitMoney from LogTenHitFishMoney where UserID=@UserID
+		
+		select @d10num=COUNT(*) from Log7DaysMatchHitFish
+
+		select @d10grade=b.PriceGrade,@Days10Score=b.HitMoney
+		from(
+		select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+		from 
+		(
+			select * from LogTenHitFishMoney
+		) a
+		)b where b.UserID=@UserID
+		
+		if @d10grade=@d10num
+			begin
+			
+			select @Days10BeforeScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from LogTenHitFishMoney
+			) a
+			)b where b.PriceGrade=@d10grade-1
+			
+			set @Days10AfterScore=0
+			
+			end
+		if @d10grade=1
+			begin
+			
+			set @Days10BeforeScore=0
+			
+			select @Days10AfterScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from LogTenHitFishMoney
+			) a
+			)b where b.PriceGrade=@d10grade+1
+			
+			end
+		else
+			begin
+			
+			select @Days10BeforeScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from LogTenHitFishMoney
+			) a
+			)b where b.PriceGrade=@d10grade-1
+			
+			select @Days10AfterScore=b.HitMoney
+			from(
+			select rank()over(order by a.HitMoney desc,a.LastCollectDate desc) as PriceGrade,a.UserID,a.HitMoney,a.LastCollectDate
+			from 
+			(
+				select * from LogTenHitFishMoney
+			) a
+			)b where b.PriceGrade=@d10grade+1
+			
+			end
+			
+		set @Days10Grade = @d10grade
+		
+		end
+	else
+		begin
+		set @Days10Score=0
+		set @Days10BeforeScore=0
+		set @Days10AfterScore=0
+		end
+	
+
+	--获取游戏ID
+	SELECT @GameNameID = GameNameID 
+	FROM TGameRoomInfo with(nolock) 
+	WHERE RoomID = @RoomID
+	
+	--判断玩家是否处于配分锁定状态
+	DECLARE  @UserLockNum tinyint  ---玩家配分锁定状态值  0为解锁  1为锁定
+	select @UserLockNum =COUNT(*)  from Web_UserPartitionCardSatus where UserID = @UserID and UserLockSatus=1
+	
+	--DECLARE  @UserLockSatus tinyint  ---玩家配分锁定状态值  0为解锁  1为锁定
+	--select @UserLockSatus =COUNT(*)  from Web_UserPartitionCardSatus where UserID = @UserID and UserLockSatus=1
+	
+	
+	declare @inttype smallint     --  @inttype为-1时，表示该房间不支持配分卡，为1时，表示可以使用配分卡
+	
+	--if @GameNameID=70030600 and @UserLockSatus=1
+	--set @inttype=1
+	--else if @GameNameID=70611800 and @UserLockSatus=1
+	--set @inttype=1
+	--else if @UserLockSatus=0
+	--set @inttype=1
+	--else
+	--set @inttype=-1
+	
+	if (@GameNameID=70030600 or @GameNameID=70611800 or @GameNameID=70661800) and @UserLockNum=1
+	set @inttype=1
+	else if @UserLockNum=0
+	set @inttype=1
+	else
+	set @inttype=-1
+	
+	if @inttype=-1
+	begin
+	return 2
+	end
+	if @inttype=1
+	begin
+	
+	DECLARE	@BankVer INT			--银行版本
+	SELECT TOP 1 @BankVer = BankVersion 
+	FROM Web_Config with(nolock)
+
+	DECLARE @oldroom int
+	IF @BankVer = 1
+	BEGIN
+		--Kylin 20090319 添加新防止账户同时登陆	
+		Set @oldroom = 0
+		select @oldroom=WID from  [TWLoginRecord] with(nolock) where UserID=@UserID
+		IF @oldroom > 0 and @oldroom != @roomid
+		BEGIN
+			select roomname from  TGameRoomInfo with(nolock) WHERE RoomID = @oldroom
+			select @oldroom
+			RETURN 11
+		END
+	END
+	ELSE IF  @BankVer = 2
+	BEGIN
+		--JianGuankun 20120330 添加新防止账户同时登陆同游戏的不同房间
+		Set @oldroom = 0
+		select @oldroom=WID 
+		from TWLoginRecord a with(nolock) join TGameRoomInfo b with(nolock) on a.WID=b.RoomID
+		where a.UserID=@UserID
+		and b.GameNameID=@GameNameID
+		      
+		IF @oldroom > 0 and @oldroom != @roomid
+		BEGIN
+			select roomname from  TGameRoomInfo WHERE RoomID = @oldroom
+
+		END
+	END
+
+	--查询用户数据
+	--先检查TUser表中是否有该用户记录
+	--Kylin 20090201 防止帐号重登录
+	DECLARE @Pass	NVARCHAR(50)
+	SELECT	@Name=UserName,
+			@Pass=Pass,
+			@NickName=NickName,
+			@LogoID=LogoID,
+			@Sex=Sex,
+			@OnLineFlag=OnlineFlag,
+			@IsRobot=IsRobot,
+			@Salt = Salt
+	FROM TUsers with(nolock)
+	WHERE UserID = @UserID
+
+	IF @Name IS NULL
+	BEGIN
+		RETURN 3
+	END 
+
+	-- 如果用户密码错误，返回失败
+	IF @Salt IS NOT NULL AND DATALENGTH(LTRIM(@Salt)) > 0
+	BEGIN
+		DECLARE @MD5Temp	VARCHAR(50)
+		SET @MD5Temp = @PassMD5
+		SET @MD5Temp = sys.fn_VarBinToHexStr(HashBytes('MD5', @MD5Temp + @Salt))
+		SET @MD5Temp = substring(@MD5Temp,charindex('x',@MD5Temp)+1,len(@MD5Temp))
+		IF @MD5Temp<>@Pass
+		begin
+			RETURN 3	--密码不正确
+		end
+	END
+
+	ELSE if @PassMD5 <> @Pass
+	begin
+		return 3
+	end
+
+	--{{防止绕过Z服务器登录W服务器ZXD修改于20100309
+	--IF @IsRobot=0
+	--BEGIN
+		--if NOT EXISTS (select ZID from [TZLoginRecord] with(nolock) where UserID = @UserID)
+		--begin
+			--return 2
+		--end
+	--END
+
+	declare @IsCanTransBack int
+	
+	--防止绕过Z服务器登录W服务器ZXD修改于20100309}}
+	--检查TUserInfo中是否有记录
+	SELECT	@Member = a.Member,
+			@MatchMember = a.MatchMember,
+			@Master = a.Master,
+			@GamePower = a.GamePower,
+			@Fascination = a.Fascination,
+			@viptime = a.viptime,
+			@DoublePointTime = a.DoublePointTime,
+			@ProtectTime = a.ProtectTime,
+			@Wallet = a.WalletMoney,
+			@BankMoney = a.BankMoney,
+			@GiveMoney = a.GiveMoney,  --赠送金币   【2017-12-26新增】
+			@GPLimitTime = a.GPLimitTime,
+			--add by yjj 090319  获取玩家信息
+			@OccuPation = a.OccuPation,
+			@PhoneNum = a.PhoneNum,
+			@AdrProvince = a.AdrProvince,
+			@AdrCity = a.AdrCity,
+			@AdrZone = a.AdrZone,
+			@StatusByGM = isnull(a.StatusByGM, 0), 
+			@StatusTime = isnull(a.StatusTime, '1970-01-01'),
+			--wushuqun 2009.6.26登录房间时获取玩家类型
+			@UserType = a.UserType,
+			@DiamondTime = a.DiamondTime,
+			@IsCanTransBack = a.ISCanTranMonBack,
+			-- add by duanxiaohui 20111111 获取玩家个性签名
+			@SignDescr = b.SignDescr
+	FROM TUserInfo a with(nolock) LEFT JOIN Web_Users b with(nolock) on a.UserID = b.UserID
+	WHERE a.UserID = @UserID
+	
+	--查询元宝数量
+	SELECT @UserIngot = UserIngot FROM TUserInfo WHERE UserID = @UserID 
+
+	--默认所有金币值是第一版本银行
+	set @AllkMoney = @Wallet+@BankMoney+@GiveMoney;    --赠送金币   【2017-12-26新增】
+
+	IF @StatusByGM >= 3 and @StatusTime>GetDate()
+	BEGIN
+		RETURN 2	--用户被限制
+	END
+
+	IF @BankVer = 2
+	BEGIN
+		--读取游戏的所属的钱包，新的银行添加游戏钱包，以往的TUserInfo的总钱包已不使用
+		--JianGuankun 2011.12.7
+		DECLARE @UserIDFind INT
+		SELECT @UserIDFind = UserID,@Wallet = WalletMoney 
+		FROM TBankWallet with(nolock) 
+		WHERE UserID=@UserID 
+		AND GameID=@GameNameID
+		IF @UserIDFind IS NULL
+		BEGIN
+			--第一次登陆房间
+			INSERT TBankWallet(UserID,GameID,WalletMoney) VALUES(@UserID,@GameNameID,0)
+			SET @Wallet = 0
+		END
+		select @AllkMoney =sum(walletmoney)+@BankMoney+@GiveMoney from TBankWallet where UserID=@UserID
+	END
+
+
+	IF @Member IS NULL
+	BEGIN
+		INSERT INTO	TUserInfo(UserID)
+		VALUES (@UserID)
+		SET	@Member=0
+		SET	@MatchMember=0
+		SET	@Master=0
+		SET	@GamePower=0
+		SET	@Fascination=0
+		SET	@viptime=0
+		SET	@DoublePointTime=0
+		SET	@ProtectTime=0
+		SET	@Wallet=0
+		SET	@BankMoney=0
+		SET  @GiveMoney=0
+		SET @GPLimitTime=GETDATE()
+		--yjj090319
+		SET @OccuPation='自由职业者'
+		SET @PhoneNum='13800138000'
+		SET @AdrProvince='广东省'
+		SET @AdrCity='深圳市'
+		SET @AdrZone='罗湖区'  
+		--duanxiaohui 20111111
+		SET @SignDescr = ''
+	END
+
+	IF @GPLimitTime < GETDATE()
+	begin
+		SET @GPLimitTime = 0
+	end 
+	--记录用户锁住记录
+	SET	@SQL='INSERT INTO '+@LockTable
+	+'(UserID,RoomID,AccessIP) VALUES ('
+	+STR(@UserID)+','+STR(@RoomID)+','''+@LoginIP+''')'
+	EXEC(@SQL)
+
+	--管理员登录要记录
+	IF	@Master > 0
+	BEGIN
+		INSERT INTO TGMRecord (GMID,beginTime,msgResult) 
+		VALUES (@UserID,GETDATE(),'logon in Room ID='+cast(@RoomID as NVARCHAR))
+	END
+
+		--读取用户在游戏中的记录
+	DECLARE @MasterPowerInRoom INT
+	SET @SQL='SELECT @MPower=MasterPower FROM '+@MatchTable
+	+' WHERE UserID='+STR(@UserID)
+	+' AND NameID='+STR(@KernelNameID)
+	--+' AND RoomID='+STR(@RoomID)		-- PengJiLin, 2011-4-14, 不同的房间不同的记录
+	EXEC SP_EXECUTESQL @SQL,N'@MPower INT OUTPUT',@MasterPowerInRoom OUTPUT
+
+	IF @MasterPowerInRoom IS NULL
+	BEGIN
+		SET @SQL='INSERT INTO '+@MatchTable
+		+'(UserID,NameID,Point,Money,'
+		+'TaxCom,Win,Lost,Mid,Cut,PlayTimeCount,'
+		+'OnLineTimeCount,MasterPower,GamePower)'
+		+' VALUES ('+STR(@UserID)
+		--+','+STR(@RoomID)
+		+','+STR(@KernelNameID)
+		+',0,0,0,0,0,0,0,0,0,0,0)'
+		EXEC (@SQL)
+
+		SET @MasterPowerInRoom = 0
+	END
+
+	ELSE
+	begin
+		SET @MasterPower = @MasterPowerInRoom
+	end
+
+	--用户的当前游戏记录
+	SET @SQL ='SELECT @GWin=win,@GLost=Lost,@GCut=Cut,@GMid=Mid,@GPoint=Point'
+	+' FROM '+@MatchTable
+	+' WHERE UserID=' + STR(@UserID)
+	+' AND NameID=' + STR(@KernelNameID)
+	--+' AND RoomID='+STR(@RoomID)		-- PengJiLin, 2011-4-14, 不同的房间不同的记录
+	EXEC SP_EXECUTESQL @SQL,
+	N'@GWin INT OUTPUT,@GLost INT OUTPUT,@GMid INT OUTPUT,@GCut INT OUTPUT,@GPoint bigint OUTPUT',
+	@Win OUTPUT,@Lost OUTPUT,@Mid OUTPUT,@Cut OUTPUT,@Point OUTPUT
+
+	-----------------------------------------------
+	--Author :wushuqun
+	--Data   : 2009.6.5
+	--Description :检查是否是混战游戏房间
+	-----------------------------------------------
+	DECLARE @BattleID INT
+	SET @SQL =' SELECT @BattleID=BattleRoomID'
+	+ ' FROM TGameRoomInfo'
+	+ ' WHERE RoomID=' + STR(@RoomID)
+	EXEC SP_EXECUTESQL @SQL ,N'@BattleID INT OUTPUT',@BattleID OUTPUT
+	IF @BattleID > 0
+	--是混战场房间
+	BEGIN
+		----检测是否是在活动时间内
+		DECLARE @BeginTime_tmp DATETIME
+		DECLARE @EndTime_tmp DATETIME
+		DECLARE	@SQL_tmp NVARCHAR(512)
+		SET @SQL_tmp ='SELECT @BeginTime_tmp=BeginTime,@EndTime_tmp=EndTime'
+		+ ' FROM TBattleRoomInfo'
+		+ ' WHERE BattleRoomID=' +STR(@BattleID)
+		EXEC SP_EXECUTESQL @SQL_tmp, N'@BeginTime_tmp DATETIME OUTPUT,@EndTime_tmp DATETIME OUTPUT',@BeginTime_tmp OUTPUT,@EndTime_tmp OUTPUT
+		--不是在混战场活动时间内
+		IF GETDATE() < @BeginTime_tmp OR GETDATE()> @EndTime_tmp
+		begin
+			RETURN 5
+		end
+	END
+
+	--用户在当前游戏房间是否是管理员
+	DECLARE @GamePowerInRoom INT
+	SET @SQL='SELECT @GPower=GamePower'+' FROM '+@MatchTable
+	+' WHERE UserID='+STR(@UserID)
+	+' AND NameID='+STR(@KernelNameID)
+	--+' AND RoomID='+STR(@RoomID)-- PengJiLin, 2011-4-14, 不同的房间不同的记录
+	EXEC SP_EXECUTESQL @SQL,N'@GPower INT OUTPUT',@GamePowerInRoom OUTPUT
+
+	IF @GamePowerInRoom IS NULL
+	begin
+		SET @GamePowerInRoom = 0
+	end
+	ELSE
+	begin
+		SET @GamePower = @GamePower | @GamePowerInRoom
+	end
+
+		--更新数据库，用户登录次数
+	SET @SQL ='UPDATE '+@MatchTable
+	+' SET LogonTimes=LogonTimes+1,'
+	+' LogonDate=GETDATE()'
+	+' WHERE UserID='+STR(@UserID)+' AND nameid='+STR(@KernelNameID)
+	--+' AND RoomID='+STR(@RoomID)	-- PengJiLin, 2011-4-14, 不同的房间不同的记录
+	EXEC(@SQL)
+
+	--2009.6.6登录房间时即时获取虚拟玩家人数，而不用重新启动W服务器
+	DECLARE @GameType INT --用于判断游戏类型
+	SELECT @VirtualUser = VirtualUser, @GameType = GameTypeID
+	FROM TGameRoomInfo with(nolock) 
+	WHERE RoomID = @RoomID
+
+    --获取房间金币下限 20130829 wzd 
+	declare @LessPoint int
+	SELECT @ExercisePoint = ExercisePoint,@LessPoint=LessPoint
+	FROM TGameRoomBase with(nolock) 
+	WHERE RoomID = @RoomID
+
+	IF((@LessPoint > @Wallet) AND @IsRobot = 1)
+	BEGIN
+		RETURN 2
+	END
+	
+	--Kylin 20090319 添加新防止账户同时登陆
+	--INSERT INTO [TWLoginRecord] ([UserID],[WID]) VALUES (@UserID,@RoomID)
+
+
+	--获取比赛信息 lixq 20140623
+	DECLARE @ContestID INT
+	DECLARE @AwardTypeID INT
+	DECLARE @AllowGame SMALLINT 
+	DECLARE @ID INT
+	DECLARE @Chip BIGINT
+	DECLARE @LowChip BIGINT 
+	DECLARE @LowCount BIGINT
+	DECLARE @ContestScore BIGINT
+	DECLARE @PeopleCount INT    --比赛报名玩家总数
+	DECLARE @MatchActors INT    --比赛参赛玩家总数
+	DECLARE @RankDis INT
+	DECLARE	@RankNum INT		--比赛排名
+	DECLARE @Times	 INT		--捕鱼比赛最多接受报名次数
+	DECLARE @UsedTimes INT		--捕鱼比赛接受多次报名的剩余次数
+
+	SET @RankNum = 1
+	DECLARE @MatchDesc VARCHAR(200)
+	SELECT @ContestID= ContestID, @Times = Times FROM dbo.TContestInfo a with(nolock) WHERE RoomID = @RoomID
+	SELECT  @ID = MAX(ID) FROM TContestDay WHERE AllowGame !=2 AND ContestID=@ContestID AND DATEDIFF(DAY, StartTime, GETDATE()) = 0
+	
+	DECLARE @StartTime Datetime
+	DECLARE @EndTime Datetime	
+	DECLARE @Timebegin Datetime
+	DECLARE @Timeend Datetime
+	
+	--捕鱼挑战赛
+	IF (@ContestID IS NOT NULL AND @GameType = 4)
+	BEGIN
+		--此房间是否比赛场
+		IF (@ID IS NULL)
+		BEGIN
+			RETURN 13  
+		END
+		SELECT  --@Timeout = Timeout,
+		@Timebegin = b.StartTime,
+		@Timeend = b.EndTime
+		FROM dbo.TContestInfo a with(nolock)
+		LEFT JOIN dbo.TContestDay b with(nolock) ON a.ContestID=b.ContestID
+		WHERE RoomID = @RoomID
+		AND ID = @ID	
+	END
+		
+	IF (@ContestID IS NOT NULL AND @GameType = 2)
+	BEGIN
+		SELECT @Chip = a.Chip,
+			   @AwardTypeID = a.AwardTypeID,
+			   @LowChip = a.LowChip
+		FROM dbo.TContestInfo a with(nolock)
+		LEFT JOIN dbo.TContestDay b with(nolock) ON a.ContestID=b.ContestID
+		WHERE RoomID = @RoomID 
+		AND ID = @ID
+		
+		--此房间是否比赛场
+		IF (@ID IS NULL)
+		BEGIN
+			RETURN 13  
+		END
+		ELSE
+		BEGIN 
+--			DECLARE @Timeout INT
+			DECLARE @DisplayTop INT
+			SELECT  --@Timeout = Timeout,
+					@Times = Times,
+					@DisplayTop = DisplayTop,
+					@Timebegin = b.StartTime,
+					@Timeend = b.EndTime
+			FROM dbo.TContestInfo a with(nolock)
+			LEFT JOIN dbo.TContestDay b with(nolock) ON a.ContestID=b.ContestID
+			WHERE RoomID = @RoomID
+			AND ID = @ID
+			
+			print @Timeend
+
+			DECLARE @ContestUser INT
+			DECLARE @ContsetCount INT
+			DECLARE @ContestState INT
+			DECLARE @EntryTime Datetime
+			DECLARE @TimeLeft Datetime
+			SELECT  @ContestUser = UserID,
+					@ContestScore = isnull(ContestScore,0),
+					@ContsetCount = isnull(ContestCount,0),
+					@ContestState = isnull(ContestState,0),
+					@EntryTime = EntryTime,
+					@TimeLeft = isnull(LeftTime,0),
+					@UsedTimes = ISNULL(UsedTimes,0)
+			FROM TContestUserRecord with(nolock)
+			WHERE ContestState <>2
+			AND UserID = @UserID 
+			AND DayID=@ID
+				
+			IF @Times < @UsedTimes
+			BEGIN
+				SET @ReturnVal = 15  --挑战次数已满
+			END		
+			
+			--比赛前
+			IF GETDATE()<@Timebegin
+			BEGIN
+				IF @ContestUser IS NULL --用户没有报名
+				BEGIN					
+					SET @ReturnVal = 9
+				END
+				ELSE
+				BEGIN
+					SET @ReturnVal = 12
+				END
+				GOTO SuccessLogin
+			END
+
+
+			--比赛后
+			IF GETDATE() > @Timeend
+			BEGIN
+				RETURN 13
+			END
+
+			--比赛时
+			IF @ContestUser IS NULL --用户没有报名
+			BEGIN			
+				RETURN 14
+			END
+
+--			IF @ContsetCount <> 0
+--			BEGIN
+--				IF DATEDIFF(minute, @TimeLeft, GETDATE())> @Timeout 
+--				BEGIN
+--					RETURN 10
+--				END
+--			END
+			
+			
+			
+			--统计报名玩家总数
+			SELECT @PeopleCount=COUNT(1) 
+			FROM dbo.TContestUserRecord with(nolock)
+			WHERE ContestState = 0
+			AND DayID = @ID
+	
+			--统计参赛玩家总数
+			SELECT @MatchActors=COUNT(1) 
+			FROM dbo.TContestUserRecord with(nolock)
+			WHERE ContestState = 1
+			AND DayID = @ID
+		END
+	END
+
+	SuccessLogin:
+		DECLARE @Point1	BIGINT
+		if  @Point < 2100000000 and  @Point > -2100000000 
+		begin 
+			set @Point1 = @Point
+		end
+		else  
+		begin 
+			if @Point > 2100000000 
+			begin
+				set @Point1 = 2100000000
+			end
+			else
+			begin
+				set @Point1 = -2100000000
+			end
+		end
+		
+		-------------------------------------------------------------------------------
+		--2018-01-04修改
+		declare @inmoney  bigint     --房间进入携带金币
+		
+			if @GameNameID=70030600 or @GameNameID=70611800 or @GameNameID=70661800
+			begin
+				set @inmoney=@Wallet+@GiveMoney
+			end
+			else
+			begin
+				set @inmoney=@Wallet
+			end
+		--------------------------------------------------------------------------------
+		
+		-------------------------------------------------------------------------------
+		--2018-01-11修改
+		declare @ishasgive int    --是否被锁定
+		if @UserLockNum>0
+		begin
+			set @ishasgive=1
+		end
+		else
+		begin
+			set @ishasgive=0
+		end
+        -------------------------------------------------------------------------------- 
+		SELECT  @Member AS Member, 
+				@GamePower AS GamePower,
+				@MatchMember AS MatchMember, 
+				@Master AS Master, 
+				@Name AS UserName, 
+				@NickName AS NickName,
+				@Sex AS Sex, 
+				@LogoID AS LogoID, 
+				@MasterPower AS MasterPower, 
+				@Fascination AS Fascination, 
+				@viptime AS viptime, 
+				@DoublePointTime AS DoublePointTime, 
+				@ProtectTime AS ProtectTime, 
+				@inmoney AS Wallet,               --2018-01-04修改
+				@BankMoney AS BankMoney,
+				--@GiveMoney AS GiveMoney,  --赠送金币   【2017-12-26新增】
+				@ishasgive AS GiveMoney,  --是否有赠送金币   【2018-01-11新增】
+				@AllkMoney AS AllkMoney,
+				@UserIngot AS UserIngot,
+				@MasterPowerInRoom AS MasterPowerInRoom, 
+				@Win AS Win, 
+				@Lost AS Lost, 
+				@Cut AS Cut, 
+				@Mid AS Mid, 
+				@Point1 AS Point,
+				-- yjj 090319
+				@OccuPation as OccuPation,@PhoneNum as  PhoneNum,
+				@AdrProvince as AdrProvince, @AdrCity as AdrCity,
+				@AdrZone as AdrZone,
+				--wushuqun 2009.6.6
+				@VirtualUser as VirualUser,
+				--wushuqun 2009.6.26
+				@UserType as UserType,
+				--huangYuanSong 09.07.14 邮游钻石身份
+				@IsRobot as IsRobot,
+				@DiamondTime as DiamondTime,
+				--{{ Added by zxd 20100806 被GM操作过记录及时效
+				@StatusByGM as StatusByGM,
+				@StatusTime as StatusTime,
+				-- Added by zxd 20100806 被GM操作过记录及时效}}
+				--JianGuankun 20120208 练习房间的金币
+				@ExercisePoint as ExercisePoint,
+				-- duanxiaohui 20111111 个性签名
+				@SignDescr as SignDescr,
+
+				@LessPoint as LessPoint,
+				@ContestID as ContestID,
+				@AwardTypeID as AwardTypeID,
+				@ContestScore as ContestScore,
+				@ContsetCount as ContestCount,
+				@Timebegin as StartTime,
+				@Timeend as TimeEnd,
+
+				@Times as Times,
+				@UsedTimes as UsedTimes,
+				@DisplayTop as DisplayTop,
+				
+				@IsCanTransBack as IsCanTransBack,
+				
+				--@TimeLeft as LeftTime
+--				@RankNum as RankNum
+				
+				 --新增7日数据
+				 @TodayGold as  TodayGold,       ---玩家金币
+				 @TodayReCardNum  as TodayReCardNum,      ---剩余复活卡次数
+				 @Days7Score as Days7Score,        ---7日排行榜分数
+				 @Days10Score as Days10Score,       ---10日排行榜分数
+				 @Days7Grade as Days7Grade,         ---7日排行榜名次
+				 @Days10Grade as Days10Grade,       ---10日排行榜名次
+				 @Days7BeforeScore as Days7BeforeScore,       ---7日排行榜前一名分数
+				 @Days10BeforeScore  as Days10BeforeScore,         ---10日排行榜前一名分数
+				 @Days7AfterScore as Days7AfterScore,         ---7日排行榜后一名分数
+				 @Days10AfterScore  as Days10AfterScore,         ---10日排行榜后一名分数
+				 @PlayTime  as PlayTime                 ---免费比赛可用时长
+
+
+	RETURN @ReturnVal
+	end
+	
+	
+	
+END

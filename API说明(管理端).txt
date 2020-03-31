@@ -1,0 +1,1645 @@
+﻿﻿API说明(管理端)
+======================================================
+
+2018-01-08 ------------------------------------------
+增加API接口
+游戏房间列表（GameRoomList），详见方法说明；
+游戏房间设置详情(GameRoomConfigDetails)，详见方法说明；
+编辑游戏房间设置(EditGameRoomConfig)，详见方法说明；
+
+2018-01-04 ------------------------------------------
+增加API接口
+推荐人分销比例详情（RecProportion），推荐人分销比例修改 (格式例如：0.10)（RecProportionSet）,详见方法说明
+修改API接口
+添加,编辑推荐人(EditRecUser)，详见方法说明
+
+2017-12-26 ------------------------------------------
+修改API接口
+修改用户金币数(充值、赠送)（ChangeUserMoney），数据库变动：在TuserInfo表增加GiveMoney字段，将充值赠送字段写入单独的赠送字段，详见数据库变动说明
+
+2017-12-23 ------------------------------------------
+增加API接口
+启用/禁用分享链接（ShareLinkEnable），详见方法说明；
+
+2017-12-21 ------------------------------------------
+增加API接口
+每日数据统计（GetDayAllData），用户注册分析（GetUserRegAnaly），用户登陆分析（GetUserLoginAnaly），详见方法说明；
+
+2017-12-16 ------------------------------------------
+修改API接口
+添加，编辑推荐人（EditRecUser）
+向推广员金币表添加一条推广员基本信息
+
+2017-12-13 ------------------------------------------
+增加API接口
+获取取款订单申请列表（未处理，含分页）（GetCashOrderDataList），订单处理（CashOrderDeal），详见方法说明；
+
+
+2017-12-12 ------------------------------------------
+增加API接口
+桌子当前输赢信息（GetRoomTableDataNow），桌子详细输赢信息（GetRoomTableDataDetail），详见方法说明；
+
+
+2017-12-08 ------------------------------------------
+增加API接口
+当前在线玩家（GetOnlinePlayersData），获取游戏列表（GetGameRoom），详见方法说明；
+
+
+
+2017-12-06 -------------------------------------------
+数据库修改项： ShareLinkQRCode 表增加字段 id(自增列)、sharedes(分享描述)、isenable(是否启用 默认指0禁用，1启用)
+增加API：
+分享链接列表(ShareLinkList)，详见方法说明；
+分享链接详情(ShareLinkDetails)，详见方法说明；
+添加,编辑分享链接(EditShareLink)，详见方法说明；
+
+修改API:
+分享链接和二维码图片管理（ShareLinkQRCodeMGT）（标记为：已过时API）；
+
+2017-12-05 -------------------------------------------
+web.config 增加 配置项： checkadminsign（是否启用管理端API验签检查 true false）；
+管理端接口重构：
+对管理端所有接口进行验签(sign)配置，可打开或关闭t、sign验证；
+建议测试服关闭此配置，方便调试；运营服务器开启此项配置，增加安全性；
+
+2017-11-29 -------------------------------------------
+增加API接口
+用户游戏记录（GetUserGameData），用户登陆记录（GetUserLoginData），详见方法说明
+数据库视图Web_VLoginRecord，增加字段UserName、NickName
+推荐人详情（RecUserDetails）增加输出参数（shareprofittype，shareprofitproportion），详见方法说明
+
+2017-11-29 -------------------------------------------
+修改API接口
+推荐人列表(分页)（RecUserList），增加输出参数（shareprofittype，shareprofitproportion），详见方法说明
+
+2017-11-23 -------------------------------------------
+增加API接口
+分润类型及比例修改设置（ChangeRecUserShare），详见方法说明；
+修改RecUser表，增加字段
+[ShareProfitType]（smallint）
+[ShareProfitProportion]（decimal(18, 3)）
+[ShareProfitNum]（bigint）
+[UpdateTime]（datetime）
+
+
+2017-11-21 -------------------------------------------
+修改API接口：
+添加，编辑推荐人（EditRecUser），增加输入参数：推荐人分润类型（充值1，流水2）、推荐人分润比例，详见方法说明；
+
+
+2017-11-24 -------------------------------------------
+修改API接口：
+获取分享链接和二维码URL(管理端使用)(GetShareLinkQRCode),增加输出参数：分享类型、分享标题、分享内容,详情见方法说明；
+分享链接和二维码图片管理（ShareLinkQRCodeMGT），增加输入参数：分享类型、分享标题、分享内容,详情见方法说明；
+
+
+数据库修改记录（备查）：
+ShareLinkQRCode 表增加字段：sharetype（分享类型：1.图片分享），sharetitle 分享标题
+
+2017-11-15 -------------------------------------------
+修改API接口：
+管理员修改密码（AdminEdit)，减少输入参数：用户名；只提交原密码、新密码即可（只能修改当前用户的密码）,详情见方法说明；
+管理员详情（AdminDetails），减少输入参数：用户名；只能查看当前用户的详情,详情见方法说明；
+
+2017-11-10 -------------------------------------------
+修改API接口：
+修改用户金币数(充值、赠送)（ChangeUserMoney),bug修复；
+管理员修改密码（AdminEdit），修改参数和逻辑，只修改密码,详情见方法说明；
+增加API接口：
+管理员详情（AdminDetails）,详情见方法说明；
+
+2017-11-07 -------------------------------------------
+增加API接口：
+推荐人金币余额变化日志(分页)（RecUserMoneyChangeLog）,详情见方法说明；
+
+2017-11-05 -------------------------------------------
+修改API接口：
+推荐人详情(RecUserDetails),增加输出字段 allowrecharge、coinbalance，详情见方法说明；
+推荐人列表(分页)（RecUserList），列表增加输出字段 allowrecharge、coinbalance，详情见方法说明；
+
+2017-11-03 -------------------------------------------
+修改API接口：
+添加,编辑推荐人（EditRecUser），输入参数：推荐人密码(明文)，详情见方法说明；
+添加,编辑推荐人（EditRecUser），增加输入参数，是否允许给自己名下用户充值： 0(默认值)不允许  1允许，详情见方法说明；
+管理员登陆(AdminLogin)，输入参数：推荐人密码(明文)，详情见方法说明；
+管理员修改密码（AdminEdit），输入参数：原密码(明文) 新密码（明文），详情见方法说明；
+修改用户金币数(充值、赠送)（ChangeUserMoney），输入参数标识值变更，逻辑变更，区分充值、赠送、扣除（changetype参数 101.充值 102.赠送 103.扣除），区分管理员充值、推荐人充值等，详情见方法说明；
+金币变化日志(分页)（MoneyChangeLog），修改输入参数定义，逻辑变更，增加输入参数，增加输出参数，详情见方法说明；
+
+增加API接口：
+修改推荐人金币余额（ChangeRecUserCoinbalance），详情见方法说明；
+
+数据库修改记录（备查）：
+RecUser（推荐人表） 增加字段： Allowrecharge（是否允许充值），Coinbalance（推荐人金币余额）；
+增加新表：RecUserMoneyChangeLog（推荐人余额日志表）
+Web_MoneyChangeLog（金币变化日志表）：增加字段 OpuserType（充值用户类型，区分推荐人充值、管理员充值）
+
+2017-10-16 -------------------------------------------
+修改API接口：
+获取分享链接和二维码URL(GetShareLinkQRCode)，增加输出参数(sharepic) 详情见方法说明；
+分享链接和二维码图片管理(ShareLinkQRCodeMGT)，增加输入参数(sharepic) 详情见方法说明；
+
+2017-09-05 -------------------------------------------
+修改API接口：
+奖卷兑换商品列表(分页)（ExchangeGoodsList），增加输出字段(附赠金币额)，详情见方法说明；
+奖卷兑换商品详情(ExchangeGoodsDetails)，增加输出字段(附赠金币额)，详情见方法说明；
+添加,编辑奖卷兑换商品(EditExchangeGoods)，增加输入参数(附赠金币额)，详情见方法说明；
+奖卷兑换订单列表(分页)(ExchangeOrderList)，增加输出参数(附赠金币额)，详情见方法说明；
+奖卷兑换订单详情(ExchangeOrderDetails)，增加输出参数(附赠金币额)，详情见方法说明；
+
+2017-08-08 -------------------------------------------
+修改API接口：
+推荐人列表（RecUserList），增加输出字段，详情见方法说明；
+修改用户金币数（ChangeUserMoney）(充值、赠送)，详情见方法说明；
+
+2017-08-07 -------------------------------------------
+修改API接口：
+游戏用户列表(分页)（UserList），增加条件限制（过滤掉机器人）；
+获取所有用户金币总额（GetAllUserMoney），增加条件限制（过滤掉机器人）；
+
+2017-08-03 -------------------------------------------
+修改API接口：
+金币变化日志（MoneyChangeLog），增加条件限制（过滤掉机器人）；
+
+2017-07-12 -------------------------------------------
+增加API接口：
+奖卷兑换订单列表(分页)(ExchangeOrderList),详情见方法说明；
+奖卷兑换订单详情(ExchangeOrderDetails),详情见方法说明；
+修改奖卷兑换订单(EditExchangeOrder),详情见方法说明；
+奖卷变化日志(分页)(LotteriesChangeLog),详情见方法说明；
+修改API接口：
+金币变化日志（MoneyChangeLog），增加参数，增加输出字段；
+
+2017-07-10 -------------------------------------------
+修改API接口：
+添加,编辑推荐人（EditRecUser），增加密码设置，详情见方法说明；
+
+2017-07-08 -------------------------------------------
+修改API接口：
+奖卷兑换商品列表（ExchangeGoodsList）,增加字段，详情见方法说明；
+奖卷兑换商品详情（ExchangeGoodsDetails），增加字段，详情见方法说明；
+添加,编辑奖卷兑换商品(EditExchangeGoods)，增加字段， 详情见方法说明；
+
+2017-07-07 -------------------------------------------
+增加API接口：
+奖卷兑换商品列表(分页)(ExchangeGoodsList) 详情见方法说明；
+奖卷兑换商品详情(ExchangeGoodsDetails) 详情见方法说明；
+添加,编辑奖卷兑换商品(EditExchangeGoods) 详情见方法说明；
+删除奖卷兑换商品(DelExchangeGoods) 详情见方法说明；
+
+2017-07-06 -------------------------------------------
+修改API接口：
+获取分享链接和二维码URL(管理端使用)   GetShareLinkQRCode  详情见方法说明；
+分享链接和二维码图片管理  ShareLinkQRCodeMGT  详情见方法说明；
+二维码不再上传，直接填写有效的url链接；
+
+2017-07-05 -------------------------------------------
+金币变化日志接口（MoneyChangeLog）再次修改，增加参数，增加更多返回值 详情见方法说明；
+
+2017-07-04 -------------------------------------------
+金币变化日志接口（MoneyChangeLog）修改，增加参数 详情见方法说明；
+
+2017-07-03 -------------------------------------------
+管理员登录接口(AdminLogin)增加返回值token 详情见方法说明；
+所有管理端调用时增加参数token(用户登录验证)  详情见方法说明；
+
+2017-07-01 -------------------------------------------
+增加API接口：
+管理员登陆 AdminLogin 详情见方法说明；
+管理员退出 AdminLogout 详情见方法说明；
+管理员修改密码 AdminEdit 详情见方法说明；
+
+2017-06-08 -------------------------------------------
+修改API接口：
+游戏用户列表（UserList）排序规则，金币倒序排列；
+搜索关键字匹配修正，只匹配UserID和UserName，不再匹配NickName；
+增加API接口：
+获取所有用户金币总额  GetAllUserMoney 详情见方法说明；
+
+2017-06-06 -------------------------------------------
+增加API接口：
+获取分享链接和二维码URL(管理端使用)   GetShareLinkQRCode  详情见方法说明；
+分享链接和二维码图片管理  ShareLinkQRCodeMGT  详情见方法说明；
+
+2017-06-05 -------------------------------------------
+兑奖(下分)订单管理(CashPrizeOrderMGT)调整：
+列表排序：订单状态正序+发生时间倒序；
+
+游戏用户列表(UserList)调整：
+搜索项可匹配（任意选一皆可）：UserID,UserName,NickName；
+
+======================================================
+
+加密：
+admin_keyid=admin@ttyx101
+admin_secret=B6B91A274A23A96769480F1A5ED1624D
+调用：http://domain/api/admin/api名称?t=currdt&sign=vsign&para=1&parb=2&parv=3
+参数：t   //unix时间戳 (10位int)
+      sign   //签名(string)
+      sign=MD5(admin_keyid + t + admin_secret)   //MD5大写形式副本
+返回：格式为json
+      code   //code=1成功,code=-1失败
+      msg    //code=1时返回success,code=-1时返回错误信息
+      results   //code=1时为返回数据,code=-1时返回null
+
+-------------------------------------------------------
+
+游戏公告:
+http://domain/api/admin/getgamenotice?t=1430000000&sign=asdasdasdsadad&noticetype=0&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    noticetype   //公告类型（0普通公告，1兑奖公告）
+返回：
+
+-------------------------------------------------------
+
+编辑游戏公告:
+http://domain/api/admin/editgamenotice?t=1430000000&sign=asdasdasdsadad&noticetype=0&noticecon=neirong&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    noticetype   //公告类型（0普通公告，1兑奖公告）
+    noticecon   //公告内容 （0-500个字符）
+
+-------------------------------------------------------
+
+推荐人列表：
+http://domain/api/admin/RecUserList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&kw=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码
+    pagesize  //每页记录条数
+    kw  //(非必选)查询关键字 模糊匹配 recuserid,realname,mobile
+
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "13",
+    "totalpage": "5",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "recuserid": "88888",  //推荐人ID
+            "realname": "sai",  //姓名
+            "mobile": "13017671923",  //手机号
+            "address": "sai",  //地址
+			"allowrecharge": "0",  //是否允许给其名下用户充值
+			"coinbalance": "0",  //推荐人金币余额
+            "adddate": "2017/7/10 22:39:06",  //添加时间
+	    "shareprofittype":"2",   //分润类型
+	    "shareprofitproportion":"0.002",   //分润比例
+            "user_total": "850",  //推荐用户数量
+            "moneychangetotal": "368934610564026699",  上分下分合计
+            "increase_total": "368943661789518047",   上分合计
+            "reduce_total": "-9051225491348"   下分合计
+        },
+        {
+            "recuserid": "12306",
+            "realname": "铁道部",
+            "mobile": "12345678901",
+            "address": "12306",
+			"allowrecharge": "0", 
+			"coinbalance": "0", 
+            "adddate": "2017/7/7 11:58:55",
+	    "shareprofittype":"2",   //分润类型
+	    "shareprofitproportion":"0.002",   //分润比例
+            "user_total": "0",
+            "moneychangetotal": "0",
+            "increase_total": "0",
+            "reduce_total": "0"
+        },
+        {
+            "recuserid": "12318",
+            "realname": "文化部举报电话",
+            "mobile": "12345678901",
+            "address": "12318",
+			"allowrecharge": "0", 
+			"coinbalance": "0", 
+            "adddate": "2017/7/7 11:58:24",
+	    "shareprofittype":"2",   //分润类型
+	    "shareprofitproportion":"0.002",   //分润比例
+            "user_total": "0",
+            "moneychangetotal": "0",
+            "increase_total": "0",
+            "reduce_total": "0"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+推荐人详情
+http://domain/api/admin/RecUserDetails?t=1430000000&sign=asdasdasdsadad&recuserid=123&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    recuserid   //推荐人ID
+返回：
+
+-------------------------------------------------------
+
+添加,编辑推荐人
+http://domain/api/admin/EditRecUser?t=1430000000&sign=asdasdasdsadad&act=add&recuserid=123&recuserpwd=aaa&realname=张三&mobile=13600001111&address=地址&allowrecharge=0&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    act  //操作动作 act=add添加,act=edit修改
+    recuserid //推荐人ID
+    parentrecuserid   //上级推荐人ID，可为空
+    recuserpwd //推荐人密码(明文)
+    realname //推荐人姓名 中文、英文或int混合
+    mobile //推荐人手机号
+    address //推荐人地址
+    allowrecharge //是否允许给自己名下用户充值： 0(默认值)不允许  1允许
+    ShareProfitType  //推荐人分润类型：1充值 2流水
+    ShareProfitProportion  //推荐人分润比例
+返回：
+
+-------------------------------------------------------
+
+删除推荐人:
+http://domain/api/admin/DelRecUser?t=1430000000&sign=asdasdasdsadad&recuserid=123&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    recuserid   //推荐人ID
+返回：
+
+-------------------------------------------------------
+
+游戏用户列表:
+http://domain/api/admin/UserList?t=1430000000&sign=asdasdasdsadad&pageindex=1&pagesize=10&kw=&recuserid=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码
+    pagesize  //每页记录条数
+    kw  //(非必选)查询关键字 模糊匹配 UserID,UserName
+    recuserid   //(非必选)推荐人ID
+返回：
+
+-------------------------------------------------------
+
+游戏用户详情:
+http://domain/api/admin/UserDetails?t=1430000000&sign=asdasdasdsadad&userid=24179&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid   //游戏用户ID
+返回：
+
+-------------------------------------------------------
+
+修改用户金币数(充值、赠送、扣除):
+http://domain/api/admin/ChangeUserMoney?t=1430000000&sign=asdasdasdsadad&userid=92915&changetype=101&changemoney=20&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid   //游戏用户ID
+    changetype   //修改金币类型 101.充值 102.赠送 103.扣除
+    changemoney   //充值、扣除金币数(例如： 充值10000金币，扣除时为负值 -10000金)
+返回：
+
+-------------------------------------------------------
+
+金币变化日志:
+http://domain/api/admin/MoneyChangeLog?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&userid=&recuserid=88888&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&changetype=&opusertype=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    userid   //(非必选)游戏用户ID
+    recuserid   //(非必选)推荐人用户ID
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-07-03 11:35
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-07-05 11:35
+    changetype //(非必选)金币变化类型: 为空. 筛选所有的 101.充值 102.赠送 103.扣除
+	opusertype //(非必选)操作人类型： 为空. 筛选所有的 1.管理员操作的  2.推荐人操作的
+ 返回:
+    返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    moneychangetotal  //总金币合计数
+    increase_total  //金币增加合计数  
+    reduce_total  //金币减少合计数
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "success",
+    "moneychangetotal": "368934610562816091",
+    "increase_total": "368943661787201859",
+    "reduce_total": "-9051224385768",
+    "recordcount": "1401",
+    "totalpage": "467",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "userid": "311923", 
+            "username": "test002",
+            "nickname": "test002",
+            "recuserid": "88888",
+            "startmoney": "577187859",
+            "changemoney": "10000",
+            "changetype": "101",
+			"opusertype": "1",
+            "datetime": "2017/7/11 22:29:00",
+            "remark": "奖卷兑换金币,金币实时到账"
+        },
+        {
+            "userid": "311923",
+            "username": "test002",
+            "nickname": "test002",
+            "recuserid": "88888",
+            "startmoney": "577177859",
+            "changemoney": "10000",
+            "changetype": "101",
+			"opusertype": "1",
+            "datetime": "2017/7/11 22:27:00",
+            "remark": "奖卷兑换金币,金币实时到账"
+        },
+        {
+            "userid": "311923",
+            "username": "test002",
+            "nickname": "test002",
+            "recuserid": "88888",
+            "startmoney": "577167859",
+            "changemoney": "10000",
+            "changetype": "101",
+			"opusertype": "1",
+            "datetime": "2017/7/11 22:26:57",
+            "remark": "奖卷兑换金币,金币实时到账"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+兑奖(下分)订单管理:
+http://domain/api/admin/CashPrizeOrderMGT?t=1430000000&sign=asdasdasdsadad&pageindex=1&pagesize=20&state=0&kw=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    state   //(非必选)订单状态 0 未处理，1 已处理，2 已拒绝
+    kw  //(非必选)查询关键字 模糊匹配 userid,username
+返回：
+
+-------------------------------------------------------
+
+修改兑奖(下分)订单状态:
+http://domain/api/admin/EditCashPrizeOrderState?t=1430000000&sign=asdasdasdsadad&oid=10001&state=1&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    oid   //订单id
+    state   //订单状态 0 未处理，1 已处理，2 已拒绝
+返回：
+
+-------------------------------------------------------
+
+获取分享链接和二维码URL(管理端使用)
+http://domain/api/admin/GetShareLinkQRCode?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+	results sharetype  //分享类型 1.图片分享
+	results sharetitle  //分享标题
+	results sharecon  //分享内容
+    results link  //分享链接
+    results qrcodeurl  //二维码URL
+	results sharepic  //分享图片URL(string)
+
+-------------------------------------------------------
+
+分享链接和二维码图片管理 （标记为：已过时API）；
+http://domain/api/admin/ShareLinkQRCodeMGT?t=1430000000&sign=asdasdasdsadad&sharetype=&sharetitle=&sharecon=&link=asdasdasdasdds&qrcodelink=asdasdasdadsdasd&sharepic=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	sharetype   //分享类型(int) 1.图片分享
+	sharetitle   //分享标题(string)
+	sharecon   //分享内容(string)
+    link   //分享链接(string)
+    qrcodelink  //二维码链接(string)
+	sharepic //分享图片链接(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+
+-------------------------------------------------------
+
+获取所有用户金币总额
+http://domain/api/admin/GetAllUserMoney?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results allusermoney  //所有用户金币总额
+
+-------------------------------------------------------
+
+管理员登陆
+http://domain/api/admin/AdminLogin?t=1430000000&sign=asdasdasdsadad&aname=aa&apwd=aa
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    aname   //用户名(string)
+    apwd   //密码(明文)(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results token //登录验证token
+    results aid  //管理员id
+    results aname  //管理员用户名
+    results lastdateip  //上次登录时间和IP，用 "|" 分隔
+
+-------------------------------------------------------
+
+管理员退出
+http://domain/api/admin/AdminLogout?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results null //null  
+
+-------------------------------------------------------
+
+管理员修改密码
+http://domain/api/admin/AdminEdit?t=1430000000&sign=asdasdasdsadad&apwd=aa&newapwd=aa11&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    apwd   //原密码(明文)(string)
+    newapwd   //新密码(明文)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results aname  //用户名
+
+-------------------------------------------------------
+
+奖卷兑换商品列表：
+http://domain/api/admin/ExchangeGoodsList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&kw=&token=123
+参数:
+    token   //登录验证token(string)
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    type  //商品类型(int) 1、金币；2、话费；3实物；
+    kw  //(非必选)查询关键字(string) 模糊匹配 title、des
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "3",
+    "totalpage": "1",
+    "pagesize": "100",
+    "pageindex": "1",
+    "results": [
+        {
+            "id": "1",  //商品id
+            "type": "3",  //商品类型 1、金币；2、话费；3实物；
+            "title": "33",  //商品标题
+            "img": "",  //商品标题图片url
+            "des": "",  //商品描述
+            "inventory": "0",  //商品库存
+            "prizeprice": "0",  //商品奖卷兑换价格
+            "exchangecoin": "0",  //兑换金币额
+            "exchangemobilefee": "0",  //兑换话费额
+            "givecoin": "0", //附赠金币额
+            "sort": "0",  //排序
+            "updatetime": "2017/7/6 15:35:28"  //更新时间
+        },
+        {
+            "id": "2",
+            "type": "2",
+            "title": "22",
+            "img": "",
+            "des": "",
+            "inventory": "0",
+            "prizeprice": "0",
+            "exchangecoin": "0",
+            "exchangemobilefee": "0",
+	    "givecoin": "0",
+            "sort": "0",
+            "updatetime": "2017/7/6 15:35:24"
+        },
+        {
+            "id": "3",
+            "type": "1",
+            "title": "11",
+            "img": "",
+            "des": "",
+            "inventory": "0",
+            "prizeprice": "0",
+            "exchangecoin": "0",
+            "exchangemobilefee": "0",
+	    "givecoin": "0",
+            "sort": "0",
+            "updatetime": "2017/7/6 15:35:21"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+奖卷兑换商品详情
+http://domain/api/admin/ExchangeGoodsDetails?t=1430000000&sign=asdasdasdsadad&id=123&token=123
+参数:
+    token   //登录验证token(string)
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    id   //商品ID(int)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results id  //商品id
+    results type  //商品类型 1、金币；2、话费；3实物；
+    results title  //商品标题
+    results img  //商品标题图片url
+    results des  //商品描述
+    results inventory  //商品库存
+    results prizeprice   //商品奖卷兑换价格
+    results exchangecoin   //兑换金币额
+    results exchangemobilefee   //兑换话费额
+    results givecoin   //附赠金币额
+    results sort  //排序
+    results updatetime  //更新时间
+
+-------------------------------------------------------
+
+添加,编辑奖卷兑换商品:
+http://domain/api/admin/EditExchangeGoods?t=1430000000&sign=asdasdasdsadad&token=123&act=&id=&type=&title=&img=&des=&inventory=&prizeprice=&exchangecoin=&exchangemobilefee=&sort=
+参数:
+    token   //登录验证token(string)
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    act   //操作动作(string) act=add添加,act=edit修改
+    id   //商品ID(int)，添加时无需提交该参数，编辑时必须提交该参数
+    type   //商品类型(int) 1、金币; 2、话费; 3、实物;
+    title   //商品标题(string)
+    img   //商品标题图片url(string)
+    des   //商品描述(string)
+    inventory   //商品库存(int)
+    prizeprice   //商品奖卷兑换价格(int)
+    exchangecoin   //兑换金币额(int) 商品类型为1时必填
+    exchangemobilefee   //兑换话费额(int) 商品类型为2时必填
+	givecoin  //附赠金币额(int)
+    sort  //排序
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results id  //商品id 
+
+-------------------------------------------------------
+
+删除奖卷兑换商品:
+http://domain/api/admin/DelExchangeGoods?t=1430000000&sign=asdasdasdsadad&id=123&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    id   //商品ID(int)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results id  //商品id 
+
+-------------------------------------------------------
+
+奖卷兑换订单列表(分页)
+http://domain/api/admin/ExchangeOrderList?t=1430000000&sign=abc&pageindex=1&pagesize=10&userid=963823&goodstype=&state=&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    userid   //(非必选)用户ID(int)
+    goodsid  //(非必选)商品ID
+    goodstype   //(非必选)商品类型(int) 1、金币；2、话费；3实物；
+    state  //(非必选)订单状态(int) 0 未处理，1 已处理
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "id": "10002",  //订单ID
+            "userid": "963823",  //用户ID
+            "goodsid": "1",  //商品ID
+            "goodstype": "1",  //商品类型 1、金币；2、话费；3实物；
+            "goodstitle": "test11",  //商品标题
+            "prizeprice": "100",   //商品奖卷兑换价格
+            "exchangecoin": "10000",  //兑换金币额
+            "exchangemobilefee": "0",  //兑换话费额
+			"givecoin": "0",  //附赠金币额
+            "realname": "",  //姓名
+            "mobile": "",  //手机号
+            "address": "",  //地址
+            "orderremark": "",  //订单处理备注信息（商品为话费时，管理端可填写充值卡号，密码，充值网址等展现给前端）
+            "orderstate": "1",  //订单状态 0 未处理，1 已处理
+            "osdate0": "2017/7/11 20:20:34",  //提交订单时间
+            "osdate1": "2017/7/11 20:20:34"  //订单处理时间（商品为金币时，自动兑换处理）
+        },
+        {
+            "id": "10001",
+            "userid": "963823",
+            "goodsid": "1",
+            "goodstype": "1",
+            "goodstitle": "test11",
+            "prizeprice": "100",
+            "exchangecoin": "10000",
+            "exchangemobilefee": "0",
+			"givecoin": "0",
+            "realname": "",
+            "mobile": "",
+            "address": "",
+            "orderremark": "",
+            "orderstate": "1",
+            "osdate0": "2017/7/11 20:18:07",
+            "osdate1": "2017/7/11 20:18:07"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+奖卷兑换订单详情
+http://domain/api/admin/ExchangeOrderDetails?t=1430000000&sign=abc&id=10002&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    id   //订单ID(int)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results id  //订单ID
+    results userid  //用户ID
+    results goodsid  //商品ID
+    results goodstype  //商品类型 1、金币；2、话费；3实物；
+    results goodstitle  //商品标题
+    results prizeprice  //商品奖卷兑换价格
+    results exchangecoin  //兑换金币额
+    results exchangemobilefee  //兑换话费额
+	results givecoin  //附赠金币额
+    results realname  //姓名
+    results mobile  //手机号
+    results address  //地址
+    results orderremark  //订单处理备注信息（商品为话费时，管理端可填写充值卡号，密码，充值网址等展现给前端）
+    results orderstate  //订单状态 0 未处理，1 已处理
+    results osdate0  //提交订单时间
+    results osdate1  //订单处理时间（商品为金币时，自动兑换处理）
+
+-------------------------------------------------------
+
+修改奖卷兑换订单
+http://domain/api/admin/EditExchangeOrder?t=1430000000&sign=abc&id=10002&orderremark=&orderstate=0&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    id   //订单ID(int)
+    orderremark   //订单处理备注信息（商品为话费时，管理端可填写充值卡号，密码，充值网址等展现给前端）
+    orderstate   //订单状态 0 未处理，1 已处理
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results id  //订单ID
+    results userid  //用户ID
+    results orderstate  //订单状态 0 未处理，1 已处理
+
+-------------------------------------------------------
+
+奖卷变化日志(分页)
+http://domain/api/Admin/LotteriesChangeLog?t=1430000000&sign=abc&pageindex=1&pagesize=3&userid=&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    userid   //(非必选)用户ID(int)
+    startdt  //(非必选)时间段筛选，开始时间
+    enddt  //(非必选)时间段筛选，结束时间
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2343",
+    "totalpage": "781",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "userid": "963823",  //用户ID
+            "username": "test2323",  //用户名
+            "nickname": "test2323",  //用户昵称
+            "prelotteries": "99998799",  //之前奖卷数
+            "changelotteries": "1000",   //变化奖卷数
+            "curlotteries": "99997799",  //之后奖卷数
+            "collectdate": "2017/7/12 16:32:00"  //发生时间
+        },
+        {
+            "userid": "963823",
+            "username": "test2323",
+            "nickname": "test2323",
+            "prelotteries": "99999799",
+            "changelotteries": "1000",
+            "curlotteries": "99998799",
+            "collectdate": "2017/7/12 16:14:00"
+        },
+        {
+            "userid": "311923",
+            "username": "test002",
+            "nickname": "test002",
+            "prelotteries": "6994580",
+            "changelotteries": "1000",
+            "curlotteries": "6993580",
+            "collectdate": "2017/7/12 16:13:00"
+        }
+    ]
+}
+
+-------------------------------------------------------
+
+修改推荐人金币余额:
+http://domain/api/admin/ChangeRecUserCoinbalance?t=1430000000&sign=asdasdasdsadad&recuserid=92915&changemoney=20&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    recuserid   //推荐人ID
+    changemoney   //充值、扣除金币数(例如： 充值10000金币，扣除时为负值 -10000金)
+返回：
+
+-------------------------------------------------------
+
+管理员详情
+http://domain/api/admin/AdminDetails?t=1430000000&sign=asdasdasdsadad&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results aname  //用户名
+    results realname  //姓名
+    results mobile  //手机号
+    results regip  //注册IP
+    results lastdate  //上次登录时间
+    results lastip  //上次登录IP
+    results logincount   //登录次数
+
+-------------------------------------------------------
+
+推荐人金币余额变化日志(分页)
+http://domain/api/admin/RecUserMoneyChangeLog?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&recuserid=88888&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数:
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    recuserid   //(非必选)推荐人用户ID
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-07-03 11:35
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-07-05 11:35
+返回:
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    moneychangetotal  //总金币合计数
+    increase_total  //金币增加合计数  
+    reduce_total  //金币减少合计数
+    recordcount  //总记录数
+    totalpage  //总页数
+    pagesize  //每页记录条数
+    pageindex  //页码
+    results  //数据集合
+
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "success",
+    "moneychangetotal": "368934610562816091",
+    "increase_total": "368943661787201859",
+    "reduce_total": "-9051224385768",
+    "recordcount": "1401",
+    "totalpage": "467",
+    "pagesize": "3",
+    "pageindex": "1",
+    "results": [
+        {
+            "recuserid": "88888",
+            "realname": "kkk",
+            "startmoney": "10000",
+            "changemoney": "5000",
+            "adddate": "2017/7/11 22:29:00",
+            "remark": "test"
+        },
+        {
+            "recuserid": "88888",
+            "realname": "kkk",
+            "startmoney": "10000",
+            "changemoney": "5000",
+            "adddate": "2017/7/11 22:29:00",
+            "remark": "test"
+        },
+        {
+            "recuserid": "88888",
+            "realname": "kkk",
+            "startmoney": "10000",
+            "changemoney": "5000",
+            "adddate": "2017/7/11 22:29:00",
+            "remark": "test"
+        }
+    ]
+}
+
+---------------------------------------------------------
+
+分润类型及比例修改
+http://domain/api/admin/ChangeRecUserShare?t=1430000000&sign=asdasdasdsadad&recuserid=88888&ShareProfitType=1&ShareProfitProportion=0.01&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    recuserid  //推荐人ID
+    ShareProfitType  //分润类型（1充值，2流水）
+    ShareProfitProportion  //分润比例设置（Decimal类型）
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回success,code=-1时返回错误信息
+    results null //null  
+
+---------------------------------------------------------
+
+用户游戏记录
+http://domain/api/admin/GetUserGameData?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&userid=123456&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //玩家ID
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-7-3 11:35:20
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-7-5 11:35:20
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "获取数据成功",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "UserID": "123456",
+            "UserName": "kkk",
+            "NickName": "逗逼也有春天",
+            "RoomName": "大话捕鱼",
+            "DeskIndex": "0",
+            "GameTime": "124",
+            "SrcMoney": "1000",
+            "ChangeMoney": "-500",
+	    "ChangeTax": "0",
+	    "EndTime": "2017/7/11 22:29:00"
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+用户登陆记录
+http://domain/api/admin/GetUserLoginData?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&userid=123456&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //玩家ID
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-07-03
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-07-05
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "获取数据成功",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "UserID": "123456",
+            "UserName": "kkk",
+	    "NickName","流浪狗"
+            "RegisterTM": "2016-01-19 10:33:14.570",  //注册时间
+            "Disabled": "0",   0为启用，1为禁用   //是否禁用
+            "LastLoginIP": "218.28.15.82",        //登陆IP
+            "LastLoginTM": "2017/7/11 22:29:00",  //登陆时间
+            "IsLimitIP": "0"       //是否为禁用IP，0为否，1为是
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+分享链接列表
+http://domain/api/admin/ShareLinkList?t=1430000000&sign=asdasdasdsadad&sharetype=&token=123
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    sharetype  //分享类型 1.图片分享、2.文字分享、3.二维码分享、4.链接分享  此参数为空显示所有 
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    results  //数据集合
+
+返回数据样例：
+
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "id": "1",   //分享链接ID
+            "sharetype": "1",  //分享类型
+            "sharetitle": "",  //分享标题
+            "sharedes": "",    //分享描述
+            "sharecon": "",    //分享内容
+            "sharelink": "https://fir.im/ugametest",    //分享链接
+            "shareqrcode": "http://api-mobilegame-test-000.kk838.com/upload/20170607/20170607111222.jpg",    //分享二维码
+            "sharepic": "http://api-mobilegame-test-000.kk838.com",    //分享图片
+            "isenable": "1"                                            //分享是否启用（0禁用、1启用 同时只有一条分享为启用状态）
+        },
+        {
+            "id": "2",
+            "sharetype": "1",
+            "sharetitle": "",
+            "sharedes": "",
+            "sharecon": "",
+            "sharelink": "https://fir.im/ugametest",
+            "shareqrcode": "http://api-mobilegame-test-000.kk838.com/upload/20170607/20170607111222.jpg",
+            "sharepic": "http://api-mobilegame-test-000.kk838.com",
+            "isenable": "0"
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+分享链接详情
+http://domain/api/admin/ShareLinkDetails?t=1430000000&sign=asdasdasdsadad&id=1&token=123
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    id  //分享链接ID
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    results  id //分享链接ID
+	results  sharetype //分享类型
+	results  sharetitle //分享标题
+	results  sharedes //分享描述
+	results  sharecon //分享内容
+	results  sharelink //分享链接
+	results  shareqrcode //分享二维码
+	results  sharepic //分享图片
+	results  isenable //分享是否启用（0禁用、1启用 同时只有一条分享为启用状态）
+
+------------------------------------------------------------
+
+添加,编辑分享链接
+http://domain/api/admin/EditShareLink?t=1430000000&sign=asdasdasdsadad&act=&id=&sharetype=&sharetitle=&sharedes=&sharecon=&sharelink=&shareqrcode=&sharepic=&isenable=0&token=123
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	act //操作动作 act=add添加,act=edit修改
+    id  //分享链接ID
+	sharetype    //分享类型 1.图片分享、2.文字分享、3.二维码分享、4.链接分享
+	sharetitle   //分享标题
+	sharedes   //分享描述
+	sharecon   //分享内容
+	sharelink   //分享链接
+	shareqrcode   //分享二维码
+	sharepic   //分享图片
+	isenable   //分享是否启用（0禁用、1启用 同时只有一条分享为启用状态）
+
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    results  id //分享链接ID
+
+------------------------------------------------------------
+
+当前在线玩家
+http://domain/api/admin/GetOnlinePlayersData?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "获取数据成功",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "UserID": "123456",
+            "UserName": "kkk",
+	    "NickName","流浪狗"
+            "RoomName": "大话捕鱼",  //当前所在房间
+            "GameCount": "23",    //总游戏次数
+            "WalletMoney": "342000"        //钱包金币
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+获取游戏列表
+http://domain/api/admin/GetGameRoomList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "获取数据成功",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "NameID": "7168000",    游戏ID
+            "GameName": "大话捕鱼",   游戏名称
+	    "RoomID","12"   房间ID
+            "RoomName": "测试房一",  //房间名称
+            "DeskPeople": "6",      //单桌人数
+            "ServiceName": "dahubuyu087",        //分布式管理名称
+            "ServerIP": "127.0.0.1",  //服务器地址
+            "EnableRoom": "0"       //是否开启房间，0为否，1为是
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+
+桌子当前输赢信息
+http://domain/api/admin/GetRoomTableDataNow?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "获取数据成功",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {
+            "RoomID": "40",    //房间ID
+            "RoomName": "渔乐圈房间1",   //房间名称
+	    "OnlineCount","2"   //在线人数
+            "Table": "1",  //桌号
+            "WinTotal": "28680348",      //系统赢分
+            "LoseTotal": "247503448",        //系统输分
+            "TaskScore": "0",  //税费
+            "CaijinScore": "0"       //彩金
+	    "JiLv"    "95.5%"     //dll概率
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+
+桌子详细输赢信息（按天查询，只能单日查询，一天有48条记录）
+http://domain/api/admin/GetRoomTableDataDetail?t=1430000000&sign=asdasdasdsadad&roomid=40&tableid=1&selectdt=2017-12-12&pagesize=8&pageindex=1&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    roomid    //房间ID
+    tableid   //桌号
+    selectdt   //选择查询的日期
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合
+返回数据样例：
+    {
+    "code": "1",
+    "msg": "获取数据成功",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "10",
+    "pageindex": "1",
+    "results": [
+        {   
+ 	    "CollectDate":  "2012-12-12 00:00:00"
+            "RoomID": "40",    //房间ID
+            "RoomName": "渔乐圈房间1",   //房间名称
+	    "OnlineCount","2"   //在线人数
+            "Table": "1",  //桌号
+            "WinTotal": "28680348",      //系统赢分
+            "LoseTotal": "247503448",        //系统输分
+            "TaskScore": "0",  //税费
+            "CaijinScore": "0"       //彩金
+	    "JiLv"    "95.5%"     //dll概率
+        },
+	{   
+ 	    "CollectDate":  "2012-12-12 00:30:00"
+            "RoomID": "40",    //房间ID
+            "RoomName": "渔乐圈房间1",   //房间名称
+	    "OnlineCount","2"   //在线人数
+            "Table": "1",  //桌号
+            "WinTotal": "28680348",      //系统赢分
+            "LoseTotal": "247503448",        //系统输分
+            "TaskScore": "0",  //税费
+            "CaijinScore": "0"       //彩金
+	    "JiLv"    "95.5%"     //dll概率
+        },
+	{   
+ 	    "CollectDate":  "2012-12-12 01:00:00"
+            "RoomID": "40",    //房间ID
+            "RoomName": "渔乐圈房间1",   //房间名称
+	    "OnlineCount","2"   //在线人数
+            "Table": "1",  //桌号
+            "WinTotal": "28680348",      //系统赢分
+            "LoseTotal": "247503448",        //系统输分
+            "TaskScore": "0",  //税费
+            "CaijinScore": "0"       //彩金
+	    "JiLv"    "95.5%"     //dll概率
+        }
+    ]
+}
+
+------------------------------------------------------------
+
+取款订单列表（未处理，含分页）
+http://domain/api/admin/GetCashOrderDataList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【获取数据成功】,code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合【包含OrderNumID（订单ID），RecUserID(推广员ID)，OrderGold(订单金币数)，AddTime(申请时间)，Status(状态：申请中)】
+
+-------------------------------------------------------------
+
+订单处理（status分为：2、同意，3、拒绝并退款，4、拒绝不退款。3和4均需要备注原因）
+http://domain/api/admin/CashOrderDeal?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    status  //处理ID
+    remark   //备注拒绝原因，如拒绝，需填写原因，同意则不需要
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【订单处理完毕】,code=-1时返回错误信息
+    results  //null
+-------------------------------------------------------------
+
+每日数据统计
+http://domain/api/admin/GetDayAllData?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-7-3 11:35:20
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-7-5 11:35:20
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【获取数据成功】,code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合【包含ReportDate（日期），AvgOnline(平均在线)，MaxOnline(最高在线)，MinOnline(最少在线)，LoginNum(登录人数)，ActiveNum（活跃人数）
+                        ActiveGameCount（活跃游戏局数），NewUserNum（新玩家数），PayNum（支付玩家数），PayMoneyCount（支付额），PayCount（支付笔数），GameCount（游戏局数）
+                        TaxCount（税费数量），RegNum（注册数量），RecUserID（代理ID）】
+
+-------------------------------------------------------------
+
+用户注册分析
+http://domain/api/admin/GetUserRegAnaly?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-7-3 11:35:20
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-7-5 11:35:20
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【获取数据成功】,code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合【包含UserID（玩家ID），UserName(用户名)，NickName(昵称)，RealName（真实姓名），BankMoney(保险箱金币)，WalletMoney(钱包金币)，SumMoney（总金币）
+                        RegisterTM（注册时间），RegisterIP（注册IP），GameCount（游戏局数），GameTime（游戏时长），TotalPayMoney（总充值）
+                        OnlineStatus（是否在线），LoginCount（登陆次数），RecUserID（代理ID）】
+
+-------------------------------------------------------------
+
+用户登陆分析
+http://domain/api/admin/GetUserLoginAnaly?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&startdt=2017-7-3 11:35:20&enddt=2017-7-5 11:35:20&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex   //页码
+    pagesize   //每页记录条数
+    startdt   //(非必选)时间段筛选，开始时间  格式：2017-7-3 11:35:20
+    enddt   //(非必选)时间段筛选，结束时间  格式：2017-7-5 11:35:20
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【获取数据成功】,code=-1时返回错误信息
+    recordcount  //总条数
+    totalpage  //总页数
+    pagesize  //每页记录数
+    pageindex  //页码
+    results  //数据集合【包含UserID（玩家ID），UserName(用户名)，NickName(昵称)，BankMoney(保险箱金币)，WalletMoney(钱包金币)，SumMoney（总金币）
+                        FirstLoginTime（第一次登陆时间），LastLoginTime（最后登陆时间），LoginNum（登录次数），OnlineTime（在线时长），GameCount（游戏局数），TotalPayMoney（总充值）
+                        OnlineStatus（是否在线），RecUserID（代理ID）】
+
+-------------------------------------------------------------
+
+推荐人分销比例详情
+http://domain/api/admin/RecProportion?t=1430000000&sign=asdasdasdsadad&token=123
+
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【获取数据成功】,code=-1时返回错误信息
+
+--------------------------------------------------------------
+
+推荐人分销比例修改 (格式例如：0.10)
+http://domain/api/admin/RecProportionSet?t=1430000000&sign=asdasdasdsadad&level1proportion=0.30&level2proportion=0.10&level3proportion=0.05&token=123
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    level1proportion   //一级比例
+    level2proportion   //二级比例
+    level3proportion   //三级比例
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回【修改比例成功】,code=-1时返回错误信息
+
+--------------------------------------------------------------
+
+游戏房间列表
+http://domain/api/admin/GameRoomList?t=1430000000&sign=asdasdasdsadad&token=123
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回：
+    code  //code=1成功,code=-1失败
+    msg   //code=1时返回"获取数据成功",code=-1时返回错误信息
+    results  //数据集合
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "roomid": "78",  //房间ID
+            "roomname": "渔乐圈本地3",  //房间名称
+            "gamenameid": "70661800",  //游戏名称ID
+            "onlinecount": "0",   //在线人数
+            "updatetime": "2017/12/19 11:45:47" //更新时间
+        },
+        {
+            "roomid": "77",
+            "roomname": "渔乐圈本地2",
+            "gamenameid": "70661800",
+            "onlinecount": "0",
+            "updatetime": "2017/12/19 11:45:43"
+        },
+        {
+            "roomid": "61",
+            "roomname": "百家乐房间",
+            "gamenameid": "10301800",
+            "onlinecount": "0",
+            "updatetime": "2017/12/4 14:53:18"
+        }
+    ]
+}
+	
+
+--------------------------------------------------------------
+
+游戏房间设置详情
+http://domain/api/admin/GameRoomConfigDetails?t=1430000000&sign=asdasdasdsadad&roomid=78&token=123
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	roomid //房间ID(int)
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    results  roomid //房间ID
+	results  cfg_roomtype //游戏难度（1,2,3）
+	results  cfg_m_icellscore //单元炮火大小（就是点一下加炮加多少）
+	results  cfg_m_imaxcellfire //最大炮火大小
+	results  cfg_m_iminxcellfire //最小炮火大小
+	results  cfg_m_igoldcoin //金币比例
+	results  cfg_m_ifishcoin //鱼币比例
+	results  cfg_tax //房间税，每一局收多少游戏币
+	results  cfg_goldtoniuniu //1金币等于多少牛牛币
+	results  cfg_upscore //牛牛一次上分上多少金币
+
+
+--------------------------------------------------------------
+
+编辑游戏房间设置
+http://domain/api/admin/EditGameRoomConfig?t=1430000000&sign=asdasdasdsadad&roomid=78&cfg_roomtype=1&cfg_m_icellscore=100&cfg_m_imaxcellfire=1000&cfg_m_iminxcellfire=100&cfg_m_igoldcoin=1&cfg_m_ifishcoin=1&cfg_tax=200&cfg_goldtoniuniu=1000&cfg_upscore=10&token=123
+
+参数：
+    token   //登录验证token
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	roomid //房间ID(int)
+	cfg_roomtype //(int)游戏难度（1,2,3）
+	cfg_m_icellscore //(int)单元炮火大小（就是点一下加炮加多少）
+	cfg_m_imaxcellfire //(int)最大炮火大小
+	cfg_m_iminxcellfire //(int)最小炮火大小
+	cfg_m_igoldcoin //(int)金币比例
+	cfg_m_ifishcoin //(int)鱼币比例
+	cfg_tax //(int)房间税，每一局收多少游戏币
+	cfg_goldtoniuniu //(int)1金币等于多少牛牛币
+	cfg_upscore //(int)牛牛一次上分上多少金币
+返回：
+    code  //code=1成功,code=-1失败
+    msg  //code=1时返回"获取数据成功",code=-1时返回错误信息
+    results  roomid //房间ID
+
+--------------------------------------------------------------
+
+
+

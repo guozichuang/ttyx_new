@@ -1,0 +1,500 @@
+﻿1、申请创建俱乐部
+http://domain/api/ClubCreate?t=1430000000&sign=asdasdasdsadad&userid=123456&phone=13888888888&remark=dfadsfsda&name=英雄联盟
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //申请玩家ID(int)
+	phone     //申请人手机号(string)
+	remark    //备注(string)
+	name      //俱乐部名称(string)
+	gameid    //游戏ID(int)
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	results clubid      //俱乐部ID(int)
+2、申请/邀请加入俱乐部
+http://domain/api/ClubJoin?t=1430000000&sign=asdasdasdsadad&clubid=564764&userid=123456&type=1
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+	userid     //申请人ID/受邀人ID
+	type		//类型：1为申请加入，2为受邀加入，3为申请退出
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+3、俱乐部成员列表
+http://42.51.28.135/api/GetClubUserList?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&clubid=509115&userid=745873&pageindex=1&pagesize=5
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+	userid     //玩家ID
+	pageindex    //页码
+	pagesize      //每页记录条数
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "userduty": 1,            //玩家俱乐部职级
+    "recordcount": "3",       //返回总条数
+    "totalpage": "1",          //返回总页数
+    "pagesize": "5",           //每页记录数
+    "pageindex": "1",           //页码
+    "results": [
+        {
+            "ClubID": "509115",         //俱乐部ID
+            "UserID": "745873",          //玩家ID
+            "NickName": "test010",      //昵称
+            "HeadIconUrl": "",             //头像地址
+            "ClubDuty": "1",              //俱乐部职级
+            "JoinTime": "2019/6/21 18:16:39"             //加入俱乐部时间
+            "Status": "",         //玩家状态：0正常，1禁止游戏
+            "ResetTime": "",  //上次清零时间
+            "Jushu": "129",  //有效局数
+            "IsOnline": "0" ,  //是否在线，0不在，1在
+            "IsHehuo": "1"   //是否在线，0不是，1是
+        },
+        {
+            "ClubID": "509115",
+            "UserID": "295284",
+            "NickName": "test001",
+            "HeadIconUrl": "",
+            "ClubDuty": "4",
+            "JoinTime": "2019/6/21 18:31:13",
+            "Status": "",
+            "ResetTime": "",
+            "Jushu": "24",
+            "IsOnline": "0",   
+            "IsHehuo": "0"   
+        },
+        {
+            "ClubID": "509115",
+            "UserID": "311923",
+            "NickName": "test002",
+            "HeadIconUrl": "http://thirdwx.qlogo.cn/mmopen/vi_32/xKILMcgibsQzdXbliareYrLSaSvP0BKDfO0wnMHBEGvG6U00f3jXfFQ51hsZEpHDBU3IwPKY6y2iaF1GeZibRfat8g/132",
+            "ClubDuty": "4",
+            "JoinTime": "2019/6/21 18:38:11",
+            "Status": "",
+            "ResetTime": "",
+            "Jushu": "18",
+            "IsOnline": "0"  , 
+            "IsHehuo": "0"  
+        }
+    ]
+}
+4、俱乐部消息列表
+http://domain/api/ClubMsgList?t=1430000000&sign=asdasdasdsadad&clubid=564764
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "21",
+    "results": [
+        {
+            "id": "5",  //消息ID
+            "ClubID": "123456",  //俱乐部ID
+            "UserID": "123456",  //玩家ID
+			"NickName": "张三",  //玩家昵称
+            "HeadIconUrl": "http://thirdwx.qlogo.cn/mmopen/vi_32/xKILMcgibsQzdXbliareYrLSaSvP0BKDfO0wnMHBEGvG6U00f3jXfFQ51hsZEpHDBU3IwPKY6y2iaF1GeZibRfat8g/132",  //玩家头像地址
+            "Type": "1",  //消息类型，1申请加入，2被邀请加入
+            "ApplyTime": "2018-11-07 14:32:10.697",  //申请时间
+            "IsRead": "0",  //是否已读，0未读，1已读
+            "IsPass": "0",  //是否通过，0未通过，1通过，2拒绝
+        }
+    ]
+}
+5、俱乐部消息处理
+http://domain/api/ClubMsgDeal?t=1430000000&sign=asdasdasdsadad&id=1&sys=1
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	id      //消息ID
+	sys     //消息操作，1同意，2拒绝
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+6、俱乐部权限操作
+http://domain/api/ClubLimitsSys?t=1430000000&sign=asdasdasdsadad&clubid=123456&userid=123123&operatorid=456456&sys=1
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+	userid     //玩家ID
+	operatorid     //操作人ID（权限操作为9时，代表合伙人ID，默认会长归置合伙人）
+	sys        //权限操作，1升职，2降职，3开除，4值班，5禁止游戏，6解除禁止，7数据清零，9玩家归置合伙人
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+7、我名下的俱乐部
+http://domain/api/GetMyClub?t=1430000000&sign=asdasdasdsadad&userid=123456
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "1",    //总共数量
+    "results": [
+        {
+            "UserID": "123456",  //玩家ID
+            "ClubID": "213411",  //俱乐部ID
+            "ClubName": "辉煌人生",  //玩家ID
+            "IconID": "1",  //俱乐部头像ID
+            "Notice": "发士大夫捏为北方",  //俱乐部公告
+            "RoomCard": "0",  //俱乐部房卡数
+            "ClubDuty": "1",  //俱乐部职称，1会长，2管理，3会员
+            "CreateTime": "2018-11-07 14:32:10.697",  //创建时间
+            "ClubStatus": "0",  //是否通过，0正常，1不可使用
+            "JoinTime": "2018-11-07 14:32:10.697",  //加入时间
+            "ServerID": "18",  //小服务器ID
+            "GameNameID": "20154500",  //游戏ID
+        }
+    ]
+}
+
+8、俱乐部房间列表
+http://domain/api/GetClubRoomList?t=1430000000&sign=asdasdasdsadad&clubid=564764
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "1",
+    "results": [
+        {
+            "RecordNum": "2018499341342134321132",  //唯一标识ID
+            "RoomID": "17",  //房间ID
+            "RoomNum": "413512",  //房间号
+			"Desk":"12",//桌子号
+            "GameNameID": "1110087",  //游戏ID
+            "ComName": "比鸡",  //游戏名称
+            "PayRule": "1",  //支付规则
+            "GameRule": "1",  //游戏规则
+            "JuShuRule": "1",  //局数
+            "PlayersRule": "4",  //玩家人数
+            "Rate": "1",  //倍率
+            "OwnerID": "432211",  //房主ID
+            "CreateTime": "2018-11-07 14:32:10.697",  //创建时间
+            "CreateClubID": "312412",  //俱乐部ID
+            "Status": "0",  //房间状态，0正常，1已解散，2游戏已开始，3房间人数已满
+          }
+    ]
+}
+9、获取房间在线玩家
+http://domain/api/GetClubRoomOnlineUsers?t=1430000000&sign=asdasdasdsadad&roomnum=564764
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	roomnum      //房间号
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2",
+    "results": [
+        {
+            "RoomNum": "413512",  //房间号
+            "DeskNum": "1",  //桌子号
+            "DeskStation": "1",  //椅子号
+            "UserID": "123456",  //玩家ID
+            "NickName": "张三",  //玩家昵称
+            "HeadIconUrl": "http://thirdwx.qlogo.cn/mmopen/vi_32/xKILMcgibsQzdXbliareYrLSaSvP0BKDfO0wnMHBEGvG6U00f3jXfFQ51hsZEpHDBU3IwPKY6y2iaF1GeZibRfat8g/132",  //玩家头像地址
+        }，
+		 {
+            "RoomNum": "413512",  //房间号
+            "DeskNum": "1",  //桌子号
+            "DeskStation": "2",  //椅子号
+            "UserID": "421412",  //玩家ID
+            "NickName": "王四",  //玩家昵称
+            "HeadIconUrl": "http://thirdwx.qlogo.cn/mmopen/vi_32/xKILMcgibsQzdXbliareYrLSaSvP0BKDfO0wnMHBEGvG6U00f3jXfFQ51hsZEpHDBU3IwPKY6y2iaF1GeZibRfat8g/132",  //玩家头像地址
+        }
+    ]
+}
+10、俱乐部战绩（分页）
+http://domain/api/FangkaRecordByClub?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&clubid=387163&clubid=813046&pageindex=1&pagesize=5
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    userid  //玩家ID
+    clubid  //俱乐部ID
+	pageindex    //分页页码
+	pagesize     //每页条数
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+	totalpage     //总页数
+	pagesize     //每页条数  
+	pageindex    //当前页码
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "32",
+    "totalpage": "7",
+    "pagesize": "5",
+    "pageindex": "1",
+    "results": [
+        {
+            "RecordNum": "20181107142832513400",  //记录编号
+            "GameNameID": "10306600",  //游戏ID
+            "RoomNum": "513400",  //房间号
+            "JuShuRule": "10",  //游戏总局数
+            "Rate": "1",  //游戏倍率
+            "OwnerID": "311923",  //房主ID
+            "UserID": "473650",  //玩家ID
+            "ScoreSum": "-6",  //单人总结算分
+            "IsWinUser": "0",  //是否为大赢家，0否，1是
+		    "IsDissolve": "1",  //是否为发起解散者，0否，1是
+            "StartTime": "2018/11/07 14:28:54 ",  //游戏开始时间
+            "AddTime": "2018-11-07 14:32:10.697"  //游戏总结算时间
+        }，
+		{
+            "RecordNum": "20181107142140815338",  //记录编号
+            "GameNameID": "10306600",  //游戏ID
+            "RoomNum": "815338",  //房间号
+            "JuShuRule": "10",  //游戏总局数
+            "Rate": "1",  //游戏倍率
+            "OwnerID": "311923",  //房主ID
+            "UserID": "473650",  //玩家ID
+            "ScoreSum": "-30",  //单人总结算分
+            "IsWinUser": "0",  //是否为大赢家，0否，1是
+		    "IsDissolve": "0",  //是否为发起解散者，0否，1是
+            "StartTime": "2018/11/07 14:21:49 ",  //游戏开始时间
+            "AddTime": "2018-11-07 14:26:43.023"  //游戏总结算时间
+        }
+    ]
+}
+11、俱乐部消息未读条数
+http://domain/api/ClubMsgCount?t=1430000000&sign=asdasdasdsadad&clubid=564764
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	recordcount  //总记录数(int)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "5"
+}
+12、俱乐部操作日志
+http://42.51.28.135/api/ClubSysList?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&clubid=226487&pageindex=1&pagesize=5
+参数：
+	    t   //unix时间戳 (10位int)
+		sign   //签名(string)
+		clubid  //俱乐部ID
+		pageindex    //分页页码
+		pagesize     //每页条数
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+	totalpage     //总页数
+	pagesize     //每页条数  
+	pageindex    //当前页码
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "1",
+    "totalpage": "1",
+    "pagesize": "5",
+    "pageindex": "1",
+    "results": [
+        {
+            "ID": "1",    //ID
+            "NewsID": "20190711182250369",     //消息ID
+            "UserID": "860527",      //玩家ID（被执行人）
+            "UserNickName": "詹姆斯·邦德",     //玩家昵称
+            "ClubID": "226487",         //俱乐部ID
+            "OperatorID": "64481",        //执行人ID
+            "OperatorNickName": "江南烟客",       //执行人昵称
+            "OperatorDuty": "1",       //执行人职级
+            "NewsType": "1",     //消息类型：1、升职，2、降职，3、开除，4、值班，5禁止游戏，6解除禁止，7数据清零，8、解散，9、玩家归置合伙人，12、申请创建通过，13、申请创建拒绝，21、申请加入通过，22、申请加入拒绝，23、申请退出通过，24、申请退出拒绝
+            "NewsContent": "申请加入俱乐部",       //附加语
+            "AddTime": "2019/7/11 18:22:50"      //添加时间
+        }
+    ]
+}
+13、俱乐部开房规则录入
+http://42.51.28.135/api/InsertClubRoomRule?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&clubid=226487&payrule=1&jushurule=5&integralrule=&optionsrule=&playrule=&extrarule=&clubrule=
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID（int）
+	payrule     //支付规则(string)
+	jushurule   //局数规则(string)
+	integralrule   //开局积分(string)
+	optionsrule   //选项(string)
+	playrule      //玩法规则(string)
+	extrarule    //进园子规则(string)
+	clubrule     //俱乐部设置(string)
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+}
+14、获取俱乐部开放配置规则
+http://domain/api/GetClubRoomRule?t=1430000000&sign=asdasdasdsadad&clubid=564764
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	clubid      //俱乐部ID
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	results  //数据集合
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results":  [
+        {
+            "ClubID": "860527",    //俱乐部ID
+            "PayRule": "1,5",     //支付规则
+            "JushuRule": "2",     //局数规则
+            "IntegralRule": "10",      //开局积分
+            "OptionsRule": "1,0,1,1",         //选项
+            "PlayRule": "5",        //玩法规则
+            "ExtraRule": "100",       //进园子
+            "ClubRule": "1,1",        //俱乐部规则
+            "UpdateTime": "2019/7/11 18:22:50"    //最后一次开放配置时间
+		 }
+]
+}
+15、上传图片
+http://domain/api/UploadImg?t=1430000000&sign=asdasdasdsadad&userid=564764
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID（int）
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+}
+16、获取图片
+http://domain/api/GetUserImg?t=1430000000&sign=asdasdasdsadad&userid=978533
+
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID（int）
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	imgurl      //图片地址
+17、绑定/换绑手机号
+http://domain/api/BindPhone?t=1430000000&sign=asdasdasdsadad&userid=978533&phone=13876758721
+
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID（int）
+	phone     //需要绑定的手机号（string）
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+18、获取系统设置的微信号，用于复制微信号
+http://domain/api/CopyVX?t=1430000000&sign=asdasdasdsadad
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	vx_account      //微信号
+19、设置俱乐部权限
+http://game.qilingmajiang.com/api/SetClubLimit?t=1600000000&sign=37A4F6A94EF0190A7E583287EF746DC1&userid=389842&clubid=811677&isAgreeJoin=0&isKickOut=0&isOpenRoom=0&isDissolve=0&isEmpty=0&isForbid=0&isCheck=0
+（注：权限统一规则，0为无权限，1为有权限）
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID（int）
+	clubid      //玩家ID（int）
+	isAgreeJoin     //通过申请权限（int）（0，1）
+	isKickOut     //踢出权限（int）（0，1）
+	isOpenRoom     //开房权限（int）（0，1）
+	isDissolve     //解散权限（int）（0，1）
+	isEmpty     //清空战绩权限（int）（0，1）
+	isForbid     //禁止游戏权限（int）（0，1）
+	isCheck     //查看战绩权限（int）（0，1）
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+20、查看玩家详细权限
+http://domain/api/CheckUserLimits?t=1430000000&sign=asdasdasdsadad&userid=978533&clubid=423145
+参数：
+	 t				//unix时间戳 (10位int)
+    sign			//签名(string)
+	userid      //玩家ID(int)
+	clubid      //俱乐部ID(int)
+返回：
+	code		//code=1成功,code=-1失败(int)
+    msg			//code=1时返回success,code=-1时返回错误信息(string)
+	results  //数据集合
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results":  [
+        {
+            "userid": "978533",    //俱乐部ID
+            "clubid": "423145",     //局数规则
+            "isAgreeJoin": "0",      //通过申请权限
+            "isKickOut": "0",         //踢出权限
+            "isOpenRoom": "0",        //开房权限
+            "isDissolve": "0",       //解散权限
+            "isEmpty": "0",        //清空战绩权限
+            "isForbid": "0"    //禁止游戏权限
+            "isCheck": "0"    //查看战绩权限
+		 }
+]
+}

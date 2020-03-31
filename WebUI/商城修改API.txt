@@ -1,0 +1,202 @@
+1、兑换奖品列表：
+http://domain/api/ExchangeGoodsList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&type=
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    type  //(非必选)商品类型(int) 1、金币；2、奖券；3、均支持  type=  为空则显示所有商品；
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    totalpage  //总页数(int)
+    pagesize  //每页记录条数(int)
+    pageindex  //页码(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "3",
+    "totalpage": "1",
+    "pagesize": "100",
+    "pageindex": "1",
+    "results": [
+        {
+            "id": "1",  //商品id
+            "type": "3",  //商品类型 1、金币；2、奖券；3、均支持
+            "title": "33",  //商品标题
+            "img": "",  //商品标题图片url
+            "des": "",  //商品描述
+            "inventory": "0",  //商品库存
+            "prizeprice": "0",  //商品价值
+            "goldprice": "0",  //兑换所需金币，注：为0则为不支持
+            "lotteriesprice": "0",  //兑换所需奖券 注：为0则为不支持
+	    "givecoin": "0",  //附赠金币额
+            "sort": "0",  //排序
+            "updatetime": "2017/7/6 15:35:28"  //更新时间
+        }
+    ]
+}
+
+2、兑换奖品详情：
+http://domain/api/ExchangeGoodsDetails?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&id=1
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    id  //商品id(int) 
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results id  //商品id(int)
+    results type  //商品类型 1、金币；2、奖券；3、均支持；(int)
+    results title  //商品标题(string)
+    results img  //商品标题图片url(string)
+    results des  //商品描述(string)
+    results inventory  //商品库存(int)
+    results prizeprice   //商品奖卷兑换价格(bigint)
+    results goldprice   //兑换所需金币(bigint)
+    results lotteriesprice   //兑换所需奖券(bigint)
+    results givecoin  //附赠金币额(bigint)
+    results sort  //排序(int)
+    results updatetime  //更新时间(datetime)
+
+3、兑换奖品：
+http://domain/api/ExchangeOrder?t=1430000000&sign=asdasdasdsadad&type=1&userid=154564
+&goodsid=1&realname=李治&mobile=13935647587&remarks=支付宝：5987894@qq.com
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    type  //(必填)商品兑换货币类型(int) 1、金币；2、奖券；
+    userid //(必填)玩家ID
+    goodsid //（必填）商品ID
+    realname  //（必填）姓名
+    mobile   //(必填) 手机号
+    remarks  //(必填) 备注信息（发奖信息）
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results orderid  //订单id(int)
+    results curr_inventory//当前库存
+
+4、兑换奖品订单列表：
+http://domain/api/ExchangeOrderList?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&userid=154564
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    userid //(必填)玩家ID
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    totalpage  //总页数(int)
+    pagesize  //每页记录条数(int)
+    pageindex  //页码(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "3",
+    "totalpage": "1",
+    "pagesize": "100",
+    "pageindex": "1",
+    "results": [
+        {
+            "id": "1",  //商品id
+            "userid": "154564"  //玩家ID
+            "goodsid": "3",  //商品ID
+            "goodstype": "1",  //商品货币兑换类型；1、金币；2、奖券；
+            "goodstitle": "",  //商品标题
+            "prizeprice": "0",  //商品价值
+            "goldprice": "0",  //兑换所需金币，注：为0则为不支持
+            "lotteriesprice": "0",  //兑换所需奖券 注：为0则为不支持
+	    "givecoin": "0",  //附赠金币额
+            "realname": "李治",  //姓名
+            "mobile": "13935647587",  //手机号
+	    "address": "",  //地址（可为空，预留）
+	    "orderremark": "",  //订单备注
+	    "orderstate": "13935647587",  //订单状态，0为未处理，1为成功，2为失败
+	    "osdate0": "13935647587",  //提交时间
+	    "osdate1": "13935647587"  //最后一次处理时间
+        }
+    ]
+}
+
+5、兑换奖品订单广播：
+http://domain/api/ExchangeOrderNotice?t=1430000000&sign=abc&topcount=10
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    topcount   //调用数量(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  //数据集合(array)
+
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+            "id": "10084", //订单ID(int)
+            "nickname": "test2323",  //用户昵称(string)
+            "goodstitle": "50元话费",  //商品标题(string)
+            "prizeprice": "5000", //商品价值
+            "osdate1": "2017年07月17日19时33分"  //订单处理时间
+        },
+        {
+            "id": "10083",
+            "nickname": "test2323",
+            "goodstitle": "50元话费",
+            "prizeprice": "5000",
+            "osdate1": "2017年07月17日19时27分"
+        },
+        {
+            "id": "10082",
+            "nickname": "testest",
+            "goodstitle": "50元话费",
+            "prizeprice": "5000",
+            "osdate1": "2017年07月17日16时02分"
+        }
+    ]
+}
+
+6、兑换奖品详情：
+http://domain/api/ExchangeOrderDetails?t=1430000000&sign=asdasdasdsadad&pagesize=8&pageindex=1&userid=154564&id=1
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+    pageindex  //页码(int)
+    pagesize  //每页记录条数(int)
+    userid //(必填)玩家ID
+    id  //(必填)订单ID
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    totalpage  //总页数(int)
+    pagesize  //每页记录条数(int)
+    pageindex  //页码(int)
+    results id  //商品id
+    results userid  //玩家ID
+    results goodsid  //商品ID
+    results goodstype //商品货币兑换类型；1、金币；2、奖券；
+    results goodstitle  //商品标题
+    results prizeprice  //商品价值
+    results goldprice  //兑换所需金币，注：为0则为不支持
+    results lotteriesprice  //兑换所需奖券 注：为0则为不支持
+    results givecoin  //附赠金币额
+    results realname  //姓名
+    results mobile  //手机号
+    results address  //地址（可为空，预留）
+    results orderremark  //订单备注
+    results orderstate  //订单状态，0为未处理，1为成功，2为失败
+    results osdate0  //提交时间
+    results osdate1  //最后一次处理时间

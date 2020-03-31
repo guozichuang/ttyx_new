@@ -1,0 +1,236 @@
+﻿【签到相关共三个】
+
+1、签到奖品列表：
+http://domain/api/GetSignInAwardList?t=1430000000&sign=asdasdasdsadad
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "7",
+    "results": [
+        {
+            "awardid": "1",  //奖品id
+            "awardType": "1",  //商品类型 1、金币；2、奖券；3、金币+奖券
+            "awardSort": "1",  //奖品序列（即签到天数序列）
+            "awardName": "10金币",  //奖品名称
+            "awardGold": "10",  //奖品兑换金币数
+            "awardLottery": "0"，  //奖品兑换奖券数
+			"awardImg": "http:fsdfuijsdafhihsdf/a.png"  //奖品图片地址
+        },
+		 {
+            "awardid": "2",  //奖品id
+            "awardType": "1",  //商品类型 1、金币；2、奖券；3、金币+奖券
+            "awardSort": "2",  //奖品序列（即签到天数序列）
+            "awardName": "30金币",  //奖品名称
+            "awardGold": "30",  //奖品兑换金币数
+            "awardLottery": "0"，  //奖品兑换奖券数
+			"awardImg": "http:fsdfuijsdafhihsdf/a.png"  //奖品图片地址
+        }
+    ]
+}
+2、玩家7日签到数据：
+http://domain/api/SignInData?t=1430000000&sign=asdasdasdsadad&userid=845472
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+	"isHasSign":"1",   //今日是否签到，为0则没有，大于0则已签
+    "recordcount": "3",
+    "results": [
+        {
+			"userid": "1",  //玩家id
+			"addTime": "2018/08/05 12:00:00.000",  //签到时间
+			"days": "1",  //第几天的签到
+            "awardid": "1",  //奖品id
+            "isGet": "1",  //是否被领取，0，未领取；1，已领取
+            "enable": "0",  //是否可领取，0，可领取；1，不可领取
+        }
+    ]
+}
+3、玩家签到奖品领取：
+http://domain/api/GetSignInAward?t=1430000000&sign=asdasdasdsadad&userid=845472
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "results": [
+        {
+			"userid": "1",  //玩家id
+			"addTime": "2018/08/05 12:00:00.000",  //签到时间
+			"days": "1",  //第几天的签到
+            "awardid": "1",  //奖签到奖品ID
+            "awardName": "10金币",  //奖品名称
+            "awardGold": "10",  //奖品兑换金币数
+            "awardLottery": "0"  //奖品兑换奖券数
+        }
+    ]
+}
+
+【轮盘抽奖共三个】
+
+1、轮盘奖品列表：
+http://domain/api/GetLotteryAwardList?t=1430000000&sign=asdasdasdsadad
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    recordcount  //总记录数(int)
+    results  //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success",
+    "recordcount": "2",
+    "results": [
+        {
+            "awardid": "1808087301",  //奖品id
+            "awardProb": "0.100",  //获奖概率
+            "awardType": "1",  //商品类型 1、金币；2、奖券；3、金币+奖券
+            "awardSort": "1",  //奖品序列（即所在轮盘位置）
+            "awardName": "1000金币",  //奖品名称
+            "awardGold": "1000",  //奖品兑换金币数
+            "awardRoomCard": "0"，  //奖品兑换房卡数
+            "awardHuafei": "0"，  //奖品兑换话费
+			"awardImg": "http:fsdfuijsdafhihsdf/a.png"  //奖品图片地址
+        },
+		{
+            "awardid": "1808085374",  //奖品id
+            "awardProb": "0.350",  //获奖概率
+            "awardType": "1",  //商品类型 1、金币；2、奖券；3、金币+奖券
+            "awardSort": "2",  //奖品序列（即所在轮盘位置）
+            "awardName": "谢谢参与",  //奖品名称
+            "awardGold": "0",  //奖品兑换金币数
+            "awardRoomCard": "0"，  //奖品兑换房卡数
+            "awardHuafei": "0"，  //奖品兑换话费
+			"awardImg": "http:fsdfuijsdafhihsdf/a.png"  //奖品图片地址
+        }
+    ]
+}
+2、轮盘抽奖结果：
+http://domain/api/LotteryResult?t=1430000000&sign=asdasdasdsadad&userid=845472
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(string)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+    results  awardid //奖品id
+    results  awardName //奖品名称
+	results  orderNum //抽奖订单号
+
+3、轮盘抽奖领取：
+http://domain/api/GetLotteryAward?t=1430000000&sign=asdasdasdsadad&userid=845472&orderNum=LA20184654
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(string)
+	orderNum  //抽奖订单号（string）
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+}
+4、分享每日送金币
+http://domain/api/GiveUserCoin?t=1430000000&sign=asdasdasdsadad&userid=845472&gold=2000
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(int)
+	gold  //金币数（int）
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+}
+5、增加轮盘抽奖次数（即记录分享时间，默认分享获取次数为1）
+http://domain/api/AddAwardTimes?t=1430000000&sign=asdasdasdsadad&userid=845472
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+}
+6、获取用户轮盘抽奖次数
+http://domain/api/GetAwardTimes?t=1430000000&sign=asdasdasdsadad&userid=845472
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+	awardTimes    //可以抽奖的次数
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+    "awardTimes": "2"
+}
+7、玩家轮盘抽奖获奖记录
+http://domain/api/GetUserLotteryLog?t=1430000000&sign=asdasdasdsadad&userid=845472
+参数:
+    t   //unix时间戳 (10位int)
+    sign   //签名(string)
+	userid  //玩家id(int)
+返回:
+    code  //code=1成功,code=-1失败(int)
+    msg  //code=1时返回success,code=-1时返回错误信息(string)
+	recordcount    //记录总条数
+	results    //数据集合(array)
+返回数据样例：
+{
+    "code": "1",
+    "msg": "success"
+	"recordcount":"1"
+     "results": [
+        {
+            "userid": "860527",  //玩家ID
+            "addTime": "2019/7/11 18:22:50",  //得奖时间
+            "awardid": "1808087301",  //奖品ID
+            "awardName": "1000金币",  //奖品名称
+            "orderNum": "51455187591871895",  //订单号
+            "isGet": "0",  //是否已领取，0未领取，1已领取
+            "enable": "0",  //是否可领取，0可以，1不可以
+        }
+    ]
+}

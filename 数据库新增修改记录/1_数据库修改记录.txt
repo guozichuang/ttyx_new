@@ -1,0 +1,68 @@
+
+-----------------------------------------------
+
+数据库修改记录：
+
+-----------------------------------------------
+
+2017-12-20 备查记录
+ShareLinkQRCode 表增加字段：
+id(自增列)
+sharetype （int）（分享类型：1.图片分享）
+sharetitle （nvarchar(MAX)） 分享标题
+sharecon （nvarchar(MAX)） 分享内容
+sharedes （nvarchar(MAX)） (分享描述)、
+isenable （int）(是否启用 默认指0禁用，1启用)
+
+
+RecUser（推荐人表） 增加字段：
+Allowrecharge （int）（是否允许充值）
+Coinbalance （bigint）（推荐人金币余额）
+
+Web_MoneyChangeLog（金币变化日志表）：增加字段 OpuserType （int）（充值用户类型，区分推荐人充值、管理员充值）
+
+-----------------------------------------------
+
+2017-11-23
+修改【RecUser】表，增加字段
+[ShareProfitType]（smallint）
+[ShareProfitProportion]（decimal(18, 3)）
+[ShareProfitNum]（bigint）
+[UpdateTime]（datetime）
+
+-----------------------------------------------
+
+2017-12-11
+增加表【LogTRoomTotalWinloseNew】
+增加作业【每小时统计房间输赢】
+
+-----------------------------------------------
+
+2017-11-27
+数据库视图【Web_VLoginRecord】，增加字段UserName、NickName
+
+-----------------------------------------------
+
+2017-12-26 
+修改数据库表：
+TUserInfo，增加GiveMoney（赠送金币，bigint类型）字段，【执行一下存储过程SQL时，请先在该表中添加该字段】
+
+增加存储过程：
+SP_UpdateUserWalletMoney【游戏端请求更新玩家钱包金币>】
+输入参数：@UserID
+成功返回return  0
+
+修改存储过程：
+SP_UserLoginPlace   增加输出参数    GiveMoney
+SP_UserLoginRoom   增加输出参数    GiveMoney
+SP_UpdateUserInfo_FishSpecial   判断赠送金币是否清除，详见存储过程
+
+
+
+2018-01-11
+修改存储过程SP_UserLoginRoom，针对配分卡设置权限，输出参数GiveMoney取值从@GiveMoney改为@inhasgive（0为没有，1为有配分）
+
+
+
+
+

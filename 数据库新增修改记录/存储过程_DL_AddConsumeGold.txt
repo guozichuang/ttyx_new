@@ -1,0 +1,123 @@
+USE [ttyxtest]
+GO
+/****** Object:  StoredProcedure [dbo].[DL_AddConsumeGold]    Script Date: 12/13/2017 20:36:28 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Mr Guo>
+-- Create date: <2016-06-22>
+-- Description:	<玩家退出捕鱼房间时，记录玩家在该房间消耗的金币数>
+-- =============================================
+ALTER PROCEDURE [dbo].[DL_AddConsumeGold]
+@inUserId		int,		---玩家Id
+@inGold		bigint,		    ---总消耗的金币
+@inGameTime     int,        ---游戏时长
+@inAgencyID     int         ---游戏地代理ID
+as
+set nocount on
+begin
+
+	declare @IsCoop   smallint        --是否为合作代理
+	declare @Svalue   decimal(18,3)   --分成比例
+	declare @Cvalue   decimal(18,3)   --佣金比例
+	declare @agencyID  int            --玩家隶属代理
+	declare @gainGold  decimal(18,4)         --代理可得佣金
+	
+	--新增2016-07-11
+	declare @userNum   smallint       --玩家佣金总表中是否存在用户的数量
+	declare @gainAgency   int         --受益代理
+	
+	-----------------------------------------------------------------------------------
+	
+	--新增2017-12-13
+	declare @recUserID  int        --玩家所属推广员ID
+	declare @recProfitProportype int   --推广员分润类型
+	declare @recProfitProportion decimal(18,3)    --推广员分润比例
+	
+	select @recUserID=RecUserID from TUsers where UserID=@inUserId
+	select @recProfitProportype=ShareProfitType,@recProfitProportion=ShareProfitProportion from RecUser where RecUserID=@recUserID
+	insert into RecUserGoldDataLog (UserID,Gold,GameTime,RecUserID,CollectDateTime) values (@inUserId,@inGold,@inGameTime,@recUserID,GETDATE())
+	update  RecUserGold set Amount=Amount+@inGold*@recProfitProportion,NoCash=NoCash+@inGold*@recProfitProportion where RecUserID=@recUserID
+	
+	-----------------------------------------------------------------------------------
+	
+	
+	select @IsCoop=IsCooperation from DL_Web_Agency where AgencyID=@inAgencyID
+
+	select @agencyID=AgencyID from TUsers where UserID=@inUserId
+	--游戏地代理即为隶属代理
+	if	@agencyID=@inAgencyID
+	begin
+	
+	select @Svalue=SpareValue,@Cvalue=CommissionsValue from DL_Web_Agency where AgencyID=@inAgencyID
+	set @gainGold=@inGold*@Svalue*0.01*@Cvalue*0.001/21000
+	
+	insert into DL_LogUserConsumeGold(UserId,Gold,GameTime,ConsumeGold,AgencyID,GainAgencyID,SpareValue,CommissionsValue,CollectDateTime)values(@inUserId,@inGold,@inGameTime,@gainGold,@inAgencyID,@inAgencyID,@Svalue,@Cvalue,GETDATE())
+	
+	select @userNum=COUNT(*) from DL_UserConsumeGoldTotal where UserID=@inUserId and GainAgencyID=@inAgencyID
+	if @userNum>0
+		begin
+			update DL_UserConsumeGoldTotal set GainGold=GainGold+@gainGold,CollectDateTime=GETDATE() where UserID=@inUserId and GainAgencyID=@inAgencyID 
+		end
+	else
+		begin
+			insert into DL_UserConsumeGoldTotal (UserID,GainGold,GainAgencyID,CollectDateTime) values (@inUserId,@gainGold,@inAgencyID,GETDATE())
+		end
+	
+	
+	end
+	
+	--游戏地代理不是隶属代理
+	else
+	
+	begin
+	--游戏地代理为合作代理
+	if	@IsCoop=1
+	
+		begin
+		
+		select @Svalue=SpareValue,@Cvalue=CommissionsValue from DL_Web_Agency where AgencyID=@inAgencyID
+		set @gainGold=@inGold*@Svalue*0.01*@Cvalue*0.001/21000
+		insert into DL_LogUserConsumeGold(UserId,Gold,GameTime,ConsumeGold,AgencyID,GainAgencyID,SpareValue,CommissionsValue,CollectDateTime)values(@inUserId,@inGold,@inGameTime,@gainGold,@agencyID,@inAgencyID,@Svalue,@Cvalue,GETDATE())
+		
+		select @userNum=COUNT(*) from DL_UserConsumeGoldTotal where UserID=@inUserId and GainAgencyID=@inAgencyID
+		if @userNum>0
+			begin
+				update DL_UserConsumeGoldTotal set GainGold=GainGold+@gainGold,CollectDateTime=GETDATE() where UserID=@inUserId and GainAgencyID=@inAgencyID 
+			end
+		else
+			begin
+				insert into DL_UserConsumeGoldTotal (UserID,GainGold,GainAgencyID,CollectDateTime) values (@inUserId,@gainGold,@inAgencyID,GETDATE())
+			end
+		
+		end
+	--游戏地代理不为合作代理
+	else
+	
+		begin
+		
+		select @Svalue=SpareValue,@Cvalue=CommissionsValue from DL_Web_Agency where AgencyID=@agencyID
+		set @gainGold=@inGold*@Svalue*0.01*@Cvalue*0.001*0.5/21000
+		insert into DL_LogUserConsumeGold(UserId,Gold,GameTime,ConsumeGold,AgencyID,GainAgencyID,SpareValue,CommissionsValue,CollectDateTime)values(@inUserId,@inGold,@inGameTime,@gainGold,@agencyID,@agencyID,@Svalue,@Cvalue,GETDATE())
+		
+		
+		select @userNum=COUNT(*) from DL_UserConsumeGoldTotal where UserID=@inUserId and GainAgencyID=@agencyID
+		if @userNum>0
+			begin
+				update DL_UserConsumeGoldTotal set GainGold=GainGold+@gainGold,CollectDateTime=GETDATE() where UserID=@inUserId and GainAgencyID=@agencyID
+			end
+		else
+			begin
+				insert into DL_UserConsumeGoldTotal (UserID,GainGold,GainAgencyID,CollectDateTime) values (@inUserId,@gainGold,@agencyID,GETDATE())
+			end
+		
+		end
+		
+	
+	
+	end
+	
+
+end
